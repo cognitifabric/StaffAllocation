@@ -1,0 +1,185 @@
+.box {
+  &-curved {
+    &-3 {
+      border-radius: 3rem;
+      padding: 5rem;
+    }
+  }
+  
+}
+
+.curved {
+  border-radius: 2.5rem;
+}
+
+.curved-eased {
+  border-radius: 1rem;
+}
+
+.element {
+  &-white {
+    background-color: white;
+  }
+}
+
+.border-right {
+  border-right: .2rem solid $color-light-grey-1!important;
+}
+
+.border-bottom {
+  border-bottom : .2rem solid $color-light-grey-1!important;
+}
+
+.schemeOne {
+  border-color: $color-scheme-1!important;
+  
+  &-background {
+    background-color: $color-scheme-1!important;
+  }
+
+  &Absolute{
+    background-color: $color-scheme-1;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: width 0.5s ease-in-out;
+  }
+  
+}
+
+.schemeTwo {
+  border-color: $color-scheme-2!important;
+  
+  &-background {
+    background-color: $color-scheme-2!important;
+  }
+
+  &Absolute{
+    background-color: $color-scheme-2;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: width 0.5s ease-in-out;
+  }
+  
+}
+
+.schemeThree {
+  border-color: $color-scheme-3!important;
+  
+  &-background {
+    background-color: $color-scheme-3!important;
+  }
+
+  &Absolute{
+    background-color: $color-scheme-3;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: width 0.5s ease-in-out;
+  }
+  
+}
+
+.schemeFour {
+  border-color: $color-scheme-4!important;
+  
+  &-background {
+    background-color: $color-scheme-4!important;
+  }
+
+  &Absolute{
+    background-color: $color-scheme-4;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: width 0.5s ease-in-out;
+  }
+  
+}
+
+.schemeFive {
+  border-color: $color-scheme-5!important;
+  
+  &-background {
+    background-color: $color-scheme-5!important;
+  }
+
+  &Absolute{
+    background-color: $color-scheme-5;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: width 0.5s ease-in-out;
+  }
+  
+}
+
+.lightGray {
+  &-background {
+    background-color: $color-light-grey-2;
+  }
+}
+
+.fontSize {
+
+  &-12 {
+    font-size: 1.2rem!important;
+  }
+  
+  &-14 {
+    font-size: 1.4rem!important;
+  }
+
+  &-16 {
+    font-size: 1.6rem!important;
+  }
+
+  &-18 {
+    font-size: 1.8rem!important;
+  }
+
+  &-20 {
+    font-size: 2rem!important;
+  }
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.lightContrast {
+  color: $color-light-contrast!important;
+}
+
+.darkContrast {
+  color: $color-dark-grey-1!important;
+}
+
+.fontWeight {
+
+  &-400 {
+    font-weight: 400!important;
+  }
+  
+  &-500 {
+    font-weight: 500!important;
+  }
+
+  &-600 {
+    font-weight: 600!important;
+  }
+
+  &-700 {
+    font-weight: 700!important;
+  }
+}

@@ -1,0 +1,155 @@
+.element {
+  &-button {
+
+    &-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      transition: all .3s;
+      
+      svg {
+        width: 5rem;
+        height: 100%;
+        fill: $color-scheme-2;
+      }
+
+      &:hover {
+        cursor: pointer;
+        transform: translateY(-3px) scale(1.05);
+      }
+      
+    }
+
+    &-text {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.6rem;
+      padding: 1rem;
+      height: 100%;
+      background-color: $color-scheme-3;
+      color: $color-light-contrast;
+      margin: 0 .5rem;
+      font-weight: 600!important;
+      outline: none;
+      border: none;
+      text-align: center;
+      transition: all .3s;
+
+      &:hover {
+        cursor: pointer;
+        transform: translateY(-3px) scale(1.05);
+      }
+      
+    }
+
+    &-allocation {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      min-width: 20rem;
+      max-width: 20rem;
+      font-size: 1.6rem;
+      padding: 1rem .1rem;
+      height: 100%;
+      background-color: $color-light-contrast;
+      color: $color-light-contrast;
+      margin: 0 .5rem;
+      font-weight: 600!important;
+      transition: all .3s;
+      position: relative;
+
+      &:hover {
+        cursor: pointer;
+        transform: translateY(-3px) scale(1.05);
+      }
+       
+    }
+
+    &-total {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      min-width: 20rem;
+      max-width: 20rem;
+      font-size: 1.6rem;
+      padding: 1rem .1rem;
+      height: 100%;
+      background-color: $color-light-contrast;
+      color: $color-light-contrast;
+      margin: 0 .5rem;
+      font-weight: 600!important;
+      transition: all .3s;
+      position: relative;
+    }
+    
+  }
+
+  &InnerText {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    border: none;
+    outline: none;
+    min-width: 2rem!important;
+    background-color: $color-light-contrast;
+    padding: .3rem;
+    z-index: 2;
+    transition: all .5s;
+
+    &:hover {
+      cursor: pointer;
+      transform: translateY(-3px) scale(1.05);
+    }
+  }
+
+  &InnerBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 1rem;
+    border: .3rem solid;
+    background-color: $color-light-contrast;
+    width: 3rem;
+    height: 3rem;
+    margin: 0 .1rem;
+    color: $color-dark-contrast;
+    font-weight: 500;
+    z-index: 2;
+    transition: all .5s;
+
+    &:hover {
+      cursor: pointer;
+      transform: translateY(-3px) scale(1.05);
+    }
+    
+  }
+
+  &SvgContainer {
+    position: absolute;
+    top: -1.2rem;
+    right: -.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $color-dark-contrast;
+    width: 2rem;
+    height: 2rem;
+    z-index: 3!important;
+    border-radius: 50%;
+
+    svg {
+      width: .8rem;
+      height: .8rem;
+      fill: $color-light-contrast;
+    }
+
+    &:hover {
+      cursor: pointer;
+    }
+    
+  }
+  
+}

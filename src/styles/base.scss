@@ -1,0 +1,112 @@
+// COLORS
+$color-scheme-1: #8D5A97;
+$color-scheme-2: #907F9F;
+$color-scheme-3: #A4A5AE;
+$color-scheme-4: #B0C7BD;
+$color-scheme-5: #B8EBD0;
+
+// SHADES
+$color-dark-grey-1: #272727;
+$color-dark-grey-2: #383b3b;
+$color-light-grey-1: #b3b3b3;
+$color-light-grey-2: #edf2f5;
+$color-light-grey-3: #b3b3b3;
+
+// DEFAULTS
+$color-error: #DC2128;
+
+// BASICS
+$color-light-contrast: white;
+$color-dark-contrast: black;
+
+//BREAKPOINTS
+$wide-large: 1800px;
+$wide: 1500px;
+$extra-large: 1250px;
+$large-medium: 1050px;
+$large: 992px;
+$extra-medium: 800px;
+$medium: 768px;
+$small: 600px;
+$extra-small: 350px;
+$extra-small-alt-1: 375px;
+
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box; // Tells the browser to account for any border and padding in the values you specify for an element's width and height
+  font-size: 62.5%; // Sets font-size to 10px
+  scroll-behavior: smooth;
+  padding: env(safe-area-inset);
+}
+
+html,
+body {
+  overflow-x: hidden;
+}
+
+@font-face {
+  font-family: 'Rubik';
+  src: url('/fonts/Rubik/Rubik-Black.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Rubik-Bold';
+  src: url('/fonts/Rubik/Rubik-Bold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('/fonts/Poppins/Poppins-Black.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins-Light';
+  src: url('/fonts/Poppins/Poppins-Light.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins-Bold';
+  src: url('/fonts/Poppins/Poppins-Bold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+body {
+  font-family: Poppins-Light;
+  font-style: normal;
+  color: black;
+  min-height: 100vh;
+  font-weight: 300;
+  line-height: 1.6;
+  overflow-y: auto;
+  background-color: white;
+
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+    background-color: white;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $color-scheme-2;
+  }
+}

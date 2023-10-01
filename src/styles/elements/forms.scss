@@ -1,0 +1,54 @@
+.form {
+  &-group {
+    margin: 2rem 0;
+    
+    input {
+      display: flex;
+      width: 100%;
+      padding: 2rem 1.5rem;
+      box-sizing: border-box;
+      outline: none;
+      font-weight: 300;
+      font-size: 2rem;
+      font-family: inherit;
+      border: none;
+      border-bottom: .1rem solid $color-scheme-2;
+      background-color: transparent;
+      margin: 0.5rem 0;
+      transition: all 0.5s ease-in-out;
+
+      &:focus + .input-label {
+        top: 5%;
+      }
+    }
+
+    &-button {
+      &-small {
+        width: 40%;
+        border-radius: 1rem;
+        outline: none;
+        font-size: 2rem;
+        padding: 1rem 0;
+        border: none;
+        background-color: $color-scheme-1;
+        transition: all .5s;
+
+        &:hover {
+          cursor: pointer;
+          transform: translateY(-5px) scale(1.1);
+        }
+        
+      }
+    }
+
+    &-error {
+      
+      &-light {
+        color: $color-light-contrast;
+        font-size: 1.6rem;
+      }
+      
+    }
+
+  }
+}

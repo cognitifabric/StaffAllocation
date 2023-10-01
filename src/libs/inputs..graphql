@@ -1,0 +1,5 @@
+input SettingsInputType {
+  type: String
+  order: Int
+  content: String
+}
