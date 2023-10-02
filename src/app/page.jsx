@@ -33,7 +33,7 @@ export default function Home() {
     
 
     try {
-      const response = await axios.post(process.env.NEXT_PUBLIC_API, form, {
+      const response = await axios.post('/api', form, {
         headers: {
           'Content-Type': 'multipart/form-data',
         }
