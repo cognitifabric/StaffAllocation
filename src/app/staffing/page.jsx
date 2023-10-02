@@ -428,6 +428,10 @@ const Staffing = ({}) => {
                 <div 
                   key={idx}
                   id={fillBar.id}
+                  draggable
+                  onDragOver={(e)=> onDragOver(e)}
+                  onDragStart={(e) => onDragStartFillBar(e, fillBar, allocation.id, allocation)}
+                  onDrop={(e) => handleOnDropFillbar(e, allocation)}
                   className="element-button-allocation curved-eased lightContrast schemeFive fontSize-12 capitalize h6"
                   onMouseEnter={() => setHovered(`hover${fillBar.id}${allocation.id}`)}
                   onMouseLeave={() => setHovered('')}
