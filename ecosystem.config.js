@@ -1,6 +1,6 @@
 module.exports = {
   apps : [{
-    script: 'index.js',
+    script: 'node_modules/next/dist/bin/next',
     watch: '.'
   }],
 
