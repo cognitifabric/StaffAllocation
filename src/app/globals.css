@@ -155,7 +155,7 @@ body::-webkit-scrollbar-thumb {
 .scrollHorizontal {
   display: flex;
   align-items: center;
-  justify-content: start;
+  justify-content: flex-start;
   overflow-x: auto;
   white-space: nowrap;
 }
@@ -168,7 +168,7 @@ body::-webkit-scrollbar-thumb {
 .scrollReverse {
   display: flex;
   align-items: center;
-  justify-content: start;
+  justify-content: flex-start;
   overflow-x: auto;
   white-space: nowrap;
   direction: rtl;

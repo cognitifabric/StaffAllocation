@@ -65,7 +65,7 @@
   &Horizontal {
     display: flex;
     align-items: center;
-    justify-content: start; 
+    justify-content: flex-start; 
     overflow-x: auto;
     white-space: nowrap;
     
@@ -81,7 +81,7 @@
   &Reverse {
     display: flex;
     align-items: center;
-    justify-content: start; 
+    justify-content: flex-start; 
     overflow-x: auto;
     white-space: nowrap;
     direction: rtl;
