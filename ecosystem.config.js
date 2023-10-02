@@ -8,7 +8,7 @@ module.exports = {
     production : {
       key  : 'allocations.pem',
       user : 'ubuntu',
-      host : '54.157.228.23',
+      host : '18.206.197.91',
       ref  : 'origin/main',
       repo : 'git@github.com:codecallogic/StaffAllocation.git',
       path : '/home/ubuntu',
