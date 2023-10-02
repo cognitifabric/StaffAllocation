@@ -4,12 +4,13 @@ import {
   ApolloClient,
   ApolloLink,
   HttpLink,
-  SuspenseCache,
+  SuspenseCache
 } from "@apollo/client";
 import {
   ApolloNextAppProvider,
   NextSSRInMemoryCache,
   SSRMultipartLink,
+  NextSSRApolloClient,
 } from "@apollo/experimental-nextjs-app-support/ssr";
 
 const GRAPHQL_ENDPOINT = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT
@@ -19,7 +20,8 @@ function makeClient() {
     uri: GRAPHQL_ENDPOINT,
   });
 
-  return new ApolloClient({
+  return new NextSSRApolloClient({
+    ssrMode: typeof window === 'undefined',
     cache: new NextSSRInMemoryCache({
       addTypename: false,
       include: 'active'
