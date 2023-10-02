@@ -9,6 +9,7 @@ import ADD_ALLOCATION from '@/mutations/addAllocation'
 import UPDATE_ALLOCATION from '@/mutations/updateAllocation'
 import ADD_FILLBAR from '@/mutations/addFillBar'
 import UPDATE_FILLBAR from '@/mutations/updateFillBar'
+import DELETE_FILLBAR from '@/mutations/deleteFillbar'
 import DELETE_ALLOCATION from '@/mutations/deleteAllocation'
 
 //// HELPERS
@@ -28,8 +29,10 @@ const Staffing = ({}) => {
   const [ updateAllocationMutation, { dataUpdateAllocation, loadingUpdateAllocation, errorUpdatedAllocation }] = useMutation(UPDATE_ALLOCATION, { refetchQueries: [ GET_USER ]});
   const [ addFillBar, { dataAddFillBar, loadingAddFillBar, errorAddFillBar }] = useMutation(ADD_FILLBAR, { refetchQueries: [ GET_USER ]});
   const [ updateFillBar, { dataUpdateFillBar, loadingUpdateFillBar, errorUpdateFillBar }] = useMutation(UPDATE_FILLBAR, { refetchQueries: [ GET_USER ]})
-  const [ deleteAllocation, { deletAllocation, loadingDeleteAllocation, errorDeleteAllocation }] = useMutation(DELETE_ALLOCATION, { refetchQueries: [ GET_USER ]})
+  const [ deleteFillbar, { dataDeleteFillbar, loadingDeleteFillbar, errorDeleteFillbar }] = useMutation(DELETE_FILLBAR, { refetchQueries: [ GET_USER ]})
+  const [ deleteAllocation, { dataDeleteAllocation, loadingDeleteAllocation, errorDeleteAllocation }] = useMutation(DELETE_ALLOCATION, { refetchQueries: [ GET_USER ]})
   const [ isTyping, setIsTyping ] = useState('');
+  const [ isHovered, setHovered ] = useState('');
 
   useEffect(() => {
 
@@ -164,13 +167,24 @@ const Staffing = ({}) => {
 
   }
 
-  const handleDeleteAllocation = (e, allocation, deleteId) => {
+  const handleDeleteFillbar = (e, allocation, deleteId) => {
     e.preventDefault()
 
     let newObject = { ...allocation }
 
     delete newObject.fillBars
-    deleteAllocation({ variables: { allocation: newObject, userID: dataUser.data.user.id, deleteId: deleteId } })
+    deleteFillbar({ variables: { allocation: newObject, userID: dataUser.data.user.id, deleteId: deleteId } })
+    setIsTyping('')
+
+  }
+
+  const handleDeleteAllocation = (e, allocation) => {
+    e.preventDefault()
+
+    let newObject = { ...allocation }
+
+    delete newObject.fillBars
+    deleteAllocation({ variables: { allocation: newObject, userID: dataUser.data.user.id } })
     setIsTyping('')
 
   }
@@ -264,13 +278,17 @@ const Staffing = ({}) => {
                   onDragOver={(e)=> onDragOver(e)}
                   onDragStart={(e) => onDragStartFillBar(e, fillBar, allocation.id, allocation)}
                   onDrop={(e) => handleOnDropFillbar(e, allocation)}
+                  onMouseEnter={() => setHovered(`hover${fillBar.id}${allocation.id}`)}
+                  onMouseLeave={() => setHovered('')}
                 >
-                  <div 
-                    className="elementSvgContainer"
-                    onClick={(e) => handleDeleteAllocation(e, allocation, fillBar.id)}
-                  >
-                    <SVG svg={'thrashCan'}></SVG>
-                  </div>
+                  { isHovered == `hover${fillBar.id}${allocation.id}` &&
+                    <div 
+                      className="elementSvgContainer"
+                      onClick={(e) => handleDeleteFillbar(e, allocation, fillBar.id)}
+                    >
+                      <SVG svg={'thrashCan'}></SVG>
+                    </div>
+                  }
                   <div 
                     className="progressBar schemeTwoAbsolute curved-eased"
                     style={{ width: `${ Math.min(100, Math.max(0, (fillBar.allocation/fillBar.fte) * 100 ))}%` }}
@@ -306,12 +324,17 @@ const Staffing = ({}) => {
               className="element-button-allocation w20 curved-eased lightContrast schemeOne fontSize-12 capitalize h6"
               draggable
               onDragStart={(e) => onDragStart(e, allocation, allocations)}
-              >
-              <div 
-                onClick={(e) => handleDeleteAllocation(e, allocation)}
-                className="elementSvgContainer"><SVG svg={'thrashCan'}
-              >
-                </SVG></div>
+              onMouseEnter={() => setHovered(`hover${allocation.id}${idx}`)}
+              onMouseLeave={() => setHovered('')}
+            >
+              { isHovered == `hover${allocation.id}${idx}` &&
+                <div 
+                  onClick={(e) => handleDeleteAllocation(e, allocation)}
+                  className="elementSvgContainer"><SVG svg={'thrashCan'}
+                >
+                  </SVG>
+                </div>
+              }
               <div 
                 className="progressBar schemeOneAbsolute curved-eased"
                 style={{ width: `${ Math.min(100, Math.max(0, (allocation.allocation/allocation.fte) * 100 ))}%`  }}
@@ -333,7 +356,7 @@ const Staffing = ({}) => {
               </input>
               <input 
                 type="text"
-                className="elementInnerBox schemeTwo"
+                className={`elementInnerBox schemeTwo ${allocation.allocation > allocation.fte ? ' redText' : ''}`}
                 value={ allocation.allocation ? parseFloat(allocation.allocation.replace(/(\.\d*?[1-9])0+$/g, '$1')) : '' }
                 readOnly
                 // onChange={(e) => updateAllocationItems(allocation.id, 'allocation', e.target.value) }
@@ -360,7 +383,17 @@ const Staffing = ({}) => {
                 className="element-button-allocation w20 curved-eased lightContrast schemeFour fontSize-12 capitalize h6"
                 draggable
                 onDragStart={(e) => onDragStart(e, allocation, allocations)}
+                onMouseEnter={() => setHovered(`hover${allocation.id}${idx}`)}
+                onMouseLeave={() => setHovered('')}
               >
+                { isHovered == `hover${allocation.id}${idx}` &&
+                  <div 
+                    onClick={(e) => handleDeleteAllocation(e, allocation)}
+                    className="elementSvgContainer"><SVG svg={'thrashCan'}
+                  >
+                    </SVG>
+                  </div>
+                }
                 <div 
                   className="progressBar schemeFourAbsolute curved-eased"
                   style={{ width: `${ Math.min(100, Math.max(0, (allocation.allocation/allocation.fte) * 100 ))}%`  }}
@@ -396,7 +429,17 @@ const Staffing = ({}) => {
                   key={idx}
                   id={fillBar.id}
                   className="element-button-allocation curved-eased lightContrast schemeFive fontSize-12 capitalize h6"
+                  onMouseEnter={() => setHovered(`hover${fillBar.id}${allocation.id}`)}
+                  onMouseLeave={() => setHovered('')}
                 >
+                  { isHovered == `hover${fillBar.id}${allocation.id}` &&
+                    <div 
+                      className="elementSvgContainer"
+                      onClick={(e) => handleDeleteFillbar(e, allocation, fillBar.id)}
+                    >
+                      <SVG svg={'thrashCan'}></SVG>
+                    </div>
+                  }
                   <div 
                     className="progressBar schemeFiveAbsolute curved-eased"
                     style={{ width: `${ Math.min(100, Math.max(0, (fillBar.allocation/fillBar.fte) * 100 ))}%` }}
@@ -448,7 +491,7 @@ const Staffing = ({}) => {
         </div>
       </div>
       
-      <div className="container-flex-left whalf h5">
+      <div className="container-flex-left whalf">
         <div 
           className="element-button-total curved-eased lightContrast schemeFour fontSize-12 capitalize h6"
         >

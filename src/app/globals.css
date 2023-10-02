@@ -390,6 +390,10 @@ body::-webkit-scrollbar-thumb {
   font-weight: 700 !important;
 }
 
+.redText {
+  color: red !important;
+}
+
 .loading span {
   width: 0.5rem;
   height: 0.5rem;
@@ -529,7 +533,7 @@ body::-webkit-scrollbar-thumb {
 .elementSvgContainer {
   position: absolute;
   top: -1.2rem;
-  right: -0.5rem;
+  right: 0rem;
   display: flex;
   align-items: center;
   justify-content: center;
