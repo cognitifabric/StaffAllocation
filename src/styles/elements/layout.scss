@@ -9,6 +9,14 @@
     height: 100%;
   }
 
+  &-centerWidth {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    // align-items: center;
+    padding: 3rem 3rem;
+  }
+
   &-flex {
 
     &-right {

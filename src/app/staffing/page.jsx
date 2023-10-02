@@ -1,7 +1,7 @@
 
 "use client"
 import SVG from '../../libs/svg'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useMutation, useQuery } from '@apollo/client';
 import GET_USER from '@/queries/fetchUser'
 import ADD_SETTINGS from '@/mutations/addSettings'
@@ -33,6 +33,7 @@ const Staffing = ({}) => {
   const [ deleteAllocation, { dataDeleteAllocation, loadingDeleteAllocation, errorDeleteAllocation }] = useMutation(DELETE_ALLOCATION, { refetchQueries: [ GET_USER ]})
   const [ isTyping, setIsTyping ] = useState('');
   const [ isHovered, setHovered ] = useState('');
+  const elementsWithIdRef = useRef([]);
 
   useEffect(() => {
 
@@ -189,6 +190,26 @@ const Staffing = ({}) => {
 
   }
 
+  const glowAll = (id) => {
+    const elementsWithId = document.querySelectorAll(`[id="${id}"`);
+    
+    // Convert the NodeList to an array
+    const elementsArray = Array.from(elementsWithId);
+    
+    // Store the array of elements in the ref
+    elementsWithIdRef.current = elementsArray;
+    
+    // Now, you can access the elements using elementsWithIdRef.current
+    elementsWithIdRef.current.forEach(element => {
+      // Do something with each element
+      if (element.classList.contains('element-button-allocation')) {
+        console.log(element.classList.contains(('glow')))
+        if(element.classList.contains(('glow'))) return element.classList.remove("glow")
+        element.classList.add("glow")
+      }
+    });
+  }
+
   if (loading) return 'Submitting...';
   if (error) return `Submission error! ${error.message}`;
   if (loadingAllocation) return 'Submitting...';
@@ -280,6 +301,7 @@ const Staffing = ({}) => {
                   onDrop={(e) => handleOnDropFillbar(e, allocation)}
                   onMouseEnter={() => setHovered(`hover${fillBar.id}${allocation.id}`)}
                   onMouseLeave={() => setHovered('')}
+                  onClick={() => glowAll(fillBar.id)}
                 >
                   { isHovered == `hover${fillBar.id}${allocation.id}` &&
                     <div 
@@ -321,11 +343,13 @@ const Staffing = ({}) => {
             )}
             </div>
             <div 
+              id={allocation.id}
               className="element-button-allocation w20 curved-eased lightContrast schemeOne fontSize-12 capitalize h6"
               draggable
               onDragStart={(e) => onDragStart(e, allocation, allocations)}
               onMouseEnter={() => setHovered(`hover${allocation.id}${idx}`)}
               onMouseLeave={() => setHovered('')}
+              onClick={() => glowAll(allocation.id)}
             >
               { isHovered == `hover${allocation.id}${idx}` &&
                 <div 
@@ -380,18 +404,19 @@ const Staffing = ({}) => {
           >
             <div className="container-flex-left wfull">
               <div 
+                id={allocation.id}
                 className="element-button-allocation w20 curved-eased lightContrast schemeFour fontSize-12 capitalize h6"
                 draggable
                 onDragStart={(e) => onDragStart(e, allocation, allocations)}
                 onMouseEnter={() => setHovered(`hover${allocation.id}${idx}`)}
                 onMouseLeave={() => setHovered('')}
+                onClick={() => glowAll(allocation.id)}
               >
                 { isHovered == `hover${allocation.id}${idx}` &&
                   <div 
                     onClick={(e) => handleDeleteAllocation(e, allocation)}
-                    className="elementSvgContainer"><SVG svg={'thrashCan'}
-                  >
-                    </SVG>
+                    className="elementSvgContainer">
+                      <SVG svg={'thrashCan'}></SVG>
                   </div>
                 }
                 <div 
@@ -435,6 +460,7 @@ const Staffing = ({}) => {
                   className="element-button-allocation curved-eased lightContrast schemeFive fontSize-12 capitalize h6"
                   onMouseEnter={() => setHovered(`hover${fillBar.id}${allocation.id}`)}
                   onMouseLeave={() => setHovered('')}
+                  onClick={() => glowAll(fillBar.id)}
                 >
                   { isHovered == `hover${fillBar.id}${allocation.id}` &&
                     <div 

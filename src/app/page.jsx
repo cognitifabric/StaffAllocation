@@ -55,7 +55,7 @@ export default function Home() {
   if (errorQuery) return `Error! ${errorQuery.message}`;
    
   return (
-    <div className="container-center h100">
+    <div className="container-center">
       <div className="w70 box-curved-3 schemeTwo-background">
         <div className="form-group element-white curved">
           <input 
@@ -83,7 +83,7 @@ export default function Home() {
             )}
           />
         </div>
-        <div className="form-group container-center">
+        <div className="form-group container-centerWidth">
           <button
            className="form-group-button-small element-white"
            onClick={() => login()}

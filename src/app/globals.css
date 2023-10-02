@@ -118,6 +118,12 @@ body::-webkit-scrollbar-thumb {
   padding: 3rem 3rem;
   height: 100%;
 }
+.container-centerWidth {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 3rem 3rem;
+}
 .container-flex-right {
   width: 100%;
   display: flex;
@@ -392,6 +398,10 @@ body::-webkit-scrollbar-thumb {
 
 .redText {
   color: red !important;
+}
+
+.glow {
+  box-shadow: 0 1rem 2rem rgba(125, 224, 90, 0.7);
 }
 
 .loading span {
