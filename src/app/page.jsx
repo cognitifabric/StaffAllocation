@@ -33,7 +33,7 @@ export default function Home() {
     
 
     try {
-      const response = await axios.post('/api', form, {
+      const response = await axios.post('/api/auth', form, {
         headers: {
           'Content-Type': 'multipart/form-data',
         }
