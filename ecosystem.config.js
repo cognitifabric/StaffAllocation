@@ -1,7 +1,6 @@
 module.exports = {
   apps : [{
-    script: 'node_modules/next/dist/bin/next',
-    watch: '.'
+    script: 'npm start'
   }],
 
   deploy : {
