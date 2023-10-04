@@ -11,6 +11,7 @@ import ADD_FILLBAR from '@/mutations/addFillBar'
 import UPDATE_FILLBAR from '@/mutations/updateFillBar'
 import DELETE_FILLBAR from '@/mutations/deleteFillbar'
 import DELETE_ALLOCATION from '@/mutations/deleteAllocation'
+import UPLOAD_ALLOCATION from '@/mutations/uploadAllocation'
 
 //// HELPERS
 import { defaultAllocationOrderTwo, defaultAllocationOrderThree } from '@/helpers/table';
@@ -19,10 +20,11 @@ import { sumByType, sum } from '@/helpers/utilities';
 
 const Staffing = ({}) => {
 
-  const [ headingSettings, setHeadingSettings ] = useState([])
-  const [ allocations, setAllocations ] = useState([])
-  const [ updatedAllocation, setUpdatedAllocation ] = useState('')
+  let   [ headingSettings, setHeadingSettings ] = useState([])
+  let   [ allocations, setAllocations ] = useState([])
+  let   [ updatedAllocation, setUpdatedAllocation ] = useState('')
   const [ updatedFillbar, setUpdatedFillbar] = useState('')
+  const [ files, setFiles] = useState('')
   const dataUser = useQuery(GET_USER)
   const [ addSettings, { data, loading, error }] = useMutation(ADD_SETTINGS);
   const [ addAllocation, { dataAllocation, loadingAllocation, errorAllocation }] = useMutation(ADD_ALLOCATION, { refetchQueries: [ GET_USER ] });
@@ -31,14 +33,22 @@ const Staffing = ({}) => {
   const [ updateFillBar, { dataUpdateFillBar, loadingUpdateFillBar, errorUpdateFillBar }] = useMutation(UPDATE_FILLBAR, { refetchQueries: [ GET_USER ]})
   const [ deleteFillbar, { dataDeleteFillbar, loadingDeleteFillbar, errorDeleteFillbar }] = useMutation(DELETE_FILLBAR, { refetchQueries: [ GET_USER ]})
   const [ deleteAllocation, { dataDeleteAllocation, loadingDeleteAllocation, errorDeleteAllocation }] = useMutation(DELETE_ALLOCATION, { refetchQueries: [ GET_USER ]})
+  const [ uploadAllocation, { dataUploadAllocation, loadingUploadAllocation, errorUploadAllocation }] = useMutation(UPLOAD_ALLOCATION, { refetchQueries: [ GET_USER ]})
+  const [ ascend, setSortAscend ] = useState(1)
+  const [ descend, setSortDescend ] = useState(-1)
   const [ isTyping, setIsTyping ] = useState('');
   const [ isHovered, setHovered ] = useState('');
   const elementsWithIdRef = useRef([]);
 
   useEffect(() => {
 
+    let newAllocations = []
+
     if(dataUser.data) setHeadingSettings(dataUser.data.user.settings)
-    if(dataUser.data) setAllocations(dataUser.data.user.allocations)
+    if(dataUser.data){
+      newAllocations = [...dataUser.data.user.allocations]
+      setAllocations(newAllocations)
+    }
     
   }, [dataUser])
 
@@ -203,11 +213,31 @@ const Staffing = ({}) => {
     elementsWithIdRef.current.forEach(element => {
       // Do something with each element
       if (element.classList.contains('element-button-allocation')) {
-        console.log(element.classList.contains(('glow')))
         if(element.classList.contains(('glow'))) return element.classList.remove("glow")
         element.classList.add("glow")
       }
     });
+  }
+
+  useEffect(() => {
+    if(files) submitFileUpload()
+  }, [files])
+
+  const submitFileUpload = () => {
+  
+    const object = new Object()
+    object.fileName = files.name
+    object.type     = files.type
+
+    uploadAllocation({ variables: { file: object} })
+    
+  }
+
+  const changeSort = () => {
+    if(ascend == 1) setSortAscend(-1)
+    if(ascend == -1) setSortAscend(1)
+    if(descend == 1) setSortDescend(-1)
+    if(descend == -1) setSortDescend(1)
   }
 
   if (loading) return 'Submitting...';
@@ -226,8 +256,20 @@ const Staffing = ({}) => {
         >
           <SVG svg={'plus'}></SVG>
         </div>
-        <div className="element-button-text curved">
-          import
+        <div className="element-buttonFile">
+          <label 
+            className="curved"
+            htmlFor="importAllocation"
+          >
+            import
+          </label>
+          <input 
+            type="file"
+            id="importAllocation"
+            className="element-button-text curved"
+            onChange={(e) => setFiles(e.target.files[0])}
+          >
+          </input>
         </div>
       </div>
       <div className="container-flex-left whalf h5">
@@ -260,8 +302,20 @@ const Staffing = ({}) => {
           onChange={(e) => updateHeadingSetting(2, e.target.value) }
         >
         </input>
+        <div 
+          className="element-button-icon"
+          onClick={() => changeSort()}
+        >
+          <SVG svg="sort"></SVG>
+        </div>
       </div>
-      <div className="container-flex-left whalf h5">
+      <div className="container-flex-left whalf">
+        <div 
+          className="element-button-icon"
+          onClick={() => changeSort()}
+        >
+          <SVG svg="sort"></SVG>
+        </div>
         <input
           type="text"
           className="element-button-text curved-eased w20 schemeFour-background capitalize"
@@ -279,7 +333,7 @@ const Staffing = ({}) => {
       </div>
 
       <div className="whalf">
-      { allocations && allocations.map(( allocation, idx ) => 
+      { allocations.length > 0 && Array.isArray(allocations) && allocations.sort( (a, b) => a.text > b.text ? descend : ascend).map(( allocation, idx ) => 
         allocation.order == 2 &&
         <div 
           id={allocation.id}
