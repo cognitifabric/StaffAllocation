@@ -164,6 +164,18 @@ body::-webkit-scrollbar-thumb {
 .scrollHorizontal::-webkit-scrollbar-thumb {
   background-color: #8D5A97;
 }
+.scrollVertical {
+  display: flex;
+  justify-content: flex-start;
+  overflow-y: auto;
+  white-space: nowrap;
+}
+.scrollVertical::-webkit-scrollbar {
+  width: 0.1rem !important;
+}
+.scrollVertical::-webkit-scrollbar-thumb {
+  background-color: #8D5A97;
+}
 .scrollReverse {
   display: flex;
   align-items: center;
@@ -219,6 +231,11 @@ body::-webkit-scrollbar-thumb {
 }
 .dropdown:hover .dropdown-menu {
   display: block;
+}
+
+.freezedPanes {
+  height: 70rem !important;
+  padding: 1rem 0.6rem !important;
 }
 
 .h5 {

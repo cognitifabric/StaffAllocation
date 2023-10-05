@@ -78,6 +78,21 @@
     }
   }
 
+  &Vertical {
+    display: flex;
+    justify-content: flex-start; 
+    overflow-y: auto;
+    white-space: nowrap;
+    
+    &::-webkit-scrollbar {
+      width: 0.1rem!important;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: $color-scheme-1;
+    }
+  }
+
   &Reverse {
     display: flex;
     align-items: center;
@@ -146,6 +161,11 @@
     display: block;
   }
   
+}
+
+.freezedPanes {
+  height: 70rem!important;
+  padding: 1rem .6rem!important;
 }
 
 .h5 {

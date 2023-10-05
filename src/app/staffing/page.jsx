@@ -296,7 +296,7 @@ const Staffing = ({}) => {
 
       setSortTwo(!sortTwo)
       setListTwo(newList)
-      
+
     }
 
     if(listType == 'three'){
@@ -441,7 +441,7 @@ const Staffing = ({}) => {
         </input>
       </div>
       {/* .sort( (a, b) => a.text > b.text ? descend : ascend) */}
-      <div className="scrollHorizontal whalf">
+      <div className="scrollHorizontal whalf scrollVertical freezedPanes">
       <div className="w100">
       { listTwo.length > 0 && Array.isArray(listTwo) && listTwo.map(( allocation, idx ) => 
         allocation.order == 2 &&
@@ -556,7 +556,7 @@ const Staffing = ({}) => {
       </div>
       </div>
       
-      <div className="scrollHorizontal whalf">
+      <div className="scrollHorizontal whalf scrollVertical freezedPanes">
       <div className="w100">
         { listThree && listThree.map(( allocation, idx ) => 
           allocation.order == 3 &&
