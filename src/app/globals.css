@@ -154,7 +154,6 @@ body::-webkit-scrollbar-thumb {
 
 .scrollHorizontal {
   display: flex;
-  align-items: center;
   justify-content: flex-start;
   overflow-x: auto;
   white-space: nowrap;
@@ -178,6 +177,48 @@ body::-webkit-scrollbar-thumb {
 }
 .scrollReverse::-webkit-scrollbar-thumb {
   background-color: #8D5A97;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  height: 100%;
+}
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: -5rem;
+  width: 20rem;
+  height: 100%;
+  background-color: transparent !important;
+  list-style: none;
+  border-radius: 25rem !important;
+  outline: none;
+}
+.dropdown-menu li {
+  padding: 1rem 0.5rem;
+  width: 20rem;
+  background-color: white;
+  font-size: 1.2rem;
+  text-align: center;
+  cursor: pointer;
+}
+.dropdown-menu li:first-child {
+  border-top-left-radius: 2rem;
+  border-top-right-radius: 2rem;
+}
+.dropdown-menu li:last-child {
+  border-bottom-left-radius: 2rem;
+  border-bottom-right-radius: 2rem;
+}
+.dropdown-menu li:hover {
+  background-color: #8D5A97;
+  color: white;
+  box-shadow: 0rem 0rem 0.5rem rgba(0, 0, 0, 0.5);
+}
+.dropdown:hover .dropdown-menu {
+  display: block;
 }
 
 .h5 {
@@ -447,6 +488,7 @@ body::-webkit-scrollbar-thumb {
   width: 5rem !important;
   padding: 1rem;
   transition: all 0.3s;
+  z-index: 100 !important;
 }
 .element-button-icon svg {
   margin: 0 !important;

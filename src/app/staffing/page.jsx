@@ -18,11 +18,16 @@ import { defaultAllocationOrderTwo, defaultAllocationOrderThree } from '@/helper
 import { onDragStart, onDragOver, onDrop, onDropFillBar, onDragStartFillBar } from '@/helpers/draggable';
 import { sumByType, sum } from '@/helpers/utilities';
 
+//// COMPONENTS
+import DropDown from '../../component/dropDown'
+
 const Staffing = ({}) => {
 
-  let   [ headingSettings, setHeadingSettings ] = useState([])
-  let   [ allocations, setAllocations ] = useState([])
-  let   [ updatedAllocation, setUpdatedAllocation ] = useState('')
+  const [ headingSettings, setHeadingSettings ] = useState([])
+  const [ allocations, setAllocations ] = useState([])
+  const [ listTwo, setListTwo] = useState([])
+  const [ listThree, setListThree] = useState([])
+  const [ updatedAllocation, setUpdatedAllocation ] = useState('')
   const [ updatedFillbar, setUpdatedFillbar] = useState('')
   const [ files, setFiles] = useState('')
   const dataUser = useQuery(GET_USER)
@@ -34,8 +39,8 @@ const Staffing = ({}) => {
   const [ deleteFillbar, { dataDeleteFillbar, loadingDeleteFillbar, errorDeleteFillbar }] = useMutation(DELETE_FILLBAR, { refetchQueries: [ GET_USER ]})
   const [ deleteAllocation, { dataDeleteAllocation, loadingDeleteAllocation, errorDeleteAllocation }] = useMutation(DELETE_ALLOCATION, { refetchQueries: [ GET_USER ]})
   const [ uploadAllocation, { dataUploadAllocation, loadingUploadAllocation, errorUploadAllocation }] = useMutation(UPLOAD_ALLOCATION, { refetchQueries: [ GET_USER ]})
-  const [ ascend, setSortAscend ] = useState(1)
-  const [ descend, setSortDescend ] = useState(-1)
+  const [ sortTwo, setSortTwo ] = useState(false)
+  const [ sortThree, setSortThree ] = useState(false)
   const [ isTyping, setIsTyping ] = useState('');
   const [ isHovered, setHovered ] = useState('');
   const elementsWithIdRef = useRef([]);
@@ -47,6 +52,12 @@ const Staffing = ({}) => {
     if(dataUser.data) setHeadingSettings(dataUser.data.user.settings)
     if(dataUser.data){
       newAllocations = [...dataUser.data.user.allocations]
+
+      let orderTwo    = newAllocations.filter( (item) => { if(item.order == 2) return item })
+      let orderThree  = newAllocations.filter( (item) => { if(item.order == 3) return item })
+
+      setListTwo(orderTwo)
+      setListThree(orderThree)
       setAllocations(newAllocations)
     }
     
@@ -148,8 +159,21 @@ const Staffing = ({}) => {
 
   }
 
-  const submitUpdateFillbar = () => {
-    updateFillBar({ variables: { allocationID: updatedAllocation.id, fillBars: updatedAllocation.fillBars, userID: dataUser.data.user.id, fillBar: updatedFillbar } })
+  const submitUpdateFillbar = async () => {
+
+    updateFillBar({ 
+      variables: { allocationID: updatedAllocation.id, fillBars: updatedAllocation.fillBars, userID: dataUser.data.user.id, fillBar: updatedFillbar },
+      optimisticResponse: {
+        __typename: "Mutation",
+        user: {
+          allocations: allocations,
+          id: dataUser.data.user.id,
+          settings: headingSettings,
+          username: "Test"
+        }
+      }
+    })
+    
     setIsTyping('')
 
   }
@@ -233,11 +257,88 @@ const Staffing = ({}) => {
     
   }
 
-  const changeSort = () => {
-    if(ascend == 1) setSortAscend(-1)
-    if(ascend == -1) setSortAscend(1)
-    if(descend == 1) setSortDescend(-1)
-    if(descend == -1) setSortDescend(1)
+  const changeSort = (sortType, listType) => {
+    
+    if(listType == 'two'){
+      let newList = []
+      
+      if(sortType == 'text'){
+        newList = allocations
+          .slice()
+          .sort( (a, b) => {
+
+          const textA = a[sortType].toLowerCase();
+          const textB = b[sortType].toLowerCase();
+
+          if (textA < textB) return sortTwo ? -1 : 1;
+          if (textA > textB) return sortTwo ? 1 : -1;
+          return 0;
+
+        }).filter((item) => {
+          if(item.order == 2) return item
+        })
+      }
+
+      if(sortType !== 'text'){
+        newList = allocations.sort( (a, b) => {
+
+          const numA = parseFloat(a[sortType]);
+          const numB = parseFloat(b[sortType]);
+          
+          if (numA < numB) return sortTwo ? 1 : -1;
+          if (numA > numB) return sortTwo ? -1 : 1;
+          return 0;
+
+        }).filter((item) => {
+          if(item.order == 2) return item
+        })
+      }
+
+      setSortTwo(!sortTwo)
+      setListTwo(newList)
+      
+    }
+
+    if(listType == 'three'){
+      let newList = []
+      
+      if(sortType == 'text'){
+        newList = allocations
+          .slice()
+          .sort( (a, b) => {
+
+            const textA = a[sortType].toLowerCase();
+            const textB = b[sortType].toLowerCase();
+
+            if (textA < textB) return sortThree ? -1 : 1;
+            if (textA > textB) return sortThree ? 1 : -1;
+            return 0;
+
+          }).filter((item) => {
+          if(item.order == 3) return item
+        })
+      }
+
+      if(sortType !== 'text'){
+        newList = allocations.sort( (a, b) => {
+
+          const numA = parseFloat(a[sortType]);
+          const numB = parseFloat(b[sortType]);
+          
+          if (numA < numB) return sortThree ? 1 : -1;
+          if (numA > numB) return sortThree ? -1 : 1;
+          return 0
+
+        }).filter((item) => {
+          if(item.order == 3) return item
+        })
+      }
+
+      setSortThree(!sortThree)
+      setListThree(newList)
+
+    }
+    
   }
 
   if (loading) return 'Submitting...';
@@ -304,17 +405,25 @@ const Staffing = ({}) => {
         </input>
         <div 
           className="element-button-icon"
-          onClick={() => changeSort()}
         >
-          <SVG svg="sort"></SVG>
+          <DropDown
+            changeSort={changeSort}
+            listType="two"
+            allocations={allocations}
+          >
+          </DropDown>
         </div>
       </div>
       <div className="container-flex-left whalf">
         <div 
           className="element-button-icon"
-          onClick={() => changeSort()}
         >
-          <SVG svg="sort"></SVG>
+          <DropDown
+            changeSort={changeSort}
+            listType="three"
+            allocations={allocations}
+          >
+          </DropDown>
         </div>
         <input
           type="text"
@@ -331,9 +440,10 @@ const Staffing = ({}) => {
         >
         </input>
       </div>
-
-      <div className="whalf">
-      { allocations.length > 0 && Array.isArray(allocations) && allocations.sort( (a, b) => a.text > b.text ? descend : ascend).map(( allocation, idx ) => 
+      {/* .sort( (a, b) => a.text > b.text ? descend : ascend) */}
+      <div className="scrollHorizontal whalf">
+      <div className="w100">
+      { listTwo.length > 0 && Array.isArray(listTwo) && listTwo.map(( allocation, idx ) => 
         allocation.order == 2 &&
         <div 
           id={allocation.id}
@@ -408,9 +518,8 @@ const Staffing = ({}) => {
               { isHovered == `hover${allocation.id}${idx}` &&
                 <div 
                   onClick={(e) => handleDeleteAllocation(e, allocation)}
-                  className="elementSvgContainer"><SVG svg={'thrashCan'}
-                >
-                  </SVG>
+                  className="elementSvgContainer">
+                    <SVG svg={'thrashCan'}></SVG>
                 </div>
               }
               <div 
@@ -445,9 +554,11 @@ const Staffing = ({}) => {
         </div>
       )}
       </div>
+      </div>
       
-      <div className="whalf">
-        { allocations && allocations.map(( allocation, idx ) => 
+      <div className="scrollHorizontal whalf">
+      <div className="w100">
+        { listThree && listThree.map(( allocation, idx ) => 
           allocation.order == 3 &&
           <div 
             id={allocation.id}
@@ -557,6 +668,7 @@ const Staffing = ({}) => {
               </div>
           </div>
         )}
+      </div>
       </div>
 
       <div className="container-flex-right whalf border-right">
