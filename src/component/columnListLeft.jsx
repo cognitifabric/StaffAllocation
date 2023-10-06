@@ -126,7 +126,7 @@ const ColumnListLeft = ({
             </input>
             <input 
               type="text"
-              className={`elementInnerBox schemeTwo ${allocation.allocation > allocation.fte ? ' redText' : ''}`}
+              className={`elementInnerBox schemeTwo ${allocation.allocation > parseFloat(allocation.fte) ? ' redText' : ''}`}
               value={ allocation.allocation ? parseFloat(allocation.allocation.replace(/(\.\d*?[1-9])0+$/g, '$1')) : '' }
               readOnly
               // onChange={(e) => updateAllocationItems(allocation.id, 'allocation', e.target.value) }
