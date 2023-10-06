@@ -23,7 +23,7 @@ const SVG = ({svg, classprop, color}) => {
         break;
         
       case 'dropdown':
-        return <svg id="icon-list" viewBox="0 0 32 32">
+        return <svg id="icon-list" viewBox="0 0 24 24">
           <path d="M3 12.984v-1.969h12v1.969h-12zM3 6h18v2.016h-18v-2.016zM3 18v-2.016h6v2.016h-6z"></path>
         </svg> 
         break;
