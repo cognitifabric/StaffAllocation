@@ -20,6 +20,8 @@ import { sumByType, sum } from '@/helpers/utilities';
 
 //// COMPONENTS
 import DropDown from '../../component/dropDown'
+import ColumnListRight from '@/component/columnListRight';
+import ColumnListLeft from '@/component/columnListLeft';
 
 const Staffing = ({}) => {
 
@@ -41,9 +43,13 @@ const Staffing = ({}) => {
   const [ uploadAllocation, { dataUploadAllocation, loadingUploadAllocation, errorUploadAllocation }] = useMutation(UPLOAD_ALLOCATION, { refetchQueries: [ GET_USER ]})
   const [ sortTwo, setSortTwo ] = useState(false)
   const [ sortThree, setSortThree ] = useState(false)
+  const [ sortType, setSortType] = useState('')
   const [ isTyping, setIsTyping ] = useState('');
   const [ isHovered, setHovered ] = useState('');
   const elementsWithIdRef = useRef([]);
+  const containerRefLeft    = useRef(null);
+  const containerRefRight   = useRef(null);
+
 
   useEffect(() => {
 
@@ -52,12 +58,8 @@ const Staffing = ({}) => {
     if(dataUser.data) setHeadingSettings(dataUser.data.user.settings)
     if(dataUser.data){
       newAllocations = [...dataUser.data.user.allocations]
+      newAllocations.sort((a, b) => a.order - b.order)
 
-      let orderTwo    = newAllocations.filter( (item) => { if(item.order == 2) return item })
-      let orderThree  = newAllocations.filter( (item) => { if(item.order == 3) return item })
-
-      setListTwo(orderTwo)
-      setListThree(orderThree)
       setAllocations(newAllocations)
     }
     
@@ -65,7 +67,7 @@ const Staffing = ({}) => {
 
   useEffect(() => {
     let typingTimer;
-
+    
     if (isTyping) {
 
       clearTimeout(typingTimer); // Clear any previous timers
@@ -83,7 +85,7 @@ const Staffing = ({}) => {
     return () => {
       clearTimeout(typingTimer); // Cleanup the timer when the component unmounts
     };
-
+  // allocations, 
   }, [headingSettings, allocations, isTyping])
 
   const updateHeadingSetting = (order, newValue) => {
@@ -137,10 +139,11 @@ const Staffing = ({}) => {
 
     // Create a copy of the state
     const parentObject = allocations.find((obj) => obj.id === id );
-    const newData = {...parentObject}
+    const newData = { ...parentObject }
     
     const fillBar = newData.fillBars.find((item, idxItem) => idxItem === idx )
     const newFillBar = { ...fillBar }
+
     newFillBar[type] = newText
     
     const fillBars = [...newData.fillBars]
@@ -152,29 +155,20 @@ const Staffing = ({}) => {
       return item.id === newData.id ? newData : item
     })
 
-    setUpdatedAllocation(newData)
-    setUpdatedFillbar(newFillBar)
     setAllocations(newAllocations)
+    setUpdatedFillbar(newFillBar)
+    setUpdatedAllocation(newData)
     setIsTyping('fillBars')
 
   }
 
-  const submitUpdateFillbar = async () => {
-
-    updateFillBar({ 
-      variables: { allocationID: updatedAllocation.id, fillBars: updatedAllocation.fillBars, userID: dataUser.data.user.id, fillBar: updatedFillbar },
-      optimisticResponse: {
-        __typename: "Mutation",
-        user: {
-          allocations: allocations,
-          id: dataUser.data.user.id,
-          settings: headingSettings,
-          username: "Test"
-        }
-      }
-    })
+  const submitUpdateFillbar = () => {
     
+    updateFillBar({ 
+      variables: { allocationID: updatedAllocation.id, fillBars: updatedAllocation.fillBars, userID: dataUser.data.user.id, fillBar: updatedFillbar }
+    })
     setIsTyping('')
+    setSortType('')
 
   }
 
@@ -312,7 +306,9 @@ const Staffing = ({}) => {
       }
 
       if(sortType !== 'text'){
-        newList = allocations.sort( (a, b) => {
+        newList = allocations
+          .slice()
+          .sort( (a, b) => {
 
           const numA = parseFloat(a[sortType]);
           const numB = parseFloat(b[sortType]);
@@ -326,8 +322,18 @@ const Staffing = ({}) => {
         })
       }
 
+      let newAllocations = [...allocations]
+      
+
+      newAllocations.forEach((item, index) => {
+        if (item.order === 2) {
+          const targetItem = newList.shift();
+          newAllocations[index] = targetItem;
+        }
+      });
+
+      setAllocations(newAllocations)
       setSortTwo(!sortTwo)
-      setListTwo(newList)
 
     }
 
@@ -352,7 +358,9 @@ const Staffing = ({}) => {
       }
 
       if(sortType !== 'text'){
-        newList = allocations.sort( (a, b) => {
+        newList = allocations
+          .slice()
+          .sort( (a, b) => {
 
           const numA = parseFloat(a[sortType]);
           const numB = parseFloat(b[sortType]);
@@ -366,11 +374,56 @@ const Staffing = ({}) => {
         })
       }
 
+      let newAllocations = [...allocations]
+      
+
+      newAllocations.forEach((item, index) => {
+        if (item.order === 3) {
+          const targetItem = newList.shift();
+          newAllocations[index] = targetItem;
+        }
+      });
+
+      setAllocations(newAllocations)
       setSortThree(!sortThree)
-      setListThree(newList)
 
     }
     
+  }
+
+  const submitAddAllocation = (type) => {
+
+    if(type == 'two'){
+      addAllocation( { variables: defaultAllocationOrderTwo } ).then(() => {
+
+        setTimeout(() => {
+          scrollToBottom( containerRefLeft )
+        }, 200);
+        
+      })
+    }
+
+    if(type == 'three'){
+      addAllocation( { variables: defaultAllocationOrderThree } ).then(() => {
+
+        setTimeout(() => {
+          scrollToBottom( containerRefRight )
+        }, 200);
+
+      })
+    }
+    
+  }
+
+  const scrollToBottom = (refElement) => {
+    if(refElement){
+      refElement.current.classList.add('smooth-scroll');
+      refElement.current.scrollTop = refElement.current.scrollHeight
+
+      setTimeout(() => {
+        refElement.current.classList.remove('smooth-scroll');
+      }, 500); // Adjust the delay as needed
+    }
   }
 
   if (loading) return 'Submitting...';
@@ -385,7 +438,9 @@ const Staffing = ({}) => {
       <div className="container-flex-right whalf h5 border-right">
         <div 
           className="element-button-icon"
-          onClick={() => addAllocation( { variables: defaultAllocationOrderTwo } )}
+          onClick={() => (
+            submitAddAllocation('two')
+          )}
         >
           <SVG svg={'plus'}></SVG>
         </div>
@@ -408,7 +463,9 @@ const Staffing = ({}) => {
       <div className="container-flex-left whalf h5">
         <div 
           className="element-button-icon"
-          onClick={() => addAllocation( { variables: defaultAllocationOrderThree } )}
+          onClick={() => 
+            submitAddAllocation('three')
+          }
         >
           <SVG svg={'plus'}></SVG>
         </div>
@@ -472,240 +529,44 @@ const Staffing = ({}) => {
         >
         </input>
       </div>
-      {/* .sort( (a, b) => a.text > b.text ? descend : ascend) */}
-      <div className="scrollHorizontal whalf scrollVertical freezedPanes">
-      <div className="w100">
-      { listTwo.length > 0 && Array.isArray(listTwo) && listTwo.map(( allocation, idx ) => 
-        allocation.order == 2 &&
-        <div 
-          id={allocation.id}
-          key={idx}
-          className="lightGray-background curved"
-          onDragOver={(e)=> onDragOver(e)}
-          onDrop={(e) => handleOnDrop(e)}
-        >
-          <div className="container-flex-right wfull">
-            <div className="container-flex-right wfull h10 fontSize-16 capitalize scrollReverse">
-              { allocation.fillBars.map( ( fillBar, idx) => 
-                <div 
-                  key={idx}
-                  id={fillBar.id}
-                  className="element-button-allocation curved-eased lightContrast schemeTwo fontSize-12 capitalize h6"
-                  draggable
-                  data-test-id="2"
-                  onDragOver={(e)=> onDragOver(e)}
-                  onDragStart={(e) => onDragStartFillBar(e, fillBar, allocation.id, allocation)}
-                  onDrop={(e) => handleOnDropFillbar(e, allocation)}
-                  onMouseEnter={() => setHovered(`hover${fillBar.id}${allocation.id}`)}
-                  onMouseLeave={() => setHovered('')}
-                  onClick={() => glowAll(fillBar.id)}
-                >
-                  { isHovered == `hover${fillBar.id}${allocation.id}` &&
-                    <div 
-                      className="elementSvgContainer"
-                      onClick={(e) => handleDeleteFillbar(e, allocation, fillBar.id)}
-                    >
-                      <SVG svg={'thrashCan'}></SVG>
-                    </div>
-                  }
-                  <div 
-                    className="progressBar schemeTwoAbsolute curved-eased"
-                    style={{ width: `${ Math.min(100, Math.max(0, (fillBar.allocation/fillBar.fte) * 100 ))}%` }}
-                  >
-                  </div>
-                  <input 
-                    type="text"
-                    className="elementInnerBox schemeTwo"
-                    value={ fillBar.allocation ? parseFloat(fillBar.allocation.replace(/(\.\d*?[1-9])0+$/g, '$1')) : ''}
-                    readOnly
-                    // onChange={(e) => updateFillBarData(allocation.id, idx, 'allocation', e.target.value) }
-                  >
-                  </input>
-                  <input 
-                    type="text"
-                    className="elementInnerText darkContrast curved-eased"
-                    value={ fillBar.text }
-                    readOnly
-                    // onChange={(e) => updateFillBarData(allocation.id, idx, 'text', e.target.value) }
-                  >
-                  </input>
-                  {/* <input 
-                    type="text"
-                    className="elementInnerBox schemeTwo"
-                    value={ fillBar.fte }
-                    onChange={(e) => updateFillBarData(allocation.id, idx, 'fte', e.target.value) }
-                  >
-                  </input> */}
-              </div>
-            )}
-            </div>
-            <div 
-              id={allocation.id}
-              className="element-button-allocation w20 curved-eased lightContrast schemeOne fontSize-12 capitalize h6"
-              draggable
-              data-test-id="2"
-              onDragStart={(e) => onDragStart(e, allocation, allocations)}
-              onMouseEnter={() => setHovered(`hover${allocation.id}${idx}`)}
-              onMouseLeave={() => setHovered('')}
-              onClick={() => glowAll(allocation.id)}
-            >
-              { isHovered == `hover${allocation.id}${idx}` &&
-                <div 
-                  onClick={(e) => handleDeleteAllocation(e, allocation)}
-                  className="elementSvgContainer">
-                    <SVG svg={'thrashCan'}></SVG>
-                </div>
-              }
-              <div 
-                className="progressBar schemeOneAbsolute curved-eased"
-                style={{ width: `${ Math.min(100, Math.max(0, (allocation.allocation/allocation.fte) * 100 ))}%`  }}
-              >
-              </div>
-              <input 
-                type="text"
-                className="elementInnerBox schemeTwo"
-                value={ allocation.fte }
-                onChange={(e) => updateAllocationItems(allocation.id, 'fte', e.target.value) }
-              >
-              </input>
-              <input 
-                type="text"
-                className="elementInnerText darkContrast curved-eased"
-                value={ allocation.text }
-                onChange={(e) => updateAllocationItems(allocation.id, 'text', e.target.value) }
-              >
-              </input>
-              <input 
-                type="text"
-                className={`elementInnerBox schemeTwo ${allocation.allocation > allocation.fte ? ' redText' : ''}`}
-                value={ allocation.allocation ? parseFloat(allocation.allocation.replace(/(\.\d*?[1-9])0+$/g, '$1')) : '' }
-                readOnly
-                // onChange={(e) => updateAllocationItems(allocation.id, 'allocation', e.target.value) }
-              >
-              </input>
-            </div>
-          </div>       
-        </div>
-      )}
-      </div>
-      </div>
-      
-      <div className="scrollHorizontal whalf scrollVertical freezedPanes">
-      <div className="w100">
-        { listThree && listThree.map(( allocation, idx ) => 
-          allocation.order == 3 &&
-          <div 
-            id={allocation.id}
-            key={idx}
-            className="lightGray-background curved"
-            onDragOver={(e)=> onDragOver(e)}
-            onDrop={(e) => handleOnDrop(e)}
-          >
-            <div className="container-flex-left wfull">
-              <div 
-                id={allocation.id}
-                className="element-button-allocation w20 curved-eased lightContrast schemeFour fontSize-12 capitalize h6"
-                data-test-id="3"
-                draggable
-                onDragStart={(e) => onDragStart(e, allocation, allocations)}
-                onMouseEnter={() => setHovered(`hover${allocation.id}${idx}`)}
-                onMouseLeave={() => setHovered('')}
-                onClick={() => glowAll(allocation.id)}
-              >
-                { isHovered == `hover${allocation.id}${idx}` &&
-                  <div 
-                    onClick={(e) => handleDeleteAllocation(e, allocation)}
-                    className="elementSvgContainer">
-                      <SVG svg={'thrashCan'}></SVG>
-                  </div>
-                }
-                <div 
-                  className="progressBar schemeFourAbsolute curved-eased"
-                  style={{ width: `${ Math.min(100, Math.max(0, (allocation.allocation/allocation.fte) * 100 ))}%`  }}
-                >
-                </div>
-                <input 
-                  type="text"
-                  className="elementInnerBox schemeFour"
-                  value={ allocation.fte }
-                  onChange={(e) => updateAllocationItems(allocation.id, 'fte', e.target.value) }
-                >
-                </input>
-                <input 
-                  type="text"
-                  className="elementInnerText darkContrast curved-eased"
-                  value={ allocation.text }
-                  onChange={(e) => updateAllocationItems(allocation.id, 'text', e.target.value) }
-                >
-                </input>
-                <input
-                  type="text"
-                  className="elementInnerBox schemeFour"
-                  value={ allocation.allocation ? parseFloat(allocation.allocation.replace(/(\.\d*?[1-9])0+$/g, '$1')) : ''}
-                  readOnly
-                  // onChange={(e) => updateAllocationItems(allocation.id, 'allocation', e.target.value) }
-                >
-                </input>
-              </div>
-              
-              <div className="container-flex-left wfull h10 fontSize-16 capitalize scrollHorizontal">
-                { allocation.fillBars && allocation.fillBars.map(( fillBar, idx) => 
-                <div 
-                  key={idx}
-                  id={fillBar.id}
-                  draggable
-                  data-test-id="3"
-                  onDragOver={(e)=> onDragOver(e)}
-                  onDragStart={(e) => onDragStartFillBar(e, fillBar, allocation.id, allocation)}
-                  onDrop={(e) => handleOnDropFillbar(e, allocation)}
-                  className="element-button-allocation curved-eased lightContrast schemeFive fontSize-12 capitalize h6"
-                  onMouseEnter={() => setHovered(`hover${fillBar.id}${allocation.id}`)}
-                  onMouseLeave={() => setHovered('')}
-                  onClick={() => glowAll(fillBar.id)}
-                >
-                  { isHovered == `hover${fillBar.id}${allocation.id}` &&
-                    <div 
-                      className="elementSvgContainer"
-                      onClick={(e) => handleDeleteFillbar(e, allocation, fillBar.id)}
-                    >
-                      <SVG svg={'thrashCan'}></SVG>
-                    </div>
-                  }
-                  <div 
-                    className="progressBar schemeFiveAbsolute curved-eased"
-                    style={{ width: `${ Math.min(100, Math.max(0, (fillBar.allocation/fillBar.fte) * 100 ))}%` }}
-                  >
-                  </div>
-                  {/* <input 
-                    type="text"
-                    className="elementInnerBox schemeFive"
-                    value={ fillBar.fte }
-                    onChange={(e) => updateFillBarData(allocation.id, idx, 'fte', e.target.value) }
-                  >
-                  </input> */}
-                  <input 
-                    type="text"
-                    className="elementInnerText darkContrast curved-eased"
-                    value={ fillBar.text }
-                    onChange={(e) => updateFillBarData(allocation.id, idx, 'text', e.target.value) }
-                  >
-                  </input>
-                  <input 
-                    type="text"
-                    className="elementInnerBox schemeFive"
-                    value={ fillBar.allocation ? fillBar.allocation.replace(/(\.\d*?[1-9])0+$/g, '$1') : '' }
-                    onChange={(e) => updateFillBarData(allocation.id, idx, 'allocation', e.target.value) }
-                  >
-                  </input>
-                </div>
-                )}
-              </div>
 
-              </div>
-          </div>
-        )}
-      </div>
-      </div>
+      <ColumnListLeft
+        allocations={allocations}
+        onDragOver={onDragOver}
+        handleOnDrop={handleOnDrop}
+        onDragStartFillBar={onDragStartFillBar}
+        handleOnDropFillbar={handleOnDropFillbar}
+        isHovered={isHovered}
+        setHovered={setHovered}
+        glowAll={glowAll}
+        handleDeleteFillbar={handleDeleteFillbar}
+        onDragStart={onDragStart}
+        handleDeleteAllocation={handleDeleteAllocation}
+        updateAllocationItems={updateAllocationItems}
+        containerRefLeft={containerRefLeft}
+      >
+      </ColumnListLeft>
+
+      <ColumnListRight
+        allocations={allocations}
+        onDragOver={onDragOver}
+        handleOnDrop={handleOnDrop}
+        onDragStartFillBar={onDragStartFillBar}
+        handleOnDropFillbar={handleOnDropFillbar}
+        isHovered={isHovered}
+        setHovered={setHovered}
+        glowAll={glowAll}
+        handleDeleteFillbar={handleDeleteFillbar}
+        onDragStart={onDragStart}
+        handleDeleteAllocation={handleDeleteAllocation}
+        updateAllocationItems={updateAllocationItems}
+        updateFillBarData={updateFillBarData}  
+        containerRefRight={containerRefRight}
+      >
+      </ColumnListRight>
+      
+      
+      
 
       <div className="container-flex-right whalf border-right">
         <div 

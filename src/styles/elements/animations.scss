@@ -25,6 +25,10 @@
   }
 }
 
+.smooth-scroll {
+  scroll-behavior: smooth;
+}
+
 @keyframes dots {
   50% {
     opacity: 0;
