@@ -458,8 +458,11 @@ body::-webkit-scrollbar-thumb {
   color: red !important;
 }
 
-.glow {
-  box-shadow: 0 1rem 2rem rgba(125, 224, 90, 0.7);
+.glowOrderTwo {
+  box-shadow: 0.2rem 1.2rem 0.5rem 0.2rem rgba(141, 90, 151, 0.7);
+}
+.glowOrderThree {
+  box-shadow: 0.2rem 1.2rem 0.5rem 0.2rem rgba(184, 235, 208, 0.7);
 }
 
 .m0 {

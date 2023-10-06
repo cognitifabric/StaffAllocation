@@ -228,7 +228,11 @@ const Staffing = ({}) => {
     const elementsWithId = document.querySelectorAll(`[id="${id}"`);
     
     // Convert the NodeList to an array
-    const elementsArray = Array.from(elementsWithId);
+    const elementsArray      = Array.from(elementsWithId);
+    const listGlowOrderTwo   = document.querySelectorAll(`.glowOrderTwo`);
+    const listGrowOrderThree = document.querySelectorAll(`.glowOrderThree`);
+    
+    const elementsWithClassName = [ ...listGlowOrderTwo, ...listGrowOrderThree]
     
     // Store the array of elements in the ref
     elementsWithIdRef.current = elementsArray;
@@ -236,10 +240,38 @@ const Staffing = ({}) => {
     // Now, you can access the elements using elementsWithIdRef.current
     elementsWithIdRef.current.forEach(element => {
       // Do something with each element
-      if (element.classList.contains('element-button-allocation')) {
-        if(element.classList.contains(('glow'))) return element.classList.remove("glow")
-        element.classList.add("glow")
+      // console.log(element.getAttribute('data-test-id'))
+      
+      if(elementsWithClassName.length > 0){
+        
+        if(elementsWithClassName[0].id == id ){
+          
+        }else{
+
+          elementsWithClassName.forEach((element) => {
+            
+            if(element.classList.contains('glowOrderTwo')){
+              element.classList.remove("glowOrderTwo")
+            }
+
+            if(element.classList.contains('glowOrderThree')){
+              element.classList.remove("glowOrderThree")
+            }
+ 
+          })
+        }
       }
+
+      if(element.getAttribute('data-test-id') == 2) {
+        if(element.classList.contains('glowOrderTwo')) return element.classList.remove("glowOrderTwo")
+        element.classList.add("glowOrderTwo")
+      }
+
+      if(element.getAttribute('data-test-id') == 3) {
+        if(element.classList.contains('glowOrderThree')) return element.classList.remove("glowOrderThree")
+        element.classList.add("glowOrderThree")
+      }
+
     });
   }
 
@@ -460,6 +492,7 @@ const Staffing = ({}) => {
                   id={fillBar.id}
                   className="element-button-allocation curved-eased lightContrast schemeTwo fontSize-12 capitalize h6"
                   draggable
+                  data-test-id="2"
                   onDragOver={(e)=> onDragOver(e)}
                   onDragStart={(e) => onDragStartFillBar(e, fillBar, allocation.id, allocation)}
                   onDrop={(e) => handleOnDropFillbar(e, allocation)}
@@ -510,6 +543,7 @@ const Staffing = ({}) => {
               id={allocation.id}
               className="element-button-allocation w20 curved-eased lightContrast schemeOne fontSize-12 capitalize h6"
               draggable
+              data-test-id="2"
               onDragStart={(e) => onDragStart(e, allocation, allocations)}
               onMouseEnter={() => setHovered(`hover${allocation.id}${idx}`)}
               onMouseLeave={() => setHovered('')}
@@ -571,6 +605,7 @@ const Staffing = ({}) => {
               <div 
                 id={allocation.id}
                 className="element-button-allocation w20 curved-eased lightContrast schemeFour fontSize-12 capitalize h6"
+                data-test-id="3"
                 draggable
                 onDragStart={(e) => onDragStart(e, allocation, allocations)}
                 onMouseEnter={() => setHovered(`hover${allocation.id}${idx}`)}
@@ -619,6 +654,7 @@ const Staffing = ({}) => {
                   key={idx}
                   id={fillBar.id}
                   draggable
+                  data-test-id="3"
                   onDragOver={(e)=> onDragOver(e)}
                   onDragStart={(e) => onDragStartFillBar(e, fillBar, allocation.id, allocation)}
                   onDrop={(e) => handleOnDropFillbar(e, allocation)}
