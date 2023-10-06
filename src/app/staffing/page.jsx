@@ -27,8 +27,6 @@ const Staffing = ({}) => {
 
   const [ headingSettings, setHeadingSettings ] = useState([])
   const [ allocations, setAllocations ] = useState([])
-  const [ listTwo, setListTwo] = useState([])
-  const [ listThree, setListThree] = useState([])
   const [ updatedAllocation, setUpdatedAllocation ] = useState('')
   const [ updatedFillbar, setUpdatedFillbar] = useState('')
   const [ files, setFiles] = useState('')
@@ -179,6 +177,16 @@ const Staffing = ({}) => {
 
     if(!data) return 
 
+    let foundDuplicate = []
+    
+    if(data.pickedContainer.fillBars){
+      data.pickedContainer.fillBars.forEach((item) => {
+        if(item.id == data.allocation.allocation.id) foundDuplicate.push(item)
+      })
+    }
+
+    if(foundDuplicate.length > 0 ) return
+    
     delete data.allocation.allocation.fillBars
     delete data.pickedContainer.fillBars
     addFillBar({ variables: { allocationID: data.onDropId, allocation: data.allocation.allocation, userID: dataUser.data.user.id, pickedContainer: data.pickedContainer } })

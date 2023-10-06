@@ -456,6 +456,7 @@ body::-webkit-scrollbar-thumb {
 
 .redText {
   color: red !important;
+  font-weight: 600 !important;
 }
 
 .glowOrderTwo {
