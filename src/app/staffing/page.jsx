@@ -731,7 +731,7 @@ const Staffing = ({}) => {
             {parseFloat(sumByType(allocations, 'fte', 3))}
           </div>
           <div className="elementInnerBox schemeFour">
-            {parseFloat(sum(allocations, 2))}
+            {parseFloat(sum(allocations, 3))}
           </div>
           <div className="elementInnerBox schemeFour">
             {parseFloat(sumByType(allocations, 'allocation', 3))}
