@@ -3,6 +3,7 @@
 import SVG from '../../libs/svg'
 import { useState, useEffect, useRef } from 'react'
 import { useMutation, useQuery } from '@apollo/client';
+import { ExcelRenderer } from 'react-excel-renderer';
 import GET_USER from '@/queries/fetchUser'
 import ADD_SETTINGS from '@/mutations/addSettings'
 import ADD_ALLOCATION from '@/mutations/addAllocation'
@@ -23,7 +24,7 @@ import DropDown from '../../component/dropDown'
 import ColumnListRight from '@/component/columnListRight';
 import ColumnListLeft from '@/component/columnListLeft';
 
-const Staffing = ({}) => {
+function Staffing () {
 
   const [ headingSettings, setHeadingSettings ] = useState([])
   const [ allocations, setAllocations ] = useState([])
@@ -48,17 +49,18 @@ const Staffing = ({}) => {
   const containerRefLeft    = useRef(null);
   const containerRefRight   = useRef(null);
 
-
   useEffect(() => {
 
     let newAllocations = []
 
     if(dataUser.data) setHeadingSettings(dataUser.data.user.settings)
     if(dataUser.data){
+
       newAllocations = [...dataUser.data.user.allocations]
       newAllocations.sort((a, b) => a.order - b.order)
 
       setAllocations(newAllocations)
+
     }
     
   }, [dataUser])
@@ -277,20 +279,6 @@ const Staffing = ({}) => {
     });
   }
 
-  useEffect(() => {
-    if(files) submitFileUpload()
-  }, [files])
-
-  const submitFileUpload = () => {
-  
-    const object = new Object()
-    object.fileName = files.name
-    object.type     = files.type
-
-    uploadAllocation({ variables: { file: object} })
-    
-  }
-
   const changeSort = (sortType, listType) => {
     
     if(listType == 'two'){
@@ -434,6 +422,52 @@ const Staffing = ({}) => {
     }
   }
 
+  const readFile = (e, orderType) => {
+
+    const file = e.target.files[0];
+
+    if(file){
+      ExcelRenderer(file, (err, resp) => {
+        if (err) {
+          console.error(err);
+        } else {
+          const excelData = resp.rows;
+
+          if(excelData.length > 0){
+
+            let array = []
+
+            excelData.forEach( (item) => {
+
+              const object = new Object()
+              object.order        = orderType
+              object.text         = item[1].toString()
+              object.fte          = item[0].toString()
+              object.allocation   = item[2].toString()
+
+              array.push(object)
+              
+            })
+
+            uploadAllocation( { variables: { userId: dataUser.data.user.id, allocations: array } } ).then(() => {
+
+              setTimeout(() => {
+                scrollToBottom( containerRefLeft )
+              }, 200);
+  
+              setTimeout(() => {
+                scrollToBottom( containerRefRight )
+              }, 200);  
+              
+            })
+
+          }
+        }
+      });
+    }
+    
+  }
+
   if (loading) return 'Submitting...';
   if (error) return `Submission error! ${error.message}`;
   if (loadingAllocation) return 'Submitting...';
@@ -455,15 +489,16 @@ const Staffing = ({}) => {
         <div className="element-buttonFile">
           <label 
             className="curved"
-            htmlFor="importAllocation"
+            htmlFor="importAllocationOrderTwo"
           >
             import
           </label>
           <input 
             type="file"
-            id="importAllocation"
+            id="importAllocationOrderTwo"
+            accept=".xlsx"
             className="element-button-text curved"
-            onChange={(e) => setFiles(e.target.files[0])}
+            onChange={(e) => readFile(e, 2)}
           >
           </input>
         </div>
@@ -477,10 +512,21 @@ const Staffing = ({}) => {
         >
           <SVG svg={'plus'}></SVG>
         </div>
-        <div 
-          className="element-button-text curved"
-        >
-          import
+        <div className="element-buttonFile">
+          <label 
+            className="curved"
+            htmlFor="importAllocationOrderThree"
+          >
+            import
+          </label>
+          <input 
+            type="file"
+            id="importAllocationOrderThree"
+            accept=".xlsx"
+            className="element-button-text curved"
+            onChange={(e) => readFile(e, 3)}
+          >
+          </input>
         </div>
       </div>
 

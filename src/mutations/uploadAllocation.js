@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export default gql`
-mutation uploadAllocation($file: FileUploadInputType!) {
-  uploadAllocation(file: $file){
+mutation uploadAllocation($userId: ID!, $allocations: [AllocationOutputType!]!) {
+  uploadAllocation(userId: $userId, allocations: $allocations){
     id
     username
     allocations {
