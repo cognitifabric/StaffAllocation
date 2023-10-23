@@ -587,13 +587,13 @@ function Staffing () {
         </input>
       </div>
 
-      { colorPallete &&
+      {/* { colorPallete &&
         <ColorPallete
           colorPallete={colorPallete}
           setColorPallete={setColorPallete}
         >
         </ColorPallete>
-      }
+      } */}
 
       <ColumnListLeft
         allocations={allocations}
