@@ -23,6 +23,7 @@ import { sumByType, sum } from '@/helpers/utilities';
 import DropDown from '../../component/dropDown'
 import ColumnListRight from '@/component/columnListRight';
 import ColumnListLeft from '@/component/columnListLeft';
+import ColorPallete from '@/component/colorPallete'
 
 function Staffing () {
 
@@ -45,6 +46,7 @@ function Staffing () {
   const [ sortType, setSortType] = useState('')
   const [ isTyping, setIsTyping ] = useState('');
   const [ isHovered, setHovered ] = useState('');
+  const [ colorPallete, setColorPallete ] = useState('aa')
   const elementsWithIdRef = useRef([]);
   const containerRefLeft    = useRef(null);
   const containerRefRight   = useRef(null);
@@ -104,6 +106,7 @@ function Staffing () {
   }
 
   const submitAddSettings = () => {
+    
     addSettings({ variables: { userID: '65123ca1b69d3defa682bf2f', settings: headingSettings } })
     setIsTyping('')
   }
@@ -443,7 +446,7 @@ function Staffing () {
               object.order        = orderType
               object.text         = item[1].toString()
               object.fte          = item[0].toString()
-              object.allocation   = item[2].toString()
+              object.allocation   = '0'
 
               array.push(object)
               
@@ -584,6 +587,14 @@ function Staffing () {
         </input>
       </div>
 
+      { colorPallete &&
+        <ColorPallete
+          colorPallete={colorPallete}
+          setColorPallete={setColorPallete}
+        >
+        </ColorPallete>
+      }
+
       <ColumnListLeft
         allocations={allocations}
         onDragOver={onDragOver}
@@ -598,6 +609,8 @@ function Staffing () {
         handleDeleteAllocation={handleDeleteAllocation}
         updateAllocationItems={updateAllocationItems}
         containerRefLeft={containerRefLeft}
+        colorPallete={colorPallete}
+        setColorPallete={setColorPallete}
       >
       </ColumnListLeft>
 
@@ -618,8 +631,6 @@ function Staffing () {
         containerRefRight={containerRefRight}
       >
       </ColumnListRight>
-      
-      
       
 
       <div className="container-flex-right whalf border-right">

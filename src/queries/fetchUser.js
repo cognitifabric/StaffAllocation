@@ -23,7 +23,8 @@ export default gql`
       id
       type
       order
-      content
+      content,
+      color
     }
   }
 }

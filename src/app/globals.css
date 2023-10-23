@@ -305,6 +305,19 @@ body::-webkit-scrollbar-thumb {
   width: 100% !important;
 }
 
+.positionLeftZero {
+  top: -1.5rem !important;
+  left: 0rem !important;
+}
+
+.noColor {
+  background-color: transparent !important;
+}
+.noColor svg {
+  width: 15rem !important;
+  height: 15rem !important;
+}
+
 .box-curved-3 {
   border-radius: 3rem;
   padding: 5rem;
@@ -642,7 +655,7 @@ body::-webkit-scrollbar-thumb {
 }
 .elementSvgContainer {
   position: absolute;
-  top: -1.2rem;
+  top: -1.5rem;
   right: 0rem;
   display: flex;
   align-items: center;
@@ -660,6 +673,30 @@ body::-webkit-scrollbar-thumb {
 }
 .elementSvgContainer:hover {
   cursor: pointer;
+}
+.elementColorPalletePopup {
+  position: fixed;
+  top: 35%;
+  width: 15%;
+  display: flex;
+  flex-wrap: wrap;
+  height: 20rem;
+  border-radius: 1.2rem;
+  background-color: #edf2f5;
+  box-shadow: 0rem 0rem 1.5rem 0.5rem rgba(0, 0, 0, 0.5);
+  padding: 1rem !important;
+  z-index: 100 !important;
+}
+.elementColorPalletePopupContainer {
+  position: relative;
+  width: 1000%;
+}
+.elementColorPalletePopupItem {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  margin: 0 0.5rem;
+  padding: 0;
 }
 
 /*# sourceMappingURL=globals.css.map */

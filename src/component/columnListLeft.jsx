@@ -15,7 +15,9 @@ const ColumnListLeft = ({
   onDragStart,
   handleDeleteAllocation,
   updateAllocationItems,
-  containerRefLeft
+  containerRefLeft,
+  colorPallete,
+  setColorPallete
 }) => {
   
   return (
@@ -103,6 +105,14 @@ const ColumnListLeft = ({
                 onClick={(e) => handleDeleteAllocation(e, allocation)}
                 className="elementSvgContainer">
                   <SVG svg={'thrashCan'}></SVG>
+              </div>
+            }
+            { isHovered == `hover${allocation.id}${idx}` &&
+              <div 
+                onClick={(e) => setColorPallete(allocation.id)}
+                className="elementSvgContainer positionLeftZero noColor"
+              >
+                  <SVG svg={'pallete'}></SVG>
               </div>
             }
             <div 

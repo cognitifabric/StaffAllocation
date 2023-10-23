@@ -162,7 +162,7 @@
 
   &SvgContainer {
     position: absolute;
-    top: -1.2rem;
+    top: -1.5rem;
     right: 0rem;
     display: flex;
     align-items: center;
@@ -181,6 +181,34 @@
 
     &:hover {
       cursor: pointer;
+    }
+    
+  }
+
+  &ColorPalletePopup {
+    position: fixed;
+    top: 35%;
+    width: 15%;
+    display: flex;
+    flex-wrap: wrap;
+    height: 20rem;
+    border-radius: 1.2rem;
+    background-color: $color-light-grey-2;
+    box-shadow: 0rem 0rem 1.5rem .5rem rgba(0,0,0, .5);
+    padding: 1rem!important;
+    z-index: 100!important;
+
+    &Container {
+      position: relative;
+      width: 1000%;
+    }
+
+    &Item {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      margin: 0 .5rem;
+      padding: 0;
     }
     
   }

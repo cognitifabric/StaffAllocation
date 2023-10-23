@@ -234,3 +234,18 @@
 .wfull {
   width: 100%!important;
 }
+
+.positionLeftZero {
+  top: -1.5rem!important;
+  left: 0rem!important;
+}
+
+.noColor {
+  background-color: transparent!important;
+
+  svg {
+    width: 15rem!important;
+    height: 15rem!important;
+  }
+  
+}
