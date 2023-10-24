@@ -470,14 +470,22 @@ function Staffing () {
 
             uploadAllocation( { variables: { userId: dataUser.data.user.id, allocations: array } } ).then(() => {
 
-              setTimeout(() => {
-                scrollToBottom( containerRefLeft )
-              }, 200);
-  
-              setTimeout(() => {
-                scrollToBottom( containerRefRight )
-              }, 200);  
+              if(orderType == 2){
+                setTimeout(() => {
+                  scrollToBottom( containerRefLeft )
+                  e.target.value = ''
+                }, 200);
+              }
               
+              if(orderType == 3){
+                setTimeout(() => {
+                  scrollToBottom( containerRefRight )
+                  e.target.value = ''
+                }, 200);  
+              }
+
+            }).catch((error) => {
+              console.log(error)
             })
 
           }
