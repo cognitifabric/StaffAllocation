@@ -17,7 +17,9 @@ const ColumnListLeft = ({
   updateAllocationItems,
   containerRefLeft,
   colorPallete,
-  setColorPallete
+  setColorPallete,
+  headingSettings,
+  setPalleteType
 }) => {
   
   return (
@@ -61,11 +63,15 @@ const ColumnListLeft = ({
                 }
                 <div 
                   className="progressBar schemeTwoAbsolute curved-eased"
-                  style={{ width: `${ Math.min(100, Math.max(0, (fillBar.allocation/fillBar.fte) * 100 ))}%` }}
+                  style={{ 
+                    width: `${ Math.min(100, Math.max(0, (fillBar.allocation/fillBar.fte) * 100 ))}%`,
+                    backgroundColor: headingSettings.length > 0 ? headingSettings[0].color : '#587B7F'  
+                  }}
                 >
                 </div>
                 <input 
                   type="text"
+                  style={{ borderColor: headingSettings.length > 0 ? headingSettings[0].color : '#587B7F' }}  
                   className="elementInnerBox schemeTwo"
                   value={ fillBar.allocation ? parseFloat(fillBar.allocation.replace(/(\.\d*?[1-9])0+$/g, '$1')) : ''}
                   readOnly
@@ -109,7 +115,10 @@ const ColumnListLeft = ({
             }
             { isHovered == `hover${allocation.id}${idx}` &&
               <div 
-                onClick={(e) => setColorPallete(allocation.id)}
+                onClick={(e) => (
+                  setColorPallete(allocation.id),
+                  setPalleteType('allocations')
+                )}
                 className="elementSvgContainer positionLeftZero noColor"
               >
                   <SVG svg={'pallete'}></SVG>
@@ -117,11 +126,15 @@ const ColumnListLeft = ({
             }
             <div 
               className="progressBar schemeOneAbsolute curved-eased"
-              style={{ width: `${ Math.min(100, Math.max(0, (allocation.allocation/allocation.fte) * 100 ))}%`  }}
+              style={{ 
+                width: `${ Math.min(100, Math.max(0, (allocation.allocation/allocation.fte) * 100 ))}%`,
+                backgroundColor: allocation.color
+              }}
             >
             </div>
             <input 
               type="text"
+              style={{ borderColor: allocation.color }}
               className="elementInnerBox schemeTwo"
               value={ allocation.fte }
               onChange={(e) => updateAllocationItems(allocation.id, 'fte', e.target.value) }
@@ -136,6 +149,7 @@ const ColumnListLeft = ({
             </input>
             <input 
               type="text"
+              style={{ borderColor: allocation.color }}
               className={`elementInnerBox schemeTwo ${allocation.allocation > parseFloat(allocation.fte) ? ' redText' : ''}`}
               value={ allocation.allocation ? parseFloat(allocation.allocation.replace(/(\.\d*?[1-9])0+$/g, '$1')) : '' }
               readOnly

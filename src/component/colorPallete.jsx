@@ -4,29 +4,53 @@ import SVG from '../libs/svg'
 
 const ColorPallete = ({
   colorPallete,
-  setColorPallete
+  setColorPallete,
+  headingSettings,
+  updateHeadingSetting,
+  palleteType,
+  setPalleteType,
+  updateAllocationItems
 }) => {
   
   return (
     <div className="elementColorPalletePopup">
       <div className="elementColorPalletePopupContainer">
-        
-      </div>
-      {colors.map((item, idx) => 
-      <div 
-        key={idx}
-        style={{ backgroundColor: item }}
-        className="elementColorPalletePopupItem"
-      >
         <div 
           className="elementSvgContainer"
-          onClick={() => setColorPallete('')}
+          onClick={() => (
+            setColorPallete(''),
+            setPalleteType('')
+          )}
         >
           <SVG svg={'close'}></SVG>
         </div>
-      </div>
-      )}
-      
+        {palleteType == 'headings' && colors.map((item, idx) => 
+          <div 
+            key={idx}
+            style={{ backgroundColor: item }}
+            className="elementColorPalletePopupItem"
+            onClick={() => (
+              updateHeadingSetting(headingSettings.find(( item ) =>  item.id === colorPallete).order, null, item),
+              setColorPallete(''),
+              setPalleteType('')
+            )}
+          >
+          </div>
+        )}
+        {palleteType == 'allocations' && colors.map((item, idx) => 
+          <div 
+            key={idx}
+            style={{ backgroundColor: item }}
+            className="elementColorPalletePopupItem"
+            onClick={() => (
+              updateAllocationItems(colorPallete, 'color', item),
+              setColorPallete(''),
+              setPalleteType('')
+            )}
+          >
+          </div>
+        )}
+      </div>      
     </div>
   )
 }

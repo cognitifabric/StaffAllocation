@@ -3,10 +3,10 @@ export {
 }
 
 const colors = [
-  '#9CFFFA',
-  '#ACF39D',
-  '#B0C592',
-  '#A97C73',
+  '#7D6A8E',
+  '#7A4384',
+  '#A1BBB0',
+  '#ABE9C6',
   '#AF3E4D',
   '#D0DB97',
   '#69B578',

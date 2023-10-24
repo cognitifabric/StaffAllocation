@@ -11,6 +11,7 @@ export default gql`
       fte
       text
       allocation 
+      color
       fillBars {
         id
         order
@@ -23,7 +24,7 @@ export default gql`
       id
       type
       order
-      content,
+      content
       color
     }
   }

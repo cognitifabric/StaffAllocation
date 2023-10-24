@@ -6,7 +6,8 @@ mutation AddSettings($userID: String!, $settings: [SettingInputType!]!) {
     id
     type
     order
-    content
+    content,
+    color
   }
 }
 `;

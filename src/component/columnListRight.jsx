@@ -15,7 +15,11 @@ const ColumnListRight = ({
   handleDeleteAllocation,
   updateAllocationItems,
   updateFillBarData,
-  containerRefRight
+  containerRefRight,
+  colorPallete,
+  setColorPallete,
+  headingSettings,
+  setPalleteType
 }) => {
   
   return (
@@ -51,14 +55,29 @@ const ColumnListRight = ({
                     <SVG svg={'thrashCan'}></SVG>
                 </div>
               }
+              { isHovered == `hover${allocation.id}${idx}` &&
+              <div 
+                onClick={(e) => (
+                  setColorPallete(allocation.id),
+                  setPalleteType('allocations')
+                )}
+                className="elementSvgContainer positionLeftZero noColor"
+              >
+                  <SVG svg={'pallete'}></SVG>
+              </div>
+            }
               <div 
                 className="progressBar schemeFourAbsolute curved-eased"
-                style={{ width: `${ Math.min(100, Math.max(0, (allocation.allocation/allocation.fte) * 100 ))}%`  }}
+                style={{ 
+                  width: `${ Math.min(100, Math.max(0, (allocation.allocation/allocation.fte) * 100 ))}%`,
+                  backgroundColor: allocation.color
+                }}
               >
               </div>
               <input 
                 type="text"
                 className="elementInnerBox schemeFour"
+                style={{ borderColor: allocation.fte }}
                 value={ allocation.fte }
                 onChange={(e) => updateAllocationItems(allocation.id, 'fte', e.target.value) }
               >
@@ -72,6 +91,7 @@ const ColumnListRight = ({
               </input>
               <input
                 type="text"
+                style={{ borderColor: allocation.allocation }}
                 className={`elementInnerBox schemeFour ${allocation.allocation > parseFloat(allocation.fte) ? ' redText' : ''}`}
                 value={ allocation.allocation ? parseFloat(allocation.allocation.replace(/(\.\d*?[1-9])0+$/g, '$1')) : ''}
                 readOnly
@@ -105,7 +125,10 @@ const ColumnListRight = ({
                 }
                 <div 
                   className="progressBar schemeFiveAbsolute curved-eased"
-                  style={{ width: `${ Math.min(100, Math.max(0, (fillBar.allocation/fillBar.fte) * 100 ))}%` }}
+                  style={{ 
+                    width: `${ Math.min(100, Math.max(0, (fillBar.allocation/fillBar.fte) * 100 ))}%`,
+                    backgroundColor: headingSettings.length > 0 ? headingSettings[3].color : '#587B7F'
+                  }}
                 >
                 </div>
                 {/* <input 
@@ -116,7 +139,7 @@ const ColumnListRight = ({
                 >
                 </input> */}
                 <input 
-                  type="text"
+                  type="text" 
                   className="elementInnerText darkContrast curved-eased"
                   value={ fillBar.text }
                   onChange={(e) => updateFillBarData(allocation.id, idx, 'text', e.target.value) }
@@ -124,6 +147,7 @@ const ColumnListRight = ({
                 </input>
                 <input 
                   type="text"
+                  style={{ borderColor: headingSettings.length > 0 ? headingSettings[3].color : '#587B7F' }} 
                   className="elementInnerBox schemeFive"
                   value={ fillBar.allocation ? fillBar.allocation.replace(/(\.\d*?[1-9])0+$/g, '$1') : '' }
                   onChange={(e) => updateFillBarData(allocation.id, idx, 'allocation', e.target.value) }

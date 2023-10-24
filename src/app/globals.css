@@ -344,7 +344,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .schemeOne {
-  border-color: #8D5A97 !important;
+  border-color: #8D5A97;
 }
 .schemeOne-background {
   background-color: #8D5A97 !important;
@@ -359,7 +359,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .schemeTwo {
-  border-color: #907F9F !important;
+  border-color: #907F9F;
 }
 .schemeTwo-background {
   background-color: #907F9F !important;
@@ -374,7 +374,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .schemeThree {
-  border-color: #A4A5AE !important;
+  border-color: #A4A5AE;
 }
 .schemeThree-background {
   background-color: #A4A5AE !important;
@@ -389,7 +389,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .schemeFour {
-  border-color: #B0C7BD !important;
+  border-color: #B0C7BD;
 }
 .schemeFour-background {
   background-color: #B0C7BD !important;
@@ -404,7 +404,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .schemeFive {
-  border-color: #B8EBD0 !important;
+  border-color: #B8EBD0;
 }
 .schemeFive-background {
   background-color: #B8EBD0 !important;
@@ -552,11 +552,10 @@ body::-webkit-scrollbar-thumb {
   outline: none;
   border: none;
   text-align: center;
-  transition: all 0.3s;
+  position: relative;
 }
 .element-button-text:hover {
   cursor: pointer;
-  transform: translateY(-3px) scale(1.05);
 }
 .element-button-allocation {
   display: flex;
@@ -639,13 +638,13 @@ body::-webkit-scrollbar-thumb {
   align-items: center;
   text-align: center;
   border-radius: 1rem;
-  border: 0.3rem solid;
+  border: 0.15rem solid;
   background-color: white;
   width: 3rem;
   height: 3rem;
   margin: 0 0.1rem;
   color: black;
-  font-weight: 500;
+  font-weight: 400;
   z-index: 2;
   transition: all 0.5s;
 }
@@ -678,8 +677,6 @@ body::-webkit-scrollbar-thumb {
   position: fixed;
   top: 35%;
   width: 15%;
-  display: flex;
-  flex-wrap: wrap;
   height: 20rem;
   border-radius: 1.2rem;
   background-color: #edf2f5;
@@ -689,14 +686,19 @@ body::-webkit-scrollbar-thumb {
 }
 .elementColorPalletePopupContainer {
   position: relative;
-  width: 1000%;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
 }
 .elementColorPalletePopupItem {
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
-  margin: 0 0.5rem;
+  margin: 0.5rem;
   padding: 0;
+}
+.elementColorPalletePopupItem:hover {
+  cursor: pointer;
 }
 
 /*# sourceMappingURL=globals.css.map */

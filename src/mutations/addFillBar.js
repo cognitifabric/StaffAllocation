@@ -10,7 +10,8 @@ mutation AddFillBarToAllocation($allocationID: ID!, $allocation: FillBarInputTyp
       order
       fte
       text
-      allocation 
+      allocation
+      color
       fillBars {
         id
         order
