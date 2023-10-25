@@ -66,7 +66,7 @@ function Staffing () {
 
     }
     
-  }, [dataUser, dataUser.loading])
+  }, [dataUser])
 
   useEffect(() => {
     let typingTimer;
