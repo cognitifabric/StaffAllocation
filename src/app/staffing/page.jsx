@@ -66,7 +66,7 @@ function Staffing () {
 
     }
     
-  }, [dataUser])
+  }, [dataUser, dataUser.loading])
 
   useEffect(() => {
     let typingTimer;
@@ -495,6 +495,7 @@ function Staffing () {
     
   }
 
+  if (dataUser.loading) return 'Loading...'
   if (loading) return 'Submitting...';
   if (error) return `Submission error! ${error.message}`;
   if (loadingAllocation) return 'Submitting...';
