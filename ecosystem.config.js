@@ -31,7 +31,7 @@ module.exports = {
       host : '34.229.44.181',
       ref  : 'origin/main',
       repo : 'git@github.com:codecallogic/StaffAllocation.git',
-      path : '/home/ubuntu/client',
+      path : '/home/ubuntu',
       'pre-deploy-local': '',
       'post-deploy' : 'source ~/.nvm/nvm.sh && npm install && npm run build && pm2 reload ecosystem.config.js --env production',
       'pre-setup': '',
