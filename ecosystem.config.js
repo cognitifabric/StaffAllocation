@@ -21,6 +21,7 @@
 
 module.exports = {
   apps : [{
+    name   : "client",
     script: 'npm start'
   }],
 
@@ -31,7 +32,7 @@ module.exports = {
       host : '34.227.152.167',
       ref  : 'origin/main',
       repo : 'git@github.com:codecallogic/StaffAllocation.git',
-      path : '/home/ubuntu',
+      path : '/home/ubuntu/client',
       'pre-deploy-local': '',
       'post-deploy' : 'source ~/.nvm/nvm.sh && npm install && npm run build && pm2 reload ecosystem.config.js --env production',
       'pre-setup': '',
