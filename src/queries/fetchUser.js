@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 
 export default gql`
 {
-  user(id:"65123ca1b69d3defa682bf2f"){
+  user(id:"654bdfbb38b8af37e526df39"){
     id
     username
     allocations {

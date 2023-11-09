@@ -118,7 +118,7 @@ function Staffing () {
 
   const submitAddSettings = () => {
     
-    addSettings({ variables: { userID: '65123ca1b69d3defa682bf2f', settings: headingSettings } })
+    addSettings({ variables: { userID: '654bdfbb38b8af37e526df39', settings: headingSettings } })
     setIsTyping('')
   }
   
