@@ -55,7 +55,7 @@ function Staffing () {
   useEffect(() => {
 
     let newAllocations = []
-    console.log(dataUser)
+
     if(dataUser.data) setHeadingSettings(dataUser.data.user.settings)
     if(dataUser.data){
 

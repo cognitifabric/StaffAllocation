@@ -1,8 +1,6 @@
 "use client"
-import Image from 'next/image'
 import { useState } from 'react'
 import axios from 'axios'
-import { ApolloClient, InMemoryCache, ApolloProvider, gql } from '@apollo/client';
 
 export default function Login() {
 

@@ -1,58 +1,52 @@
 "use client"
-import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { gql, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from '@apollo/client';
+import { useCookies } from 'react-cookie';
+import { useRouter } from 'next/navigation';
 
-
-const query = gql`
-  query {
-    users {
-      id
-      username
-    }
-  }
-`;
+//// MUTATIONS
+import USER_LOGIN from '@/mutations/login'
 
 export default function Home() {
 
   const loadingColor = 'white'
+  const router = useRouter();
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const { loadingQuery, errorQuery, data } = useQuery(query)
+  const [cookies, setCookie] = useCookies(['accessToken', 'user']);
+  const [ userLogin, { data, loadingLogin, errorLogin }] = useMutation(USER_LOGIN);
 
   const login = async () => {
 
     setLoading(true)
-    
-    const form = new FormData();
-    form.append('username', username);
-    form.append('password', password);
-    
 
     try {
-      const response = await axios.post(':3001/api/auth', form, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        }
-      })
-      
-      setLoading(false)
-      window.location.href = '/staffing'
-      
+      const response = await userLogin({ variables: { username: username, password: password } })
+      const { token } = response.data.login;
+
+      // Handle successful login (use response data)
+      // Set cookies with a 1-hour expiration time
+      setCookie('accessToken', token, { path: '/', expires: new Date(Date.now() + 60 * 60 * 1000) });
+      setCookie('user', JSON.stringify(response.data.login), { path: '/', expires: new Date(Date.now() + 60 * 60 * 1000) });
+
+      // Callback or additional logic after successful login
+      router.push('/staffing');
+
     } catch (error) {
-      console.error('Error submitting data:', error);
-      setLoading(false)
-      if(error) setError(error.response.data)
-      
+      // Handle login error (use error)
+
+      console.error(error);
     }
+    
+    setLoading(false)
     
   }
 
-  if (loadingQuery) return 'Loading...';
-  if (errorQuery) return `Error! ${errorQuery.message}`;
+  if (loadingLogin) return 'Loading...';
+  if (errorLogin) return `Error! ${errorQuery.message}`;
    
   return (
     <div className="container-center">
