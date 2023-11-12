@@ -5,14 +5,13 @@
     input {
       display: flex;
       width: 100%;
-      padding: 2rem 1.5rem;
+      padding: 2.5rem 1.5rem;
       box-sizing: border-box;
       outline: none;
       font-weight: 300;
       font-size: 2rem;
       font-family: inherit;
-      border: none;
-      border-bottom: .1rem solid $color-scheme-2;
+      border: .05rem solid $color-dark-grey-2;
       background-color: transparent;
       margin: 0.5rem 0;
       transition: all 0.5s ease-in-out;
@@ -28,7 +27,7 @@
         border-radius: 1rem;
         outline: none;
         font-size: 2rem;
-        padding: 1rem 0;
+        padding: 1rem 2rem;
         border: none;
         background-color: $color-scheme-1;
         transition: all .5s;
@@ -41,10 +40,36 @@
       }
     }
 
+    &-button {
+      &-large {
+        width: 100%;
+        border-radius: 1rem;
+        outline: none;
+        font-size: 2rem;
+        padding: 2rem 1rem;
+        border: none;
+        background-color: $color-scheme-2;
+        color: $color-light-contrast;
+        font-weight: 600;
+        transition: all .5s;
+
+        &:hover {
+          cursor: pointer;
+          transform: translateY(-1px) scale(1.03);
+        }
+        
+      }
+    }
+
     &-error {
       
       &-light {
         color: $color-light-contrast;
+        font-size: 1.6rem;
+      }
+
+      &-dark {
+        color: $color-dark-contrast;
         font-size: 1.6rem;
       }
       

@@ -1,9 +1,15 @@
 .box {
   &-curved {
     &-3 {
-      border-radius: 3rem;
-      padding: 5rem;
+      border-radius: 1.5rem;
+      box-shadow: -.3rem .3rem .5rem .2rem rgba(0,0,0, .5);
+      padding: 1.5rem;
     }
+  }
+
+  &Form {
+    background-color: $color-light-contrast;
+    height: max-content;
   }
   
 }
@@ -22,6 +28,12 @@
   }
 }
 
+.text {
+  &-black {
+    color: $color-dark-contrast;
+  }
+}
+
 .border-right {
   border-right: .2rem solid $color-light-grey-1!important;
 }
@@ -32,6 +44,7 @@
 
 .schemeOne {
   border-color: $color-scheme-1;
+  color: $color-scheme-1;
   
   &-background {
     background-color: $color-scheme-1!important;
@@ -50,6 +63,7 @@
 
 .schemeTwo {
   border-color: $color-scheme-2;
+  color: $color-scheme-2;
   
   &-background {
     background-color: $color-scheme-2!important;
@@ -68,6 +82,7 @@
 
 .schemeThree {
   border-color: $color-scheme-3;
+  color: $color-scheme-3;
   
   &-background {
     background-color: $color-scheme-3!important;
@@ -86,6 +101,7 @@
 
 .schemeFour {
   border-color: $color-scheme-4;
+  color: $color-scheme-4;
   
   &-background {
     background-color: $color-scheme-4!important;

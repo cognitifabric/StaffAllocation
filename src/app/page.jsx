@@ -37,8 +37,8 @@ export default function Home() {
 
     } catch (error) {
       // Handle login error (use error)
-
       console.error(error);
+      if(error) setError(error.message)
     }
     
     setLoading(false)
@@ -49,56 +49,72 @@ export default function Home() {
   if (errorLogin) return `Error! ${errorQuery.message}`;
    
   return (
-    <div className="container-center">
-      <div className="w70 box-curved-3 schemeTwo-background">
-        <div className="form-group element-white curved">
-          <input 
-            className="curved"
-            type="text" 
-            value={username}
-            placeholder="username"
-            onKeyDown={(e) => e.key == 'Enter' ? login() : null }
-            onChange={(e) => (
-              setError(''),
-              setUsername(e.target.value)
-            )}
-          />
-        </div>
-        <div className="form-group element-white curved">
-          <input 
-            className="curved"
-            type="password" 
-            value={password}
-            placeholder="password"
-            onKeyDown={(e) => e.key == 'Enter' ? login() : null }
-            onChange={(e) => (
-              setError(''),
-              setPassword(e.target.value)
-            )}
-          />
-        </div>
-        <div className="form-group container-centerWidth">
-          <button
-           className="form-group-button-small element-white"
-           onClick={() => login()}
-          >
-            {!loading && <span>Sign In</span>} 
-            {loading && 
-            <div className="loading">
-              <span style={{backgroundColor: loadingColor}}></span>
-              <span style={{backgroundColor: loadingColor}}></span>
-              <span style={{backgroundColor: loadingColor}}></span>
+    <div className="columnsTwo">
+      <div className="w60percent" style={{ backgroundImage: `url('/media/loginBackground.jpeg')`}}>
+        <div className="wfull slantedColumnRight" style={{ backgroundImage: `url('/media/loginBackground.jpeg')`}}>
+      </div>
+      </div>
+      <div className="w60percent overlay">
+        <div className="wfull container-center slantedColumnLeft">
+          <div className="w40 box-curved-3 boxForm counteractSkew">
+            <div className="form-group element-white curved-eased">
+              <input 
+                className="curved-eased"
+                type="text" 
+                value={username}
+                placeholder="username"
+                onKeyDown={(e) => e.key == 'Enter' ? login() : null }
+                onChange={(e) => (
+                  setError(''),
+                  setLoading(''),
+                  setUsername(e.target.value)
+                )}
+              />
             </div>
+            <div className="form-group element-white curved-eased">
+              <input 
+                className="curved-eased"
+                type="password" 
+                value={password}
+                placeholder="password"
+                onKeyDown={(e) => e.key == 'Enter' ? login() : null }
+                onChange={(e) => (
+                  setError(''),
+                  setLoading(''),
+                  setPassword(e.target.value)
+                )}
+              />
+            </div>
+            <div className="form-group">
+              <button
+              className="form-group-button-large"
+              onClick={() => login()}
+              >
+                {!loading && <span>Sign In</span>} 
+                {loading && 
+                <div className="loading">
+                  <span style={{backgroundColor: loadingColor}}></span>
+                  <span style={{backgroundColor: loadingColor}}></span>
+                  <span style={{backgroundColor: loadingColor}}></span>
+                </div>
+                }
+              </button>
+            </div>
+            <div className="container-center padding-0 text-black fontSize-16">
+              Don't have an account?
+            </div>
+            <div className="container-center padding-0 elementLink">
+              <a href="/signup" className="fontSize-16 schemeOne">Sign Up</a>
+            </div>
+            {error && 
+              <div className="container-center padding-0">
+                <div className="form-group-error-light">
+                  {error}
+                </div>
+              </div>
             }
-          </button>
-        </div>
-        {error && 
-          <div className="container-center padding-0">
-            <div className="form-group-error-light">
-              {error}
-            </div>
           </div>
-        }
+        </div>
       </div>
     </div>
   )

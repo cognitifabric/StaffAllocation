@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
-export default gql`
-{
-  user(id:"654bdfbb38b8af37e526df39"){
+export const GET_USER = gql`
+query User($id: ID!, $token: String!) {
+  user(id: $id, token: $token){
     id
     username
     allocations {

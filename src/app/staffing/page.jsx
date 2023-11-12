@@ -4,7 +4,9 @@ import SVG from '../../libs/svg'
 import { useState, useEffect, useRef } from 'react'
 import { useMutation, useQuery } from '@apollo/client';
 import { ExcelRenderer } from 'react-excel-renderer';
-import GET_USER from '@/queries/fetchUser'
+import { useCookies } from 'react-cookie';
+import { useRouter } from 'next/navigation';
+import { GET_USER } from '@/queries/fetchUser'
 import ADD_SETTINGS from '@/mutations/addSettings'
 import ADD_ALLOCATION from '@/mutations/addAllocation'
 import UPDATE_ALLOCATION from '@/mutations/updateAllocation'
@@ -13,6 +15,7 @@ import UPDATE_FILLBAR from '@/mutations/updateFillBar'
 import DELETE_FILLBAR from '@/mutations/deleteFillbar'
 import DELETE_ALLOCATION from '@/mutations/deleteAllocation'
 import UPLOAD_ALLOCATION from '@/mutations/uploadAllocation'
+import USER_REQUIRES_LOGIN from '@/mutations/userRequiresLogin'
 
 //// HELPERS
 import { defaultAllocationOrderTwo, defaultAllocationOrderThree } from '@/helpers/table';
@@ -27,12 +30,16 @@ import ColorPallete from '@/component/colorPallete'
 
 function Staffing () {
 
+  const router = useRouter();
   const [ headingSettings, setHeadingSettings ] = useState([])
   const [ allocations, setAllocations ] = useState([])
   const [ updatedAllocation, setUpdatedAllocation ] = useState('')
   const [ updatedFillbar, setUpdatedFillbar] = useState('')
-  const [ files, setFiles] = useState('')
-  const dataUser = useQuery(GET_USER)
+  const [cookies, setCookie, removeCookie] = useCookies(['user']);
+  const [ loadingData, setLoadingData ] = useState(false)
+  const dataUser = useQuery(GET_USER, {
+    variables: { id: "654bdfbb38b8af37e526df39", token: cookies.accessToken }
+  })
   const [ addSettings, { data, loading, error }] = useMutation(ADD_SETTINGS);
   const [ addAllocation, { dataAllocation, loadingAllocation, errorAllocation }] = useMutation(ADD_ALLOCATION, { refetchQueries: [ GET_USER ] });
   const [ updateAllocationMutation, { dataUpdateAllocation, loadingUpdateAllocation, errorUpdatedAllocation }] = useMutation(UPDATE_ALLOCATION, { refetchQueries: [ GET_USER ]});
@@ -41,6 +48,7 @@ function Staffing () {
   const [ deleteFillbar, { dataDeleteFillbar, loadingDeleteFillbar, errorDeleteFillbar }] = useMutation(DELETE_FILLBAR, { refetchQueries: [ GET_USER ]})
   const [ deleteAllocation, { dataDeleteAllocation, loadingDeleteAllocation, errorDeleteAllocation }] = useMutation(DELETE_ALLOCATION, { refetchQueries: [ GET_USER ]})
   const [ uploadAllocation, { dataUploadAllocation, loadingUploadAllocation, errorUploadAllocation }] = useMutation(UPLOAD_ALLOCATION, { refetchQueries: [ GET_USER ]})
+  const [ userRequiresLogin, { dataUserRequiresLogin, loadingUserRequiresLogin, errorUserRequiresLogin }] = useMutation(USER_REQUIRES_LOGIN, { refetchQueries: [ GET_USER ]})
   const [ sortTwo, setSortTwo ] = useState(false)
   const [ sortThree, setSortThree ] = useState(false)
   const [ sortType, setSortType] = useState('')
@@ -56,9 +64,16 @@ function Staffing () {
 
     let newAllocations = []
 
+    setLoadingData(true)
+    
+    if(dataUser.error){ 
+      dataUser.error.message = 'Invalid token' ? router.push('/') : router.push('/error') 
+    }
+
+    if(!dataUser.error) setLoadingData(false)
     if(dataUser.data) setHeadingSettings(dataUser.data.user.settings)
     if(dataUser.data){
-
+      
       newAllocations = [...dataUser.data.user.allocations]
       newAllocations.sort((a, b) => a.order - b.order)
 
@@ -495,13 +510,15 @@ function Staffing () {
     
   }
 
-  if (dataUser.loading) return 'Loading...'
-  if (loading) return 'Submitting...';
+  if (loadingData) return <div className="loadingPage"><span>loading</span></div>
+  if (dataUser.loading) return <div className="loadingPage"><span>loading</span></div>
+  if (loading) return <div className="loadingPage"><span>loading</span></div>
   if (error) return `Submission error! ${error.message}`;
-  if (loadingAllocation) return 'Submitting...';
+  if (loadingAllocation) return <div className="loadingPage"><span>loading</span></div>
   if (errorAllocation) return `Submission error! ${errorAllocation}`;
-  if (loadingUpdateAllocation) return 'Submitting...';
-  if (errorUpdatedAllocation) `Submission error! ${errorUpdatedAllocation}`;
+  if (loadingUpdateAllocation) return <div className="loadingPage"><span>loading</span></div>
+  if (errorUpdatedAllocation) return `Submission error! ${errorUpdatedAllocation}`;
+  if (!cookies.accessToken) return <div className="loadingPage"><span>loading user data</span></div>
   
   return (
     <div className="container-center wrap">
