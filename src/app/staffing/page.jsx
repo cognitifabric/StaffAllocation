@@ -473,11 +473,13 @@ function Staffing () {
             let array = []
 
             excelData.forEach( (item) => {
+              
+              console.log(item)
 
               const object = new Object()
               object.order        = orderType
-              object.text         = item[1].toString()
-              object.fte          = item[0].toString()
+              object.text         = item[1] ? item[1].toString() : '0'
+              object.fte          = item[0] ? item[0].toString() : '0'
               object.allocation   = '0'
 
               array.push(object)
