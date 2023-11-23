@@ -30,7 +30,13 @@
 
 .text {
   &-black {
-    color: $color-dark-contrast;
+    color: $color-dark-contrast!important;
+    font-size: 1.6rem;
+  }
+
+  &-schemeOne {
+    color: $color-scheme-1!important;
+    font-size: 1.6rem;
   }
 }
 

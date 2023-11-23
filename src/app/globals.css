@@ -126,7 +126,7 @@ body::-webkit-scrollbar-thumb {
   font-size: 1.6rem;
 }
 .form-group-error-dark {
-  color: black;
+  color: black !important;
   font-size: 1.6rem;
 }
 
@@ -417,6 +417,11 @@ body::-webkit-scrollbar-thumb {
   height: 15rem !important;
 }
 
+.maxContainer {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
 .box-curved-3 {
   border-radius: 1.5rem;
   box-shadow: -0.3rem 0.3rem 0.5rem 0.2rem rgba(0, 0, 0, 0.5);
@@ -440,7 +445,12 @@ body::-webkit-scrollbar-thumb {
 }
 
 .text-black {
-  color: black;
+  color: black !important;
+  font-size: 1.6rem;
+}
+.text-schemeOne {
+  color: #8D5A97 !important;
+  font-size: 1.6rem;
 }
 
 .border-right {
@@ -905,6 +915,41 @@ body::-webkit-scrollbar-thumb {
 }
 .elementLink {
   margin: 1rem 0rem !important;
+}
+
+.mtb10 {
+  margin: 10rem 0rem !important;
+}
+
+.headerOne {
+  letter-spacing: 0.2rem;
+  font-size: 2.4rem;
+}
+
+.nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3rem 5rem;
+  background-color: #8D5A97;
+  color: white;
+}
+.nav-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+}
+.nav-list-item {
+  font-size: 1.8rem;
+}
+.nav-list-item:hover {
+  cursor: pointer;
+}
+.nav-logo {
+  font-size: 2.4rem;
+  font-family: palanquin;
 }
 
 /*# sourceMappingURL=globals.css.map */

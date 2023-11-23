@@ -108,7 +108,7 @@ export default function Home() {
             </div>
             {error && 
               <div className="container-center padding-0">
-                <div className="form-group-error-light">
+                <div className="text-schemeOne">
                   {error}
                 </div>
               </div>

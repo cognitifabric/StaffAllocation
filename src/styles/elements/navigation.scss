@@ -1,0 +1,32 @@
+.nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3rem 5rem;
+  background-color: $color-scheme-1;
+  color: $color-light-contrast;
+
+  &-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+
+    &-item {
+      font-size: 1.8rem;
+
+      &:hover {
+        cursor: pointer;
+      }
+      
+    }
+    
+  }
+
+  &-logo {
+    font-size: 2.4rem;
+    font-family: palanquin;
+  }
+  
+}

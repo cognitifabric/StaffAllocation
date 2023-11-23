@@ -4,7 +4,7 @@ import SVG from '../../libs/svg'
 import { useState, useEffect, useRef } from 'react'
 import { useMutation, useQuery } from '@apollo/client';
 import { ExcelRenderer } from 'react-excel-renderer';
-import { useCookies } from 'react-cookie';
+import { useCookies, getAll } from 'react-cookie';
 import { useRouter } from 'next/navigation';
 import { GET_USER } from '@/queries/fetchUser'
 import ADD_SETTINGS from '@/mutations/addSettings'
@@ -27,6 +27,7 @@ import DropDown from '../../component/dropDown'
 import ColumnListRight from '@/component/columnListRight';
 import ColumnListLeft from '@/component/columnListLeft';
 import ColorPallete from '@/component/colorPallete'
+import SystemAdmin from '../_components/SystemAdmin'
 
 function Staffing () {
 
@@ -61,7 +62,7 @@ function Staffing () {
   const containerRefRight   = useRef(null);
 
   useEffect(() => {
-
+    console.log(cookies)
     let newAllocations = []
 
     setLoadingData(true)
@@ -519,6 +520,7 @@ function Staffing () {
   if (loadingUpdateAllocation) return <div className="loadingPage"><span>loading</span></div>
   if (errorUpdatedAllocation) return `Submission error! ${errorUpdatedAllocation}`;
   if (!cookies.accessToken) return <div className="loadingPage"><span>loading user data</span></div>
+  if (cookies.user.role == 'systemAdmin') return <SystemAdmin />
   
   return (
     <div className="container-center wrap">
