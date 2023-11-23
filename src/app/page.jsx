@@ -101,7 +101,7 @@ export default function Home() {
               </button>
             </div>
             <div className="container-center padding-0 text-black fontSize-16">
-              Don't have an account?
+              Don&rsquo;t have an account?
             </div>
             <div className="container-center padding-0 elementLink">
               <a href="/signup" className="fontSize-16 schemeOne">Sign Up</a>
