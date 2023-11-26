@@ -94,6 +94,38 @@
   z-index: -1;
 }
 
+.popUpSendInvite {
+  z-index: 100;
+  background-color: rgba(0,0,0, .7);
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  
+}
+
+.popUpBox {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &Close {
+    position: absolute;
+    top: 5%;
+    right: 5%;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
 .overlay {
   position: absolute;
   top: 0%;
@@ -332,4 +364,42 @@
 .maxContainer {
   max-width: 1440px;
   margin: 0 auto;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.ml5 {
+  margin-left: 1rem;
+}
+
+.mt10 {
+  margin-top: 10rem;
+}
+
+.mt5 {
+  margin-top: 20rem;
+}
+
+.mt1 {
+  margin-top: 5rem;
+}
+
+.mt {
+  margin-top: 2rem;
+}
+
+.hoverCursor {
+  &:hover {
+    cursor: pointer;
+  }
 }

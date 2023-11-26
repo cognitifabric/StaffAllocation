@@ -4,9 +4,10 @@ import SVG from '../../libs/svg'
 import { useState, useEffect, useRef } from 'react'
 import { useMutation, useQuery } from '@apollo/client';
 import { ExcelRenderer } from 'react-excel-renderer';
-import { useCookies, getAll } from 'react-cookie';
+import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/navigation';
-import { GET_USER } from '@/queries/fetchUser'
+import GET_USER from '@/queries/fetchUser'
+import GET_USERS from '@/queries/fetchUsers'
 import ADD_SETTINGS from '@/mutations/addSettings'
 import ADD_ALLOCATION from '@/mutations/addAllocation'
 import UPDATE_ALLOCATION from '@/mutations/updateAllocation'
@@ -23,6 +24,7 @@ import { onDragStart, onDragOver, onDrop, onDropFillBar, onDragStartFillBar } fr
 import { sumByType, sum } from '@/helpers/utilities';
 
 //// COMPONENTS
+import Nav from '../_components/Navigation';
 import DropDown from '../../component/dropDown'
 import ColumnListRight from '@/component/columnListRight';
 import ColumnListLeft from '@/component/columnListLeft';
@@ -32,15 +34,19 @@ import SystemAdmin from '../_components/SystemAdmin'
 function Staffing () {
 
   const router = useRouter();
+
+  const [cookies, setCookie, removeCookie] = useCookies(['user']);
   const [ headingSettings, setHeadingSettings ] = useState([])
   const [ allocations, setAllocations ] = useState([])
   const [ updatedAllocation, setUpdatedAllocation ] = useState('')
   const [ updatedFillbar, setUpdatedFillbar] = useState('')
-  const [cookies, setCookie, removeCookie] = useCookies(['user']);
+  const [ allUsers, setAllUsers] = useState([])
   const [ loadingData, setLoadingData ] = useState(false)
+
   const dataUser = useQuery(GET_USER, {
-    variables: { id: "654bdfbb38b8af37e526df39", token: cookies.accessToken }
+    variables: { id: cookies.user ? cookies.user.id : '', token: cookies.accessToken }
   })
+  const users = useQuery(GET_USERS, { variables: { id: cookies.user ? cookies.user.id : ''} })
   const [ addSettings, { data, loading, error }] = useMutation(ADD_SETTINGS);
   const [ addAllocation, { dataAllocation, loadingAllocation, errorAllocation }] = useMutation(ADD_ALLOCATION, { refetchQueries: [ GET_USER ] });
   const [ updateAllocationMutation, { dataUpdateAllocation, loadingUpdateAllocation, errorUpdatedAllocation }] = useMutation(UPDATE_ALLOCATION, { refetchQueries: [ GET_USER ]});
@@ -60,14 +66,15 @@ function Staffing () {
   const elementsWithIdRef = useRef([]);
   const containerRefLeft    = useRef(null);
   const containerRefRight   = useRef(null);
-
+  
   useEffect(() => {
-    console.log(cookies)
+    
     let newAllocations = []
 
     setLoadingData(true)
     
     if(dataUser.error){ 
+      console.log('DATAUSER ERROR', dataUser.error)
       dataUser.error.message = 'Invalid token' ? router.push('/') : router.push('/error') 
     }
 
@@ -83,6 +90,18 @@ function Staffing () {
     }
     
   }, [dataUser])
+
+  useEffect(() => {
+    
+    setLoadingData(true)
+    
+    if(users.error){
+      console.log('USERS ERROR', error)
+    }
+    if(!users.error) setLoadingData(false)
+    if(users.data) setAllUsers(users.data.users)
+    
+  }, [users])
 
   useEffect(() => {
     let typingTimer;
@@ -134,7 +153,7 @@ function Staffing () {
 
   const submitAddSettings = () => {
     
-    addSettings({ variables: { userID: '654bdfbb38b8af37e526df39', settings: headingSettings } })
+    addSettings({ variables: { userID: cookies.user.id, settings: headingSettings } })
     setIsTyping('')
   }
   
@@ -473,8 +492,6 @@ function Staffing () {
             let array = []
 
             excelData.forEach( (item) => {
-              
-              console.log(item)
 
               const object = new Object()
               object.order        = orderType
@@ -522,10 +539,15 @@ function Staffing () {
   if (loadingUpdateAllocation) return <div className="loadingPage"><span>loading</span></div>
   if (errorUpdatedAllocation) return `Submission error! ${errorUpdatedAllocation}`;
   if (!cookies.accessToken) return <div className="loadingPage"><span>loading user data</span></div>
-  if (cookies.user.role == 'systemAdmin') return <SystemAdmin />
+  if (cookies.user.role == 'systemAdmin') return <SystemAdmin allUsers={allUsers} setAllUsers={setAllUsers} removeCookie={removeCookie}/>
   
   return (
-    <div className="container-center wrap">
+    <>
+      <Nav
+        removeCookie={removeCookie}
+      >
+      </Nav>
+    <div className="container-center wrap mt">
       <div className="container-flex-right whalf h5 border-right">
         <div 
           className="element-button-icon"
@@ -799,6 +821,7 @@ function Staffing () {
       </div>
 
     </div>
+    </>
   )
 }
 

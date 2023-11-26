@@ -1,10 +1,11 @@
 import { gql } from '@apollo/client';
 
 export default gql`
-query User($id: ID!, $token: String!) {
-  user(id: $id, token: $token){
+query User($id: ID!) {
+  users(id: $id){
     id
     username
+    role
     allocations {
       id
       order

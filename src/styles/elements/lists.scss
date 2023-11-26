@@ -1,0 +1,41 @@
+.list {
+  &Users {
+    display: flex;
+    flex-direction: column;
+
+    &Heading {
+      display: flex;
+      align-items: center;
+      border: .05rem solid $color-scheme-2;
+      padding: 3rem 1.5rem;
+      gap: 3rem;
+      background-color: $color-scheme-2;
+
+      span {
+        display: flex;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: 600;
+        min-width: 15rem;
+        color: $color-light-contrast;
+      }
+      
+    }
+    
+    &User {
+      display: flex;
+      align-items: center;
+      border: .05rem solid $color-scheme-2;
+      padding: 3rem 1.5rem;
+      gap: 3rem;
+
+      span {
+        display: flex;
+        justify-content: center;
+        font-size: 1.4rem;
+        min-width: 15rem;
+      }
+      
+    }
+  }
+}

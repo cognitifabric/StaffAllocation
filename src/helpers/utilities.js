@@ -2,7 +2,8 @@ export {
   switchPositions,
   isEmptyObject,
   sumByType,
-  sum
+  sum,
+  isStrongPassword
 }
 
 const switchPositions = (object, id1, id2) => {
@@ -46,4 +47,21 @@ const sum = (data, order) => {
   
   return total.toFixed(2).replace(/(\.\d*?[1-9])0+$/g, '$1')
   
+}
+
+const isStrongPassword = (password) => {
+  // Minimum length requirement
+  const minLength = 8;
+
+  // Regular expressions for different criteria
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasLowercase = /[a-z]/.test(password);
+  const hasNumber = /\d/.test(password);
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+  // Check if the password meets all criteria
+  const isLengthValid = password.length >= minLength;
+  const isStrong = hasUppercase && hasLowercase && hasNumber && hasSpecialChar;
+
+  return isLengthValid && isStrong;
 }
