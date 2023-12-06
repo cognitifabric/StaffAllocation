@@ -25,7 +25,7 @@ const ActivateAccount = ({
   const [ activateAccount, { dataActivateForm, loadingActivateForm, errorActivateForm }] = useMutation(ACTIVATE_ACCOUNT)
 
   const activateAccountForm = async () => {
-    // J#uP1t3r@2023!
+    // Civnax-kypwaz-7kuhne!
     if(password !== confirmPassword) return setError(`Passwords don't match`)
     if(!isStrongPassword(password)) return setInvalid(true)
 

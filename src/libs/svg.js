@@ -5,14 +5,14 @@ const SVG = ({svg, width, height, classprop, color}) => {
     switch(svg){
 
       case 'plus':
-        return <svg width={width} height={height} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+        return <svg width={width} height={height} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 24">
           <path fill={color} d="M5 13h6v6c0 0.552 0.448 1 1 1s1-0.448 1-1v-6h6c0.552 0 1-0.448 1-1s-0.448-1-1-1h-6v-6c0-0.552-0.448-1-1-1s-1 0.448-1 1v6h-6c-0.552 0-1 0.448-1 1s0.448 1 1 1z"></path>
           </svg> 
         break;
 
       case 'thrashCan':
-        return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-          <path d="M6 32h20l2-22h-24zM20 4v-4h-8v4h-10v6l2-2h24l2 2v-6h-10zM18 4h-4v-2h4v2z"></path>
+        return <svg width={width} heigth={height} viewBox="0 0 32 32">
+          <path fill={color} d="M6 32h20l2-22h-24zM20 4v-4h-8v4h-10v6l2-2h24l2 2v-6h-10zM18 4h-4v-2h4v2z"></path>
           </svg> 
         break;
 
@@ -42,7 +42,7 @@ const SVG = ({svg, width, height, classprop, color}) => {
           <path d="m22,12c0,2.76-1.12,5.26-2.93,7.07l-4.24-4.24c.72-.73,1.17-1.73,1.17-2.83h6Z" style={{ fill: "#3a8def" }}/>
           <path d="m19.07,19.07c-1.81,1.81-4.31,2.93-7.07,2.93v-6c1.1,0,2.1-.45,2.83-1.17l4.24,4.24Z" style={{ fill: "#109138" }}/>
           <path d="m12,16v6c-2.76,0-5.26-1.12-7.07-2.93l4.24-4.24c.73.72,1.73,1.17,2.83,1.17Z" style={{ fill: "#c9273a" }}/>
-          <path d="m9.17,14.83l-4.24,4.24c-1.81-1.81-2.93-4.31-2.93-7.07h6c0,1.1.45,2.1,1.17,2.83Z" style={{ fill: "#0b4f6c" }}/>
+          <path d="m9.17,14.83l-4.24,4                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         .24c-1.81-1.81-2.93-4.31-2.93-7.07h6c0,1.1.45,2.1,1.17,2.83Z" style={{ fill: "#0b4f6c" }}/>
           <path d="m9.17,9.17c-.72.73-1.17,1.73-1.17,2.83H2c0-2.76,1.12-5.26,2.93-7.07l4.24,4.24Z" style={{ fill: "#2675e2" }}/>
         </svg>
         break;
@@ -64,6 +64,24 @@ const SVG = ({svg, width, height, classprop, color}) => {
         return <svg viewBox="0 0 24 24" width={width} height={height}>
           <path fill={color} d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm4.71,10.71-4,4a1,1,0,0,1-1.41,0l-4-4a1,1,0,0,1,1.41-1.41L12,13.59l3.29-3.29a1,1,0,0,1,1.41,1.41Z"/>
         </svg>  
+        break;
+
+      case 'edit':
+        return <svg height={height} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width={width}>
+          <path fill={"transparent"}  d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+          <path fill={color}  d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>  
+        break;
+
+      case 'users':
+        return <svg version="1.0" viewBox="0 0 24 24" width={width} height={height}>
+          <g>
+            <path fill={color} d="M9,9c0-1.7,1.3-3,3-3s3,1.3,3,3c0,1.7-1.3,3-3,3S9,10.7,9,9z M12,14c-4.6,0-6,3.3-6,3.3V19h12v-1.7C18,17.3,16.6,14,12,14z   "/>
+            </g><g><g><circle cx="18.5" cy="8.5" r="2.5"/></g><g>
+            <path fill={color} d="M18.5,13c-1.2,0-2.1,0.3-2.8,0.8c2.3,1.1,3.2,3,3.2,3.2l0,0.1H23v-1.3C23,15.7,21.9,13,18.5,13z"/></g></g><g><g><circle fill={color}cx="18.5" cy="8.5" r="2.5"/></g><g>
+            <path fill={color} d="M18.5,13c-1.2,0-2.1,0.3-2.8,0.8c2.3,1.1,3.2,3,3.2,3.2l0,0.1H23v-1.3C23,15.7,21.9,13,18.5,13z"/></g></g><g><g><circle fill={color} cx="5.5" cy="8.5" r="2.5"/></g><g>
+            <path fill={color} d="M5.5,13c1.2,0,2.1,0.3,2.8,0.8c-2.3,1.1-3.2,3-3.2,3.2l0,0.1H1v-1.3C1,15.7,2.1,13,5.5,13z"/></g></g>
+        </svg>
         break;
         
     }

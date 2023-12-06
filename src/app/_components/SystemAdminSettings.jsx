@@ -1,10 +1,14 @@
 
 import SVG from '../../libs/svg'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useMutation } from '@apollo/client';
 
 //// MUTATIONS
 import USER_INVITE from '@/mutations/inviteUser'
+
+//// COMPONENTS
+import SendInvite from '../_components/SendInvite'
+import EditUser from '../_components/EditUser'
 
 const SystemAdminSettings = ({
   error,
@@ -17,14 +21,15 @@ const SystemAdminSettings = ({
 }) => {
 
   const myRefs = useRef()
-  const loadingColor = 'white'
   const [sendInvite, setSendInvite] = useState(false)
+  const [popup, setPopup] = useState('')
   const [username, setUsername] = useState('')
   const [userType, setUserType] = useState('')
   const [userTypeFormField, setUserTypeFormField] = useState('')
   const [inputDropdown, setInputDropdown] = useState('')
+  const [user, setUser] = useState('')
   const [ sendInviteMutation, { dataInviteUser, loadingInviteUser, errorInviteUser}] = useMutation(USER_INVITE)
-
+  
   const reset = () => {
     setUsername(''),
     setUserType(''),
@@ -86,128 +91,136 @@ const SystemAdminSettings = ({
         </div>
       </div>
       <div className="listUsers">
-        {allUsers && allUsers.map((user, idx) => 
+        {allUsers.length > 0 && allUsers.map((user, idx) => 
           <div 
             key={idx}
             className="listUsersUser"
           >
             <span>{user.username}</span>
-            <span>{user.role}</span>
-          </div>
-        )}
-      </div>
-      {sendInvite &&
-        <div className="popUpSendInvite">
-          <div className="popUpBox">
-            <div 
-              className="popUpBoxClose"
-              onClick={() => (
-                setSendInvite(false),
-                reset()
-              )}
-            >
-              <SVG 
-                svg={'close'}
-                width={25}
-                height={25}
-                color={'white'}
-              >
-              </SVG>
-            </div>
-            <div className="w40 box-curved-3 boxForm">
-              <div className="form-group element-white curved-eased">
-                <input 
-                  className="curved-eased"
-                  type="text" 
-                  value={username}
-                  placeholder="email"
-                  onChange={(e) => (
-                    setError(''),
-                    setLoading(''),
-                    setUsername(e.target.value)
-                  )}
-                />
-              </div>
-              <div className="form-group element-white curved-eased">
-                <input
-                  className="curved-eased"
-                  onClick={() => setInputDropdown('inviteUser')} 
-                  value={userTypeFormField} 
-                  placeholder="user type"
-                  // onChange={(e) => (setInputDropdown(''), stateMethod(caseType, 'leader', e.target.value))}
-                  readOnly
-                />
+            <span className="capitalize">{user.role.split(/(?=[A-Z])/).join(' ')}</span>
+            {user.role == 'systemAdmin' &&
+              <div className="flexSVGGroup">
                 <div 
+                  className="svgItem"
                   onClick={() => (
-                    inputDropdown == 'inviteUser' ? setInputDropdown('') : setInputDropdown('inviteUser')
+                    setPopup('edit'),
+                    setUser(user)
                   )}
                 >
                   <SVG 
-                    svg={'arrowDown'}
-                    width={20}
-                    height={20}
+                    svg={'edit'}
+                    width={25}
+                    height={25}
                     color={'#8D5A97'}
                   >
                   </SVG>
                 </div>
-                { inputDropdown == 'inviteUser' &&
-                  <div 
-                    className="form-group-list" 
-                    ref={myRefs}
-                  >
-                    <div 
-                      className="form-group-list-item" 
-                      onClick={(e) => (setUserType('systemAdmin'), setUserTypeFormField('System Admin'), setInputDropdown(''))}
-                    >
-                      System Admin
-                    </div>
-                    <div 
-                      className="form-group-list-item" 
-                      onClick={(e) => (setUserType('entityAdmin'), setUserTypeFormField('Entity Admin'), setInputDropdown(''))}
-                    >
-                      Entity Admin
-                    </div>
-                    {/* <div 
-                      className="form-group-list-item" 
-                      onClick={(e) => (setUserType('entityUser'), setUserTypeFormField('Entity User'), setInputDropdown(''))}
-                    >
-                      Entity User
-                    </div> */}
-                  </div>
-                }
-              </div>
-              <div className="form-group">
-              <button
-                className="form-group-button-large"
-                onClick={() => sendInviteForm()}
+                <div 
+                  className="svgItem"
+                  onClick={() => setPopup('delete')}
                 >
-                  {!loading && <span>Send Invite</span>} 
-                  {loading && 
-                  <div className="loading">
-                    <span style={{backgroundColor: loadingColor}}></span>
-                    <span style={{backgroundColor: loadingColor}}></span>
-                    <span style={{backgroundColor: loadingColor}}></span>
-                  </div>
-                  }
-              </button>
+                  <SVG 
+                    svg={'thrashCan'}
+                    width={25}
+                    height={25}
+                    color={'#8D5A97'}
+                  >
+                  </SVG>
+                </div>
               </div>
-              {message && 
-                <div className="container-center padding-0">
-                  <div className="text-schemeOne">
-                    {message}
-                  </div>
+            }
+            {user.role == 'entityAdmin' &&
+              <div className="flexSVGGroup">
+                <div 
+                  className="svgItem"
+                  onClick={() => (
+                    setPopup('edit'),
+                    setUser(user)
+                  )}
+                >
+                  <SVG 
+                    svg={'edit'}
+                    width={25}
+                    height={25}
+                    color={'#8D5A97'}
+                  >
+                  </SVG>
                 </div>
-              }
-              {error && 
-                <div className="container-center padding-0">
-                  <div className="text-schemeOne">
-                    {error}
-                  </div>
+                <div className="svgItem">
+                  <SVG 
+                    svg={'thrashCan'}
+                    width={25}
+                    height={25}
+                    color={'#8D5A97'}
+                  >
+                  </SVG>
                 </div>
-              }
-            </div>
+                <div className="svgItem">
+                  <SVG 
+                    svg={'plus'}
+                    width={50}
+                    height={50}
+                    color={'#8D5A97'}
+                  >
+                  </SVG>
+                </div>
+                <div className="svgItem">
+                  <SVG 
+                    svg={'users'}
+                    width={25}
+                    height={25}
+                    color={'#8D5A97'}
+                  >
+                  </SVG>
+                </div>
+              </div>
+            }
           </div>
-        </div>
+        )}
+      </div>
+      {sendInvite &&
+        <SendInvite 
+          setSendInvite={setSendInvite}
+          reset={reset}
+          username={username}
+          setError={setError}
+          setLoading={setLoading}
+          setUsername={setUsername}
+          setInputDropdown={setInputDropdown}
+          userTypeFormField={userTypeFormField}
+          inputDropdown={inputDropdown}
+          myRefs={myRefs}
+          setUserType={setUserType}
+          setUserTypeFormField={setUserTypeFormField}
+          loading={loading}
+          sendInviteForm={sendInviteForm}
+          message={message}
+          error={error}
+        />
+      }
+      {popup === 'edit' &&
+        <EditUser
+          setSendInvite={setSendInvite}
+          reset={reset}
+          username={username}
+          setError={setError}
+          setLoading={setLoading}
+          setUsername={setUsername}
+          setInputDropdown={setInputDropdown}
+          userTypeFormField={userTypeFormField}
+          inputDropdown={inputDropdown}
+          myRefs={myRefs}
+          setUserType={setUserType}
+          setUserTypeFormField={setUserTypeFormField}
+          loading={loading}
+          sendInviteForm={sendInviteForm}
+          message={message}
+          error={error}
+          setPopup={setPopup}
+          user={user}
+          setUser={setUser}
+          userType={userType}
+        />
       }
     </div>
   )

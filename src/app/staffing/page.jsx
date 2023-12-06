@@ -35,7 +35,7 @@ function Staffing () {
 
   const router = useRouter();
 
-  const [cookies, setCookie, removeCookie] = useCookies(['user']);
+  const [cookies, setCookie, removeCookie] = useCookies(['accessToken', 'user']);
   const [ headingSettings, setHeadingSettings ] = useState([])
   const [ allocations, setAllocations ] = useState([])
   const [ updatedAllocation, setUpdatedAllocation ] = useState('')
@@ -79,15 +79,16 @@ function Staffing () {
     }
 
     if(!dataUser.error) setLoadingData(false)
-    if(dataUser.data) setHeadingSettings(dataUser.data.user.settings)
-    if(dataUser.data){
+    if(dataUser.data) console.log(console.log(dataUser.data))
+    // if(dataUser.data) setHeadingSettings(dataUser.data.user.settings)
+    // if(dataUser.data){
       
-      newAllocations = [...dataUser.data.user.allocations]
-      newAllocations.sort((a, b) => a.order - b.order)
+    //   newAllocations = [...dataUser.data.user.allocations]
+    //   newAllocations.sort((a, b) => a.order - b.order)
 
-      setAllocations(newAllocations)
+    //   setAllocations(newAllocations)
 
-    }
+    // }
     
   }, [dataUser])
 
@@ -98,6 +99,8 @@ function Staffing () {
     if(users.error){
       console.log('USERS ERROR', error)
     }
+
+    console.log(users)
     if(!users.error) setLoadingData(false)
     if(users.data) setAllUsers(users.data.users)
     
@@ -123,7 +126,7 @@ function Staffing () {
     return () => {
       clearTimeout(typingTimer); // Cleanup the timer when the component unmounts
     };
-  // allocations, 
+  
   }, [headingSettings, allocations, isTyping])
 
   const updateHeadingSetting = (order, newValue, newColor) => {
@@ -547,280 +550,280 @@ function Staffing () {
         removeCookie={removeCookie}
       >
       </Nav>
-    <div className="container-center wrap mt">
-      <div className="container-flex-right whalf h5 border-right">
-        <div 
-          className="element-button-icon"
-          onClick={() => (
-            submitAddAllocation('two')
-          )}
-        >
-          <SVG svg={'plus'}></SVG>
-        </div>
-        <div className="element-buttonFile">
-          <label 
-            className="curved"
-            htmlFor="importAllocationOrderTwo"
-          >
-            import
-          </label>
-          <input 
-            type="file"
-            id="importAllocationOrderTwo"
-            accept=".xlsx"
-            className="element-button-text curved"
-            onChange={(e) => readFile(e, 2)}
-          >
-          </input>
-        </div>
-      </div>
-      <div className="container-flex-left whalf h5">
-        <div 
-          className="element-button-icon"
-          onClick={() => 
-            submitAddAllocation('three')
-          }
-        >
-          <SVG svg={'plus'}></SVG>
-        </div>
-        <div className="element-buttonFile">
-          <label 
-            className="curved"
-            htmlFor="importAllocationOrderThree"
-          >
-            import
-          </label>
-          <input 
-            type="file"
-            id="importAllocationOrderThree"
-            accept=".xlsx"
-            className="element-button-text curved"
-            onChange={(e) => readFile(e, 3)}
-          >
-          </input>
-        </div>
-      </div>
-
-
-      <div className="container-flex-right whalf border-right">
-        <div
-          style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[0].color : '#254D32' }} 
-          className="element-button-text curved-eased wfull"
-          onMouseEnter={() => setHovered(`${headingSettings.find(( item ) =>  item.order === 1).id}`)}
-          onMouseLeave={() => setHovered('')}
-        >
-          { headingSettings.length > 0 && isHovered == headingSettings.find(( item ) =>  item.order === 1).id &&
+      <div className="container-center wrap mt">
+        <div className="container-flex-right whalf h5 border-right">
           <div 
-            onClick={(e) => (
-              setColorPallete(headingSettings.find(( item ) =>  item.order === 1).id,
-              setPalleteType('headings')
-            ))}
-            className="elementSvgContainer positionLeftZero noColor"
-          >
-              <SVG svg={'pallete'}></SVG>
-          </div>
-          }
-          <input 
-            type="text"
-            style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[0].color : '#587B7F' }} 
-            className="element-button-text curved-eased wfull fontSize-16 capitalize"
-            value={ headingSettings.length > 0 ? headingSettings.find(( item ) =>  item.order === 1).content : 'Districts' }
-            onChange={(e) => updateHeadingSetting(1, e.target.value) }
-          >
-          </input>
-        </div>
-        <div
-          style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[1].color : '#587B7F' }}  
-          className="element-button-text curved-eased w20"
-          onMouseEnter={() => setHovered(`${headingSettings.find(( item ) =>  item.order === 2).id}`)}
-          onMouseLeave={() => setHovered('')}
-        >
-          { headingSettings.length > 0 && isHovered == headingSettings.find(( item ) =>  item.order === 2).id &&
-          <div 
-            onClick={(e) => (
-              setColorPallete(headingSettings.find(( item ) =>  item.order === 2).id),
-              setPalleteType('headings')
+            className="element-button-icon"
+            onClick={() => (
+              submitAddAllocation('two')
             )}
-            className="elementSvgContainer positionLeftZero noColor"
           >
-              <SVG svg={'pallete'}></SVG>
+            <SVG svg={'plus'}></SVG>
           </div>
-          }
-          <input 
-            type="text"
-            style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[1].color : '#587B7F' }}  
-            className="element-button-text curved-eased w20 fontSize-16 capitalize"
-            value={ headingSettings.length > 0 ? headingSettings.find(( item ) =>  item.order === 2).content : 'Employees' }
-            onChange={(e) => updateHeadingSetting(1, e.target.value) }
-          >
-          </input>
+          <div className="element-buttonFile">
+            <label 
+              className="curved"
+              htmlFor="importAllocationOrderTwo"
+            >
+              import
+            </label>
+            <input 
+              type="file"
+              id="importAllocationOrderTwo"
+              accept=".xlsx"
+              className="element-button-text curved"
+              onChange={(e) => readFile(e, 2)}
+            >
+            </input>
+          </div>
         </div>
-        <div 
-          className="element-button-icon"
-        >
-          <DropDown
-            changeSort={changeSort}
-            listType="two"
-            allocations={allocations}
-          >
-          </DropDown>
-        </div>
-      </div>
-      <div className="container-flex-left whalf">
-        <div 
-          className="element-button-icon"
-        >
-          <DropDown
-            changeSort={changeSort}
-            listType="three"
-            allocations={allocations}
-          >
-          </DropDown>
-        </div>
-        <div
-          style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[2].color : '#587B7F' }}  
-          className="element-button-text curved-eased w20"
-          onMouseEnter={() => setHovered(`${headingSettings.find(( item ) =>  item.order === 3).id}`)}
-          onMouseLeave={() => setHovered('')}
-        >
-          { headingSettings.length > 0 && isHovered == headingSettings.find(( item ) =>  item.order === 3).id &&
+        <div className="container-flex-left whalf h5">
           <div 
-            onClick={(e) => (
-              setColorPallete(headingSettings.find(( item ) =>  item.order === 3).id,
-              setPalleteType('headings')
-            ))}
-            className="elementSvgContainer positionLeftZero noColor"
+            className="element-button-icon"
+            onClick={() => 
+              submitAddAllocation('three')
+            }
           >
-              <SVG svg={'pallete'}></SVG>
+            <SVG svg={'plus'}></SVG>
           </div>
-          }
-          <input 
-            type="text"
-            style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[2].color : '#587B7F' }}  
-            className="element-button-text curved-eased w20 fontSize-16 capitalize"
-            value={ headingSettings.length > 0 ? headingSettings.find(( item ) =>  item.order === 3).content : 'Locations' }
-            onChange={(e) => updateHeadingSetting(1, e.target.value) }
-          >
-          </input>
-        </div>
-        <div
-          style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[3].color : '#587B7F' }}  
-          className="element-button-text curved-eased wfull"
-          onMouseEnter={() => setHovered(`${headingSettings.find(( item ) =>  item.order === 4).id}`)}
-          onMouseLeave={() => setHovered('')}
-        >
-          { headingSettings.length > 0 && isHovered == headingSettings.find(( item ) =>  item.order === 4).id &&
-          <div 
-            onClick={(e) => (
-                setColorPallete(headingSettings.find(( item ) =>  item.order === 4).id,
-                setPalleteType('headings')
-            ))}
-            className="elementSvgContainer positionLeftZero noColor"
-          >
-              <SVG svg={'pallete'}></SVG>
+          <div className="element-buttonFile">
+            <label 
+              className="curved"
+              htmlFor="importAllocationOrderThree"
+            >
+              import
+            </label>
+            <input 
+              type="file"
+              id="importAllocationOrderThree"
+              accept=".xlsx"
+              className="element-button-text curved"
+              onChange={(e) => readFile(e, 3)}
+            >
+            </input>
           </div>
-          }
-          <input 
-            type="text"
-            style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[3].color : '#587B7F' }}  
-            className="element-button-text curved-eased wfull fontSize-16 capitalize"
-            value={ headingSettings.length > 0 ? headingSettings.find(( item ) =>  item.order === 4).content : 'Allocations' }
-            onChange={(e) => updateHeadingSetting(1, e.target.value) }
-          >
-          </input>
         </div>
-      </div>
 
-      { colorPallete &&
-        <ColorPallete
+
+        <div className="container-flex-right whalf border-right">
+          <div
+            style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[0].color : '#254D32' }} 
+            className="element-button-text curved-eased wfull"
+            onMouseEnter={() => setHovered(`${headingSettings.find(( item ) =>  item.order === 1).id}`)}
+            onMouseLeave={() => setHovered('')}
+          >
+            { headingSettings.length > 0 && isHovered == headingSettings.find(( item ) =>  item.order === 1).id &&
+            <div 
+              onClick={(e) => (
+                setColorPallete(headingSettings.find(( item ) =>  item.order === 1).id,
+                setPalleteType('headings')
+              ))}
+              className="elementSvgContainer positionLeftZero noColor"
+            >
+                <SVG svg={'pallete'}></SVG>
+            </div>
+            }
+            <input 
+              type="text"
+              style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[0].color : '#587B7F' }} 
+              className="element-button-text curved-eased wfull fontSize-16 capitalize"
+              value={ headingSettings.length > 0 ? headingSettings.find(( item ) =>  item.order === 1).content : 'Districts' }
+              onChange={(e) => updateHeadingSetting(1, e.target.value) }
+            >
+            </input>
+          </div>
+          <div
+            style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[1].color : '#587B7F' }}  
+            className="element-button-text curved-eased w20"
+            onMouseEnter={() => setHovered(`${headingSettings.find(( item ) =>  item.order === 2).id}`)}
+            onMouseLeave={() => setHovered('')}
+          >
+            { headingSettings.length > 0 && isHovered == headingSettings.find(( item ) =>  item.order === 2).id &&
+            <div 
+              onClick={(e) => (
+                setColorPallete(headingSettings.find(( item ) =>  item.order === 2).id),
+                setPalleteType('headings')
+              )}
+              className="elementSvgContainer positionLeftZero noColor"
+            >
+                <SVG svg={'pallete'}></SVG>
+            </div>
+            }
+            <input 
+              type="text"
+              style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[1].color : '#587B7F' }}  
+              className="element-button-text curved-eased w20 fontSize-16 capitalize"
+              value={ headingSettings.length > 0 ? headingSettings.find(( item ) =>  item.order === 2).content : 'Employees' }
+              onChange={(e) => updateHeadingSetting(1, e.target.value) }
+            >
+            </input>
+          </div>
+          <div 
+            className="element-button-icon"
+          >
+            <DropDown
+              changeSort={changeSort}
+              listType="two"
+              allocations={allocations}
+            >
+            </DropDown>
+          </div>
+        </div>
+        <div className="container-flex-left whalf">
+          <div 
+            className="element-button-icon"
+          >
+            <DropDown
+              changeSort={changeSort}
+              listType="three"
+              allocations={allocations}
+            >
+            </DropDown>
+          </div>
+          <div
+            style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[2].color : '#587B7F' }}  
+            className="element-button-text curved-eased w20"
+            onMouseEnter={() => setHovered(`${headingSettings.find(( item ) =>  item.order === 3).id}`)}
+            onMouseLeave={() => setHovered('')}
+          >
+            { headingSettings.length > 0 && isHovered == headingSettings.find(( item ) =>  item.order === 3).id &&
+            <div 
+              onClick={(e) => (
+                setColorPallete(headingSettings.find(( item ) =>  item.order === 3).id,
+                setPalleteType('headings')
+              ))}
+              className="elementSvgContainer positionLeftZero noColor"
+            >
+                <SVG svg={'pallete'}></SVG>
+            </div>
+            }
+            <input 
+              type="text"
+              style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[2].color : '#587B7F' }}  
+              className="element-button-text curved-eased w20 fontSize-16 capitalize"
+              value={ headingSettings.length > 0 ? headingSettings.find(( item ) =>  item.order === 3).content : 'Locations' }
+              onChange={(e) => updateHeadingSetting(1, e.target.value) }
+            >
+            </input>
+          </div>
+          <div
+            style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[3].color : '#587B7F' }}  
+            className="element-button-text curved-eased wfull"
+            onMouseEnter={() => setHovered(`${headingSettings.find(( item ) =>  item.order === 4).id}`)}
+            onMouseLeave={() => setHovered('')}
+          >
+            { headingSettings.length > 0 && isHovered == headingSettings.find(( item ) =>  item.order === 4).id &&
+            <div 
+              onClick={(e) => (
+                  setColorPallete(headingSettings.find(( item ) =>  item.order === 4).id,
+                  setPalleteType('headings')
+              ))}
+              className="elementSvgContainer positionLeftZero noColor"
+            >
+                <SVG svg={'pallete'}></SVG>
+            </div>
+            }
+            <input 
+              type="text"
+              style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[3].color : '#587B7F' }}  
+              className="element-button-text curved-eased wfull fontSize-16 capitalize"
+              value={ headingSettings.length > 0 ? headingSettings.find(( item ) =>  item.order === 4).content : 'Allocations' }
+              onChange={(e) => updateHeadingSetting(1, e.target.value) }
+            >
+            </input>
+          </div>
+        </div>
+
+        { colorPallete &&
+          <ColorPallete
+            colorPallete={colorPallete}
+            setColorPallete={setColorPallete}
+            headingSettings={headingSettings}
+            updateHeadingSetting={updateHeadingSetting}
+            palleteType={palleteType}
+            setPalleteType={setPalleteType}
+            updateAllocationItems={updateAllocationItems}
+          >
+          </ColorPallete>
+        }
+
+        <ColumnListLeft
+          allocations={allocations}
+          onDragOver={onDragOver}
+          handleOnDrop={handleOnDrop}
+          onDragStartFillBar={onDragStartFillBar}
+          handleOnDropFillbar={handleOnDropFillbar}
+          isHovered={isHovered}
+          setHovered={setHovered}
+          glowAll={glowAll}
+          handleDeleteFillbar={handleDeleteFillbar}
+          onDragStart={onDragStart}
+          handleDeleteAllocation={handleDeleteAllocation}
+          updateAllocationItems={updateAllocationItems}
+          containerRefLeft={containerRefLeft}
           colorPallete={colorPallete}
           setColorPallete={setColorPallete}
           headingSettings={headingSettings}
-          updateHeadingSetting={updateHeadingSetting}
-          palleteType={palleteType}
           setPalleteType={setPalleteType}
+        >
+        </ColumnListLeft>
+
+        <ColumnListRight
+          allocations={allocations}
+          onDragOver={onDragOver}
+          handleOnDrop={handleOnDrop}
+          onDragStartFillBar={onDragStartFillBar}
+          handleOnDropFillbar={handleOnDropFillbar}
+          isHovered={isHovered}
+          setHovered={setHovered}
+          glowAll={glowAll}
+          handleDeleteFillbar={handleDeleteFillbar}
+          onDragStart={onDragStart}
+          handleDeleteAllocation={handleDeleteAllocation}
           updateAllocationItems={updateAllocationItems}
+          updateFillBarData={updateFillBarData}  
+          containerRefRight={containerRefRight}
+          colorPallete={colorPallete}
+          setColorPallete={setColorPallete}
+          headingSettings={headingSettings}
+          setPalleteType={setPalleteType}
         >
-        </ColorPallete>
-      }
+        </ColumnListRight>
+        
 
-      <ColumnListLeft
-        allocations={allocations}
-        onDragOver={onDragOver}
-        handleOnDrop={handleOnDrop}
-        onDragStartFillBar={onDragStartFillBar}
-        handleOnDropFillbar={handleOnDropFillbar}
-        isHovered={isHovered}
-        setHovered={setHovered}
-        glowAll={glowAll}
-        handleDeleteFillbar={handleDeleteFillbar}
-        onDragStart={onDragStart}
-        handleDeleteAllocation={handleDeleteAllocation}
-        updateAllocationItems={updateAllocationItems}
-        containerRefLeft={containerRefLeft}
-        colorPallete={colorPallete}
-        setColorPallete={setColorPallete}
-        headingSettings={headingSettings}
-        setPalleteType={setPalleteType}
-      >
-      </ColumnListLeft>
-
-      <ColumnListRight
-        allocations={allocations}
-        onDragOver={onDragOver}
-        handleOnDrop={handleOnDrop}
-        onDragStartFillBar={onDragStartFillBar}
-        handleOnDropFillbar={handleOnDropFillbar}
-        isHovered={isHovered}
-        setHovered={setHovered}
-        glowAll={glowAll}
-        handleDeleteFillbar={handleDeleteFillbar}
-        onDragStart={onDragStart}
-        handleDeleteAllocation={handleDeleteAllocation}
-        updateAllocationItems={updateAllocationItems}
-        updateFillBarData={updateFillBarData}  
-        containerRefRight={containerRefRight}
-        colorPallete={colorPallete}
-        setColorPallete={setColorPallete}
-        headingSettings={headingSettings}
-        setPalleteType={setPalleteType}
-      >
-      </ColumnListRight>
-      
-
-      <div className="container-flex-right whalf border-right">
-        <div 
-          className="element-button-total curved-eased lightContrast schemeOne fontSize-12 capitalize h6"
-        >
-          <div className="elementInnerBox schemeOne">
-            {parseFloat(sumByType(allocations, 'fte', 2))}
-          </div>
-          <div className="elementInnerBox schemeOne">
-            {parseFloat(sum(allocations, 2))}
-          </div>
-          <div className="elementInnerBox schemeOne">
-            {parseFloat(sumByType(allocations, 'allocation', 2))}
+        <div className="container-flex-right whalf border-right">
+          <div 
+            className="element-button-total curved-eased lightContrast schemeOne fontSize-12 capitalize h6"
+          >
+            <div className="elementInnerBox schemeOne">
+              {parseFloat(sumByType(allocations, 'fte', 2))}
+            </div>
+            <div className="elementInnerBox schemeOne">
+              {parseFloat(sum(allocations, 2))}
+            </div>
+            <div className="elementInnerBox schemeOne">
+              {parseFloat(sumByType(allocations, 'allocation', 2))}
+            </div>
           </div>
         </div>
-      </div>
-      
-      <div className="container-flex-left whalf">
-        <div 
-          className="element-button-total curved-eased lightContrast schemeFour fontSize-12 capitalize h6"
-        >
-          <div className="elementInnerBox schemeFour">
-            {parseFloat(sumByType(allocations, 'fte', 3))}
-          </div>
-          <div className="elementInnerBox schemeFour">
-            {parseFloat(sum(allocations, 3))}
-          </div>
-          <div className="elementInnerBox schemeFour">
-            {parseFloat(sumByType(allocations, 'allocation', 3))}
+        
+        <div className="container-flex-left whalf">
+          <div 
+            className="element-button-total curved-eased lightContrast schemeFour fontSize-12 capitalize h6"
+          >
+            <div className="elementInnerBox schemeFour">
+              {parseFloat(sumByType(allocations, 'fte', 3))}
+            </div>
+            <div className="elementInnerBox schemeFour">
+              {parseFloat(sum(allocations, 3))}
+            </div>
+            <div className="elementInnerBox schemeFour">
+              {parseFloat(sumByType(allocations, 'allocation', 3))}
+            </div>
           </div>
         </div>
-      </div>
 
-    </div>
+      </div>
     </>
   )
 }

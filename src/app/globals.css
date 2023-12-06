@@ -293,7 +293,7 @@ body::-webkit-scrollbar-thumb {
   z-index: -1;
 }
 
-.popUpSendInvite {
+.popUpBackground {
   z-index: 100;
   background-color: rgba(0, 0, 0, 0.7);
   display: flex;
@@ -1074,6 +1074,21 @@ body::-webkit-scrollbar-thumb {
   font-size: 2.4rem;
 }
 
+.flexSVGGroup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.svgItem:hover {
+  cursor: pointer;
+}
+
+.capitalize {
+  text-transform: capitalize !important;
+}
+
 .nav {
   display: flex;
   flex-direction: row;
@@ -1117,7 +1132,7 @@ body::-webkit-scrollbar-thumb {
   justify-content: center;
   font-size: 2rem;
   font-weight: 600;
-  min-width: 15rem;
+  min-width: 25rem;
   color: white;
 }
 .listUsersUser {
@@ -1131,7 +1146,7 @@ body::-webkit-scrollbar-thumb {
   display: flex;
   justify-content: center;
   font-size: 1.4rem;
-  min-width: 15rem;
+  min-width: 25rem;
 }
 
 /*# sourceMappingURL=globals.css.map */

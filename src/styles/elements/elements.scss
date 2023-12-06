@@ -245,3 +245,21 @@
   letter-spacing: .2rem;
   font-size: 2.4rem;
 }
+
+.flexSVGGroup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  
+}
+
+.svgItem {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.capitalize {
+  text-transform: capitalize!important;
+}
