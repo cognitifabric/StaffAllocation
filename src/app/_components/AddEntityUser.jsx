@@ -135,7 +135,7 @@ const AddEntityUser = ({
             className="form-group-button-large"
             onClick={() => addEntityUser()}
             >
-              {!loading && <span>Add User</span>} 
+              {!loading && <span>Add Entity User</span>} 
               {loading && 
               <div className="loading">
                 <span style={{backgroundColor: loadingColor}}></span>
