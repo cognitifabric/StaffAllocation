@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export default gql`
-query User($id: ID!, $token: String!) {
-  user(id: $id, token: $token){
+mutation AddEntityUser($id: ID!, $username: String!, $role: String!) {
+  addEntityUser(id: $id, username: $username, role: $role) {
     id
     username,
     role,
@@ -33,13 +33,7 @@ query User($id: ID!, $token: String!) {
           color
         }
       }
-    },
-    users {
-      username,
-      password,
-      role,
-      parentID
     }
   }
 }
-`
+`;

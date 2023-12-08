@@ -79,7 +79,7 @@ function Staffing () {
     }
 
     if(!dataUser.error) setLoadingData(false)
-    if(dataUser.data) console.log(console.log(dataUser.data))
+    // if(dataUser.data) console.log(console.log(dataUser.data))
     // if(dataUser.data) setHeadingSettings(dataUser.data.user.settings)
     // if(dataUser.data){
       
@@ -100,7 +100,6 @@ function Staffing () {
       console.log('USERS ERROR', error)
     }
 
-    console.log(users)
     if(!users.error) setLoadingData(false)
     if(users.data) setAllUsers(users.data.users)
     
@@ -542,7 +541,7 @@ function Staffing () {
   if (loadingUpdateAllocation) return <div className="loadingPage"><span>loading</span></div>
   if (errorUpdatedAllocation) return `Submission error! ${errorUpdatedAllocation}`;
   if (!cookies.accessToken) return <div className="loadingPage"><span>loading user data</span></div>
-  if (cookies.user.role == 'systemAdmin') return <SystemAdmin allUsers={allUsers} setAllUsers={setAllUsers} removeCookie={removeCookie}/>
+  if (cookies.user.role == 'systemAdmin') return <SystemAdmin allUsers={allUsers} setAllUsers={setAllUsers} removeCookie={removeCookie} currentUser={dataUser}/>
   
   return (
     <>

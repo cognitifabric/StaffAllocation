@@ -33,6 +33,12 @@ query Users($id: ID!) {
           color
         }
       }
+    },
+    users {
+      username,
+      password,
+      role,
+      parentID
     }
   }
 }

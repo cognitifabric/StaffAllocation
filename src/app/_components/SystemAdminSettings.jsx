@@ -9,8 +9,12 @@ import USER_INVITE from '@/mutations/inviteUser'
 //// COMPONENTS
 import SendInvite from '../_components/SendInvite'
 import EditUser from '../_components/EditUser'
+import DeleteUser from '../_components/DeleteUser'
+import AddEntityUser from '../_components/AddEntityUser'
+import EntityUsers from './EntityUsers';
 
 const SystemAdminSettings = ({
+  currentUser,
   error,
   setError,
   loading,
@@ -92,6 +96,7 @@ const SystemAdminSettings = ({
       </div>
       <div className="listUsers">
         {allUsers.length > 0 && allUsers.map((user, idx) => 
+          currentUser.data.user.id !== user.id &&
           <div 
             key={idx}
             className="listUsersUser"
@@ -117,7 +122,10 @@ const SystemAdminSettings = ({
                 </div>
                 <div 
                   className="svgItem"
-                  onClick={() => setPopup('delete')}
+                  onClick={() => ( 
+                    setPopup('delete'),
+                    setUser(user)
+                  )}
                 >
                   <SVG 
                     svg={'thrashCan'}
@@ -146,7 +154,13 @@ const SystemAdminSettings = ({
                   >
                   </SVG>
                 </div>
-                <div className="svgItem">
+                <div 
+                  className="svgItem"
+                  onClick={() => (
+                    setPopup('delete'),
+                    setUser(user)
+                  )}
+                >
                   <SVG 
                     svg={'thrashCan'}
                     width={25}
@@ -155,7 +169,13 @@ const SystemAdminSettings = ({
                   >
                   </SVG>
                 </div>
-                <div className="svgItem">
+                <div 
+                  className="svgItem"
+                  onClick={() => (
+                    setPopup('addEntityUser'),
+                    setUser(user)
+                  )}
+                >
                   <SVG 
                     svg={'plus'}
                     width={50}
@@ -164,7 +184,13 @@ const SystemAdminSettings = ({
                   >
                   </SVG>
                 </div>
-                <div className="svgItem">
+                <div 
+                  className="svgItem"
+                  onClick={() => (
+                    setPopup('entityUsers'),
+                    setUser(user)
+                  )}
+                >
                   <SVG 
                     svg={'users'}
                     width={25}
@@ -220,6 +246,81 @@ const SystemAdminSettings = ({
           user={user}
           setUser={setUser}
           userType={userType}
+        />
+      }
+      {popup === 'delete' &&
+        <DeleteUser
+          setSendInvite={setSendInvite}
+          reset={reset}
+          username={username}
+          setError={setError}
+          setLoading={setLoading}
+          setUsername={setUsername}
+          setInputDropdown={setInputDropdown}
+          userTypeFormField={userTypeFormField}
+          inputDropdown={inputDropdown}
+          myRefs={myRefs}
+          setUserType={setUserType}
+          setUserTypeFormField={setUserTypeFormField}
+          loading={loading}
+          sendInviteForm={sendInviteForm}
+          message={message}
+          error={error}
+          setPopup={setPopup}
+          user={user}
+          setUser={setUser}
+          userType={userType}
+        />
+      }
+      {popup === 'addEntityUser' &&
+        <AddEntityUser
+          setSendInvite={setSendInvite}
+          reset={reset}
+          username={username}
+          setError={setError}
+          setLoading={setLoading}
+          setUsername={setUsername}
+          setInputDropdown={setInputDropdown}
+          userTypeFormField={userTypeFormField}
+          inputDropdown={inputDropdown}
+          myRefs={myRefs}
+          setUserType={setUserType}
+          setUserTypeFormField={setUserTypeFormField}
+          loading={loading}
+          sendInviteForm={sendInviteForm}
+          message={message}
+          setMessage={setMessage}
+          error={error}
+          setPopup={setPopup}
+          user={user}
+          setUser={setUser}
+          userType={userType}
+        />
+      }
+      {popup === 'entityUsers' &&
+        <EntityUsers
+          setSendInvite={setSendInvite}
+          reset={reset}
+          username={username}
+          setError={setError}
+          setLoading={setLoading}
+          setUsername={setUsername}
+          setInputDropdown={setInputDropdown}
+          userTypeFormField={userTypeFormField}
+          inputDropdown={inputDropdown}
+          myRefs={myRefs}
+          setUserType={setUserType}
+          setUserTypeFormField={setUserTypeFormField}
+          loading={loading}
+          sendInviteForm={sendInviteForm}
+          message={message}
+          setMessage={setMessage}
+          error={error}
+          setPopup={setPopup}
+          user={user}
+          setUser={setUser}
+          userType={userType}
+          allUsers={allUsers}
         />
       }
     </div>

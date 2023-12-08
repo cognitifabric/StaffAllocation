@@ -3,11 +3,12 @@ import SystemAdminSettings from './SystemAdminSettings'
 import { useState } from 'react'
 
 const SystemAdmin = ({
+  currentUser,
   allUsers,
   setAllUsers,
   removeCookie
 }) => {
-  
+  console.log(allUsers)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState('')
   const [message, setMessage] = useState('')
@@ -27,6 +28,7 @@ const SystemAdmin = ({
         setMessage={setMessage}
         allUsers={allUsers}
         setAllUsers={setAllUsers}
+        currentUser={currentUser}
       >
       </SystemAdminSettings>
     </>

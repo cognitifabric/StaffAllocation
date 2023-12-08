@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export default gql`
-query User($id: ID!, $token: String!) {
-  user(id: $id, token: $token){
+mutation DeleteUser($id: ID!) {
+  deleteUser(id: $id) {
     id
     username,
     role,
@@ -33,13 +33,7 @@ query User($id: ID!, $token: String!) {
           color
         }
       }
-    },
-    users {
-      username,
-      password,
-      role,
-      parentID
     }
   }
 }
-`
+`;
