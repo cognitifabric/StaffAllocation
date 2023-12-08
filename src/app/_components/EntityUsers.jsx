@@ -77,9 +77,9 @@ const EntityUsers = ({
         <div className="w40 box-curved-3 boxForm">
           <div className="form-group element-white curved-eased">
             { allUsers.length > 0 && allUsers.map((account) => 
-              account.username == user.username && account.users.length > 0 && account.users.map((item) => 
+              account.username == user.username && account.users.length > 0 && account.users.map((item, idx) => 
                 <div 
-                  
+                  key={idx}
                   onClick={(e) => (setUserType('editor'), setUserTypeFormField('Editor'), setInputDropdown(''), setMessage(''))}
                 >
                   {item.username}
