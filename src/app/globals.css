@@ -1089,6 +1089,29 @@ body::-webkit-scrollbar-thumb {
   text-transform: capitalize !important;
 }
 
+.rounded {
+  border-top-right-radius: 1rem !important;
+  border-top-left-radius: 1rem !important;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  background-color: #edf2f5;
+  border-radius: 1.2rem;
+  font-size: 1.2rem;
+  padding: 2rem;
+}
+
+.justifyBetween {
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.gap2 {
+  gap: 1rem;
+}
+
 .nav {
   display: flex;
   flex-direction: row;

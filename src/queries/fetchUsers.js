@@ -35,6 +35,7 @@ query Users($id: ID!) {
       }
     },
     users {
+      id
       username,
       password,
       role,

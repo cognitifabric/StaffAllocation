@@ -8,7 +8,7 @@ const SystemAdmin = ({
   setAllUsers,
   removeCookie
 }) => {
-  console.log(allUsers)
+  
   const [error, setError] = useState('')
   const [loading, setLoading] = useState('')
   const [message, setMessage] = useState('')

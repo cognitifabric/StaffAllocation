@@ -28,34 +28,7 @@ const EntityUsers = ({
   userType,
   allUsers
 }) => {
-
-  const loadingColor = 'white'
-  const [ addEntityUserMutation, { dataAddEntityUser, loadingAddEntityUser, errorAddEntityUser}] = useMutation(ADD_ENTITY_USER, { refetchQueries: [ GET_USERS ]})
-
-  const addEntityUser = async () => {
-    
-    // if(!username && !userType) return setError('Username or role must be different')
-    setLoading(true)
-
-    try {
-      
-      const response = await addEntityUserMutation({ variables: { id: user.id, username: username, role: userType} })
-      setUser('')
-      setLoading(false)
-      setUsername('')
-      setUserType('')
-      setUserTypeFormField('')
-      setMessage('Invite sent')
-      
-    } catch (error) {
-      
-      console.log(error)
-      if(error) setError(error)
-      
-    }
-    
-  }
-  
+  console.log(allUsers)
   return (
     <div className="popUpBackground">
       <div className="popUpBox">
@@ -75,14 +48,47 @@ const EntityUsers = ({
           </SVG>
         </div>
         <div className="w40 box-curved-3 boxForm">
-          <div className="form-group element-white curved-eased">
+          <div className="element-white curved-eased">
             { allUsers.length > 0 && allUsers.map((account) => 
               account.username == user.username && account.users.length > 0 && account.users.map((item, idx) => 
                 <div 
                   key={idx}
-                  onClick={(e) => (setUserType('editor'), setUserTypeFormField('Editor'), setInputDropdown(''), setMessage(''))}
+                  // onClick={(e) => (setUserType('editor'), setUserTypeFormField('Editor'), setInputDropdown(''), setMessage(''))}
+                  className="justifyBetween listItem"
                 >
-                  {item.username}
+                  <div>{item.username} / {item.role}</div>
+                  <div className="flex gap2">
+                    <div
+                      className="svgItem"
+                      onClick={() => (
+                        setPopup('editEntityUser'),
+                        setUser(item)
+                      )}
+                    >
+                    <SVG 
+                      svg={'edit'}
+                      width={25}
+                      height={25}
+                      color={'#8D5A97'}
+                    >
+                    </SVG>
+                    </div>
+                    <div
+                      className="svgItem"
+                      onClick={() => (
+                        setPopup('edit'),
+                        setUser(item)
+                      )}
+                    >
+                    <SVG 
+                      svg={'thrashCan'}
+                      width={25}
+                      height={25}
+                      color={'#8D5A97'}
+                    >
+                    </SVG>
+                    </div>
+                  </div>
                 </div>
               )
             )}

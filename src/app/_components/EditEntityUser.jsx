@@ -2,10 +2,10 @@ import SVG from '../../libs/svg'
 import { useMutation } from '@apollo/client';
 
 //// MUTATIONS
-import ADD_ENTITY_USER from '../../mutations/addEntityUser'
+import UPDATE_ENTITY_USER from '../../mutations/updateEntityUser'
 import GET_USERS from '@/queries/fetchUsers'
 
-const AddEntityUser = ({
+const EditEntityUser = ({
   reset,
   username,
   setError,
@@ -27,25 +27,26 @@ const AddEntityUser = ({
   setUser,
   userType
 }) => {
-
+  
   const loadingColor = 'white'
-  const [ addEntityUserMutation, { dataAddEntityUser, loadingAddEntityUser, errorAddEntityUser}] = useMutation(ADD_ENTITY_USER, { refetchQueries: [ GET_USERS ]})
+  const [ updateEntityUserMutation, { dataUpdateEntityUser, loadingUpdateEntityUser, errorUpdateEntityUser}] = useMutation(UPDATE_ENTITY_USER, { refetchQueries: [ GET_USERS ]})
 
-  const addEntityUser = async () => {
-    
-    // if(!username && !userType) return setError('Username or role must be different')
+  const updateEntityUser = async () => {
+    // console.log(username, userType)
+    if(!username && !userType) return setError('Username or role must be different')
     setLoading(true)
+
+    console.log(user)
 
     try {
       
-      const response = await addEntityUserMutation({ variables: { id: user.id, username: username, role: userType } })
+      const response = await updateEntityUserMutation({ variables: { id: user.id, username: username, role: userType} })
       setUser('')
       setLoading(false)
+      setPopup('entityUsers')
       setUsername('')
       setUserType('')
-      setUserTypeFormField('')
-      console.log(response)
-      setMessage('Invite sent')
+      setMessage('User updated')
       
     } catch (error) {
       
@@ -79,7 +80,7 @@ const AddEntityUser = ({
             <input 
               className="curved-eased"
               type="text" 
-              value={username}
+              value={username ? username : user.username}
               placeholder="Email"
               onChange={(e) => (
                 setError(''),
@@ -93,7 +94,7 @@ const AddEntityUser = ({
             <input
               className="curved-eased capitalize"
               onClick={() => setInputDropdown('userType')} 
-              value={userTypeFormField.split(/(?=[A-Z])/).join('')} 
+              value={userTypeFormField.split(/(?=[A-Z])/).join('') ? userTypeFormField.split(/(?=[A-Z])/).join('') : user.role.split(/(?=[A-Z])/).join(' ')} 
               placeholder="user type"
               // onChange={(e) => (setInputDropdown(''), stateMethod(caseType, 'leader', e.target.value))}
               readOnly
@@ -134,9 +135,9 @@ const AddEntityUser = ({
           <div className="form-group">
           <button
             className="form-group-button-large"
-            onClick={() => addEntityUser()}
+            onClick={() => updateEntityUser()}
             >
-              {!loading && <span>Add Entity User</span>} 
+              {!loading && <span>Update Entity User</span>} 
               {loading && 
               <div className="loading">
                 <span style={{backgroundColor: loadingColor}}></span>
@@ -166,4 +167,4 @@ const AddEntityUser = ({
   )
 }
 
-export default AddEntityUser
+export default EditEntityUser

@@ -11,6 +11,7 @@ import SendInvite from '../_components/SendInvite'
 import EditUser from '../_components/EditUser'
 import DeleteUser from '../_components/DeleteUser'
 import AddEntityUser from '../_components/AddEntityUser'
+import EditEntityUser from '../_components/EditEntityUser'
 import EntityUsers from './EntityUsers';
 
 const SystemAdminSettings = ({
@@ -88,7 +89,7 @@ const SystemAdminSettings = ({
       </div>
       <div className="listUsers">
         <div 
-          className="listUsersHeading"
+          className="listUsersHeading rounded"
         >
           <span>Email</span>
           <span>Role</span>
@@ -321,6 +322,31 @@ const SystemAdminSettings = ({
           setUser={setUser}
           userType={userType}
           allUsers={allUsers}
+        />
+      }
+      {popup === 'editEntityUser' &&
+        <EditEntityUser
+          setSendInvite={setSendInvite}
+          reset={reset}
+          username={username}
+          setError={setError}
+          setLoading={setLoading}
+          setUsername={setUsername}
+          setInputDropdown={setInputDropdown}
+          userTypeFormField={userTypeFormField}
+          inputDropdown={inputDropdown}
+          myRefs={myRefs}
+          setUserType={setUserType}
+          setUserTypeFormField={setUserTypeFormField}
+          loading={loading}
+          sendInviteForm={sendInviteForm}
+          message={message}
+          setMessage={setMessage}
+          error={error}
+          setPopup={setPopup}
+          user={user}
+          setUser={setUser}
+          userType={userType}
         />
       }
     </div>

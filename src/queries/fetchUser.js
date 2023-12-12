@@ -35,6 +35,7 @@ query User($id: ID!, $token: String!) {
       }
     },
     users {
+      id
       username,
       password,
       role,
