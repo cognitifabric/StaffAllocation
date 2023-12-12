@@ -44,13 +44,13 @@ const AddEntityUser = ({
       setUsername('')
       setUserType('')
       setUserTypeFormField('')
-      console.log(response)
       setMessage('Invite sent')
       
     } catch (error) {
       
       console.log(error)
-      if(error) setError(error)
+      setLoading(false)
+      if(error) setError(error.message)
       
     }
     

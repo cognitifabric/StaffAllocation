@@ -28,7 +28,7 @@ const EntityUsers = ({
   userType,
   allUsers
 }) => {
-  console.log(allUsers)
+  
   return (
     <div className="popUpBackground">
       <div className="popUpBox">
@@ -76,7 +76,7 @@ const EntityUsers = ({
                     <div
                       className="svgItem"
                       onClick={() => (
-                        setPopup('edit'),
+                        setPopup('deleteEntityUser'),
                         setUser(item)
                       )}
                     >

@@ -13,6 +13,7 @@ import DeleteUser from '../_components/DeleteUser'
 import AddEntityUser from '../_components/AddEntityUser'
 import EditEntityUser from '../_components/EditEntityUser'
 import EntityUsers from './EntityUsers';
+import DeleteEntityUser from './DeleteEntityUser';
 
 const SystemAdminSettings = ({
   currentUser,
@@ -326,6 +327,31 @@ const SystemAdminSettings = ({
       }
       {popup === 'editEntityUser' &&
         <EditEntityUser
+          setSendInvite={setSendInvite}
+          reset={reset}
+          username={username}
+          setError={setError}
+          setLoading={setLoading}
+          setUsername={setUsername}
+          setInputDropdown={setInputDropdown}
+          userTypeFormField={userTypeFormField}
+          inputDropdown={inputDropdown}
+          myRefs={myRefs}
+          setUserType={setUserType}
+          setUserTypeFormField={setUserTypeFormField}
+          loading={loading}
+          sendInviteForm={sendInviteForm}
+          message={message}
+          setMessage={setMessage}
+          error={error}
+          setPopup={setPopup}
+          user={user}
+          setUser={setUser}
+          userType={userType}
+        />
+      }
+      {popup === 'deleteEntityUser' &&
+        <DeleteEntityUser
           setSendInvite={setSendInvite}
           reset={reset}
           username={username}
