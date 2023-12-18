@@ -7,8 +7,10 @@ query User($id: ID!, $token: String!) {
     username,
     role,
     years {
+      id,
       year,
       teams {
+        id
         team,
         allocations {
           id

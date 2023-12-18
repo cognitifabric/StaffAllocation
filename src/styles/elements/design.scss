@@ -14,6 +14,55 @@
   
 }
 
+.teams {
+  width: 3%;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  font-size: 1.6rem;
+
+  &Item {
+    width: 90%;
+    display: flex;
+    padding: 1rem;
+    border-radius: 1.2rem;
+    margin: 1rem 0;
+    justify-content: center;
+    align-items: center;
+    min-height: 5rem;
+    background-color: #f0f0f0;
+    position: relative;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    white-space: nowrap;
+  }
+  
+}
+
+.years {
+  width: 3%;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  font-size: 1.6rem;
+
+  &Item {
+    display: flex;
+    padding: 1rem 2rem;
+    border-radius: 1.2rem;
+    margin: 1rem 0;
+    justify-content: center;
+    align-items: center;
+    min-height: 5rem;
+    background-color: #f0f0f0;
+    position: relative;
+    white-space: nowrap;
+  }
+  
+}
+
 .curved {
   border-radius: 2.5rem;
 }

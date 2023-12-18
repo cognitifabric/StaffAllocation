@@ -4,26 +4,44 @@ export default gql`
 mutation UpdateAllocation($allocationID: ID!, $userID: ID!, $allocation: FillBarInputType!) {
   updateAllocation(allocationID: $allocationID, userID: $userID, allocation: $allocation) {
     id
-    username
-    allocations {
-      id
-      order
-      fte
-      text
-      allocation 
-      fillBars {
+    username,
+    role,
+    years {
+      id,
+      year,
+      teams {
         id
-        order
-        fte
-        text
-        allocation 
+        team,
+        allocations {
+          id
+          order
+          fte
+          text
+          allocation 
+          color
+          fillBars {
+            id
+            order
+            fte
+            text
+            allocation 
+          }
+        }
+        settings {
+          id
+          type
+          order
+          content
+          color
+        }
       }
-    }
-    settings {
+    },
+    users {
       id
-      type
-      order
-      content
+      username,
+      password,
+      role,
+      parentID
     }
   }
 }

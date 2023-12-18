@@ -214,7 +214,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .container-center {
-  width: 100%;
+  width: 90%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -240,6 +240,10 @@ body::-webkit-scrollbar-thumb {
   justify-content: flex-start;
   align-items: center;
   margin: 1rem 0;
+}
+
+.w-full {
+  width: 100%;
 }
 
 .columnsTwo {
@@ -546,6 +550,14 @@ body::-webkit-scrollbar-thumb {
   justify-content: center;
 }
 
+.justify-end {
+  justify-content: end;
+}
+
+.items-center {
+  align-items: center;
+}
+
 .ml5 {
   margin-left: 1rem;
 }
@@ -566,6 +578,10 @@ body::-webkit-scrollbar-thumb {
   margin-top: 2rem;
 }
 
+.ml5 {
+  margin-left: 5rem;
+}
+
 .hoverCursor:hover {
   cursor: pointer;
 }
@@ -578,6 +594,51 @@ body::-webkit-scrollbar-thumb {
 .boxForm {
   background-color: white;
   height: max-content;
+}
+
+.teams {
+  width: 3%;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  font-size: 1.6rem;
+}
+.teamsItem {
+  width: 90%;
+  display: flex;
+  padding: 1rem;
+  border-radius: 1.2rem;
+  margin: 1rem 0;
+  justify-content: center;
+  align-items: center;
+  min-height: 5rem;
+  background-color: #f0f0f0;
+  position: relative;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  white-space: nowrap;
+}
+
+.years {
+  width: 3%;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  font-size: 1.6rem;
+}
+.yearsItem {
+  display: flex;
+  padding: 1rem 2rem;
+  border-radius: 1.2rem;
+  margin: 1rem 0;
+  justify-content: center;
+  align-items: center;
+  min-height: 5rem;
+  background-color: #f0f0f0;
+  position: relative;
+  white-space: nowrap;
 }
 
 .curved {

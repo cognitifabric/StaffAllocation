@@ -1,7 +1,7 @@
 .container {
   
   &-center {
-    width: 100%;
+    width: 90%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -41,6 +41,10 @@
     
   }
   
+}
+
+.w-full {
+  width: 100%;
 }
 
 .columnsTwo {
@@ -378,6 +382,14 @@
   justify-content: center;
 }
 
+.justify-end {
+  justify-content: end;
+}
+
+.items-center {
+  align-items: center;
+}
+
 .ml5 {
   margin-left: 1rem;
 }
@@ -396,6 +408,10 @@
 
 .mt {
   margin-top: 2rem;
+}
+
+.ml5 {
+  margin-left: 5rem;
 }
 
 .hoverCursor {

@@ -42,6 +42,9 @@ function Staffing () {
   const [ updatedFillbar, setUpdatedFillbar] = useState('')
   const [ allUsers, setAllUsers] = useState([])
   const [ loadingData, setLoadingData ] = useState(false)
+  const [ yearID, setYearID] = useState('')
+  const [ years, setYears] = useState([])
+  const [ teamID, setTeamID] = useState('')
 
   const dataUser = useQuery(GET_USER, {
     variables: { id: cookies.user ? cookies.user.id : '', token: cookies.accessToken }
@@ -72,23 +75,27 @@ function Staffing () {
     let newAllocations = []
 
     setLoadingData(true)
-    
+    // console.log(dataUser)
     if(dataUser.error){ 
       console.log('DATAUSER ERROR', dataUser.error)
       dataUser.error.message = 'Invalid token' ? router.push('/') : router.push('/error') 
     }
 
     if(!dataUser.error) setLoadingData(false)
-    // if(dataUser.data) console.log(console.log(dataUser.data))
-    // if(dataUser.data) setHeadingSettings(dataUser.data.user.settings)
-    // if(dataUser.data){
+    if(dataUser.data && dataUser.data.user.years.length > 0) setHeadingSettings(dataUser.data.user.years[0].teams[0].settings)
+    if(dataUser.data && dataUser.data.user.years.length > 0){
       
-    //   newAllocations = [...dataUser.data.user.allocations]
-    //   newAllocations.sort((a, b) => a.order - b.order)
+      if(dataUser.data.user.years[0]){
+        setYearID(dataUser.data.user.years[0].id)
+        setYears(dataUser.data.user.years)
+      }
+      if(dataUser.data.user.years[0].teams[0]) setTeamID(dataUser.data.user.years[0].teams[0].id)
+      newAllocations = [...dataUser.data.user.years[0].teams[0].allocations]
+      newAllocations.sort((a, b) => a.order - b.order)
 
-    //   setAllocations(newAllocations)
+      setAllocations(newAllocations)
 
-    // }
+    }
     
   }, [dataUser])
 
@@ -134,7 +141,6 @@ function Staffing () {
     
     if(newValue){
       updatedSettings = headingSettings.map(( item ) => {
-
         return item.order === order ? { ...item, content: newValue } : item
         
       })
@@ -154,9 +160,10 @@ function Staffing () {
   }
 
   const submitAddSettings = () => {
-    
-    addSettings({ variables: { userID: cookies.user.id, settings: headingSettings } })
+
+    addSettings({ variables: { teamID: teamID, settings: headingSettings } })
     setIsTyping('')
+
   }
   
   const updateAllocationItems = ( id, type, newText ) => {
@@ -505,7 +512,7 @@ function Staffing () {
               
             })
 
-            uploadAllocation( { variables: { userId: dataUser.data.user.id, allocations: array } } ).then(() => {
+            uploadAllocation( { variables: { userID: dataUser.data.user.id, teamID: teamID, allocations: array } } ).then(() => {
 
               if(orderType == 2){
                 setTimeout(() => {
@@ -549,7 +556,32 @@ function Staffing () {
         removeCookie={removeCookie}
       >
       </Nav>
-      <div className="container-center wrap mt">
+      <div className="w-full flex justify-end mt">
+      <div className="teams flex justify-center items-center mt10">
+        { years.length > 0 && years.find(item => item.id === yearID).teams.map((team, idx) => 
+          <span className="teamsItem" key={idx}>{team.team}</span>
+        )}
+        <SVG 
+          svg={'plus'}
+          color={'#8D5A97'}
+        ></SVG>
+      </div>
+      <div className="container-center wrap">
+        <div className="w-full flex">
+          <div className="years flex items-center">
+            { years.length > 0 && years.map((year, idx) => 
+              <span className="yearsItem" key={idx}>{year.year}</span>
+            )}
+          </div>
+          <div className="ml5">
+            <SVG 
+              width={60}
+              height={60}
+              svg={'plus'}
+              color={'#8D5A97'}
+            ></SVG>
+          </div>
+        </div>
         <div className="container-flex-right whalf h5 border-right">
           <div 
             className="element-button-icon"
@@ -653,7 +685,7 @@ function Staffing () {
               style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[1].color : '#587B7F' }}  
               className="element-button-text curved-eased w20 fontSize-16 capitalize"
               value={ headingSettings.length > 0 ? headingSettings.find(( item ) =>  item.order === 2).content : 'Employees' }
-              onChange={(e) => updateHeadingSetting(1, e.target.value) }
+              onChange={(e) => updateHeadingSetting(2, e.target.value) }
             >
             </input>
           </div>
@@ -701,7 +733,7 @@ function Staffing () {
               style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[2].color : '#587B7F' }}  
               className="element-button-text curved-eased w20 fontSize-16 capitalize"
               value={ headingSettings.length > 0 ? headingSettings.find(( item ) =>  item.order === 3).content : 'Locations' }
-              onChange={(e) => updateHeadingSetting(1, e.target.value) }
+              onChange={(e) => updateHeadingSetting(3, e.target.value) }
             >
             </input>
           </div>
@@ -727,7 +759,7 @@ function Staffing () {
               style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[3].color : '#587B7F' }}  
               className="element-button-text curved-eased wfull fontSize-16 capitalize"
               value={ headingSettings.length > 0 ? headingSettings.find(( item ) =>  item.order === 4).content : 'Allocations' }
-              onChange={(e) => updateHeadingSetting(1, e.target.value) }
+              onChange={(e) => updateHeadingSetting(4, e.target.value) }
             >
             </input>
           </div>
@@ -822,6 +854,7 @@ function Staffing () {
           </div>
         </div>
 
+      </div>
       </div>
     </>
   )

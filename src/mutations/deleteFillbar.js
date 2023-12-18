@@ -4,26 +4,44 @@ export default gql`
 mutation deleteFillbar($allocation: FillBarInputType, $userID: ID!, $deleteId: ID!) {
   deleteFillbar(allocation: $allocation, userID: $userID, deleteId: $deleteId) {
     id
-    username
-    allocations {
-      id
-      order
-      fte
-      text
-      allocation 
-      fillBars {
+    username,
+    role,
+    years {
+      id,
+      year,
+      teams {
         id
-        order
-        fte
-        text
-        allocation 
+        team,
+        allocations {
+          id
+          order
+          fte
+          text
+          allocation 
+          color
+          fillBars {
+            id
+            order
+            fte
+            text
+            allocation 
+          }
+        }
+        settings {
+          id
+          type
+          order
+          content
+          color
+        }
       }
-    }
-    settings {
+    },
+    users {
       id
-      type
-      order
-      content
+      username,
+      password,
+      role,
+      parentID
     }
   }
 }

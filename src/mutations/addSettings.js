@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export default gql`
-mutation AddSettings($userID: String!, $settings: [SettingInputType!]!) {
-  addSettings(userId: $userID, settings: $settings) {
+mutation AddSettings($teamID: String!, $settings: [SettingInputType!]!) {
+  addSettings(teamID: $teamID, settings: $settings) {
     id
     type
     order
