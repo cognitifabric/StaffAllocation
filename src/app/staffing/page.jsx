@@ -65,6 +65,8 @@ function Staffing () {
   const [ isHovered, setHovered ] = useState('');
   const [ colorPallete, setColorPallete ] = useState('')
   const [ palleteType, setPalleteType] = useState('')
+  const [ sortLeftType, setSortLeftType] = useState('')
+  const [ sortRightType, setSortRightType] = useState('')
   const elementsWithIdRef = useRef([]);
   const containerRefLeft    = useRef(null);
   const containerRefRight   = useRef(null);
@@ -90,9 +92,12 @@ function Staffing () {
       }
       if(dataUser.data.user.years[0].teams[0]) setTeamID(dataUser.data.user.years[0].teams[0].id)
       newAllocations = [...dataUser.data.user.years[0].teams[0].allocations]
-      newAllocations.sort((a, b) => a.order - b.order)
-
+      newAllocations.sort((a, b) => a.order - b.order) 
+    
       setAllocations(newAllocations)
+
+      if(sortLeftType) changeSort(sortLeftType.type, sortLeftType.order)
+      if(sortRightType) changeSort(sortRightType.type, sortRightType.order)
 
     }
     
@@ -713,6 +718,7 @@ function Staffing () {
               changeSort={changeSort}
               listType="two"
               allocations={allocations}
+              setSortLeftType={setSortLeftType}
             >
             </DropDown>
           </div>
@@ -725,6 +731,7 @@ function Staffing () {
               changeSort={changeSort}
               listType="three"
               allocations={allocations}
+              setSortRightType={setSortRightType}
             >
             </DropDown>
           </div>
