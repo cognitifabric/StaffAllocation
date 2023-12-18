@@ -19,7 +19,6 @@ import UPLOAD_ALLOCATION from '@/mutations/uploadAllocation'
 import USER_REQUIRES_LOGIN from '@/mutations/userRequiresLogin'
 
 //// HELPERS
-import { defaultAllocationOrderTwo, defaultAllocationOrderThree } from '@/helpers/table';
 import { onDragStart, onDragOver, onDrop, onDropFillBar, onDragStartFillBar } from '@/helpers/draggable';
 import { sumByType, sum } from '@/helpers/utilities';
 
@@ -278,7 +277,7 @@ function Staffing () {
     e.preventDefault()
 
     let newObject = { ...allocation }
-
+    console.log(allocation)
     delete newObject.fillBars
     deleteAllocation({ variables: { allocation: newObject, userID: dataUser.data.user.id } })
     setIsTyping('')
@@ -448,6 +447,15 @@ function Staffing () {
     
     if(type == 'two'){
 
+      let defaultAllocationOrderTwo = {
+        userID: dataUser.data.user.id,
+        teamID: teamID,
+        order: 2,
+        fte: "1",
+        text: "",
+        allocation: "0"
+      }
+
       defaultAllocationOrderTwo.color = headingSettings.length > 0 ? headingSettings[1].color : '#587B7F'
       
       addAllocation( { variables: defaultAllocationOrderTwo } ).then(() => {
@@ -460,6 +468,15 @@ function Staffing () {
     }
 
     if(type == 'three'){
+
+      let defaultAllocationOrderThree = {
+        userID: dataUser.data.user.id,
+        teamID: teamID,
+        order: 3,
+        fte: "1",
+        text: "",
+        allocation: "0"
+      }
 
       defaultAllocationOrderThree.color = headingSettings.length > 0 ? headingSettings[2].color : '#587B7F'
       
