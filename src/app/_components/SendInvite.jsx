@@ -17,7 +17,9 @@ const SendInvite = ({
   loading,
   sendInviteForm,
   message,
-  error
+  error,
+  name,
+  setName
 }) => {
 
   const loadingColor = 'white'
@@ -41,6 +43,19 @@ const SendInvite = ({
           </SVG>
         </div>
         <div className="w40 box-curved-3 boxForm">
+          <div className="form-group element-white curved-eased">
+            <input 
+              className="curved-eased"
+              type="text" 
+              value={name}
+              placeholder="name"
+              onChange={(e) => (
+                setError(''),
+                setLoading(''),
+                setName(e.target.value)
+              )}
+            />
+          </div>
           <div className="form-group element-white curved-eased">
             <input 
               className="curved-eased"

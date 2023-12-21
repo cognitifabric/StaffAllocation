@@ -29,6 +29,7 @@ const SystemAdminSettings = ({
   const myRefs = useRef()
   const [sendInvite, setSendInvite] = useState(false)
   const [popup, setPopup] = useState('')
+  const [name, setName] = useState('')
   const [username, setUsername] = useState('')
   const [userType, setUserType] = useState('')
   const [userTypeFormField, setUserTypeFormField] = useState('')
@@ -37,6 +38,7 @@ const SystemAdminSettings = ({
   const [ sendInviteMutation, { dataInviteUser, loadingInviteUser, errorInviteUser}] = useMutation(USER_INVITE)
   
   const reset = () => {
+    setName(''),
     setUsername(''),
     setUserType(''),
     setUserTypeFormField(''),
@@ -48,15 +50,17 @@ const SystemAdminSettings = ({
   const sendInviteForm = async () => {
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!name){ return setError('Name is required')}
     if(!emailPattern.test(username)){ return setError('Email invalid') }
     if(!userType){ return setError('Please select a user type')}
     
     setLoading('sendInvite')
+    reset(),
     setError('')
 
     try {
       const response = await sendInviteMutation({ 
-        variables: { username: username, role: userType }
+        variables: { name: name, username: username, role: userType }
       })
 
       setLoading('')
@@ -92,6 +96,7 @@ const SystemAdminSettings = ({
         <div 
           className="listUsersHeading rounded"
         >
+          <span>Name</span>
           <span>Email</span>
           <span>Role</span>
         </div>
@@ -103,6 +108,7 @@ const SystemAdminSettings = ({
             key={idx}
             className="listUsersUser"
           >
+            <span>{user.name}</span>
             <span>{user.username}</span>
             <span className="capitalize">{user.role.split(/(?=[A-Z])/).join(' ')}</span>
             {user.role == 'systemAdmin' &&
@@ -224,6 +230,8 @@ const SystemAdminSettings = ({
           sendInviteForm={sendInviteForm}
           message={message}
           error={error}
+          name={name}
+          setName={setName}
         />
       }
       {popup === 'edit' &&
@@ -248,6 +256,8 @@ const SystemAdminSettings = ({
           user={user}
           setUser={setUser}
           userType={userType}
+          name={name}
+          setName={setName}
         />
       }
       {popup === 'delete' &&

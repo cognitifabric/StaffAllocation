@@ -3,7 +3,8 @@ import { gql } from '@apollo/client';
 export default gql`
 mutation AddEntityUser($id: ID!, $username: String!, $role: String!) {
   addEntityUser(id: $id, username: $username, role: $role) {
-    id
+    id,
+    name,
     username,
     role,
     years {

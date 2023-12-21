@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export default gql`
-mutation DeleteUser($id: ID!) {
-  deleteUser(id: $id) {
+mutation AddYear($id: ID!, $year: String!) {
+  addYear(id: $id, year: $year) {
     id,
     name,
     username,

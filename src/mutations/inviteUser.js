@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export default gql`
-mutation inviteUser($username: String!, $role: String!) {
-  inviteUser(username: $username, role: $role) {
+mutation inviteUser($name: String!, $username: String!, $role: String!) {
+  inviteUser(name: $name, username: $username, role: $role) {
     message
   }
 }

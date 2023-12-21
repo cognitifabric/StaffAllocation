@@ -604,6 +604,17 @@ body::-webkit-scrollbar-thumb {
   justify-content: start;
   align-items: center;
   font-size: 1.6rem;
+  background-color: rgba(237, 242, 245, 0.7);
+  padding: 1rem 0;
+  border-radius: 1.2rem;
+  overflow-y: scroll;
+}
+.teams::-webkit-scrollbar {
+  width: 0.2rem;
+  background-color: white;
+}
+.teams::-webkit-scrollbar-thumb {
+  background-color: #907F9F;
 }
 .teamsItem {
   width: 90%;
@@ -616,29 +627,53 @@ body::-webkit-scrollbar-thumb {
   min-height: 5rem;
   background-color: #f0f0f0;
   position: relative;
-  writing-mode: vertical-rl;
-  text-orientation: upright;
+  writing-mode: vertical-lr;
+  transform: rotate(-180deg);
   white-space: nowrap;
+  transition: all 0.5s;
+}
+.teamsItem:hover {
+  cursor: pointer;
+  transform: rotate(-180deg) scaleY(1.2);
+  box-shadow: 1rem 0.1rem 1rem 0.1rem rgba(0, 0, 0, 0.3);
 }
 
 .years {
-  width: 3%;
+  width: 20%;
   display: flex;
   justify-content: start;
   align-items: center;
   font-size: 1.6rem;
+  overflow-x: scroll;
+  background-color: rgba(237, 242, 245, 0.7);
+  padding: 0 1rem;
+  border-radius: 1.2rem;
+}
+.years::-webkit-scrollbar {
+  height: 0.2rem;
+  background-color: white;
+}
+.years::-webkit-scrollbar-thumb {
+  background-color: #907F9F;
 }
 .yearsItem {
   display: flex;
   padding: 1rem 2rem;
   border-radius: 1.2rem;
   margin: 1rem 0;
+  margin-right: 1rem;
   justify-content: center;
   align-items: center;
   min-height: 5rem;
   background-color: #f0f0f0;
   position: relative;
   white-space: nowrap;
+  transition: all 0.5s;
+}
+.yearsItem:hover {
+  cursor: pointer;
+  transform: scaleY(1.2);
+  box-shadow: 1rem 0.1rem 1rem 0.1rem rgba(0, 0, 0, 0.3);
 }
 
 .curved {
@@ -646,7 +681,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .curved-eased {
-  border-radius: 1rem;
+  border-radius: 2rem;
 }
 
 .element-white {
@@ -980,6 +1015,7 @@ body::-webkit-scrollbar-thumb {
 .element-button-allocation:hover {
   cursor: pointer;
   transform: translateY(-3px) scale(1.05);
+  box-shadow: -0.5rem 0.1rem 1rem 0.1rem rgba(0, 0, 0, 0.3);
 }
 .element-button-total {
   display: flex;

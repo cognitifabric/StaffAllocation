@@ -3,7 +3,8 @@ import { gql } from '@apollo/client';
 export default gql`
 mutation deleteAllocation($allocation: FillBarInputType, $userID: ID! ) {
   deleteAllocation(allocation: $allocation, userID: $userID ) {
-    id
+    id,
+    name,
     username,
     role,
     years {

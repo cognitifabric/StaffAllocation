@@ -3,7 +3,8 @@ import { gql } from '@apollo/client';
 export default gql`
 query Users($id: ID!) {
   users(id: $id){
-    id
+    id,
+    name,
     username,
     role,
     years {

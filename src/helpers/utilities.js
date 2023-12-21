@@ -3,7 +3,8 @@ export {
   isEmptyObject,
   sumByType,
   sum,
-  isStrongPassword
+  isStrongPassword,
+  isValidYear
 }
 
 const switchPositions = (object, id1, id2) => {
@@ -64,4 +65,13 @@ const isStrongPassword = (password) => {
   const isStrong = hasUppercase && hasLowercase && hasNumber && hasSpecialChar;
 
   return isLengthValid && isStrong;
+}
+
+const isValidYear = (year) => {
+
+  var yearPattern = /^\d{4}$/;
+
+  
+  return yearPattern.test(year);
+  
 }

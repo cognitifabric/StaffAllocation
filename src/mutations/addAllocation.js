@@ -3,7 +3,8 @@ import { gql } from '@apollo/client';
 export default gql`
 mutation AddAllocation($userID: ID!, $teamID: ID!, $order: Int!, $fte: String!, $text: String!, $allocation: String!, $color: String!) {
   addAllocationToUser(userID: $userID, teamID: $teamID, order: $order, fte: $fte, text: $text, allocation: $allocation, color: $color) {
-    id
+    id,
+    name,
     username,
     role,
     years {

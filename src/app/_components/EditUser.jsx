@@ -24,22 +24,25 @@ const EditUser = ({
   setPopup,
   user,
   setUser,
-  userType
+  userType,
+  name,
+  setName
 }) => {
-
+  
   const loadingColor = 'white'
   const [ updateUserMutation, { dataUpdateUser, loadingUpdateUser, errorUpdateUser}] = useMutation(UPDATE_USER, { refetchQueries: [ GET_USERS ]})
 
   const sendUpdatedUser = () => {
     
-    if(!username && !userType) return setError('Username or role must be different')
+    if(!username && !userType && !name) return setError('Username, name, or role must be different')
     setLoading(true)
 
     try {
       
-      updateUserMutation({ variables: { id: user.id, username: username, role: userType} })
+      updateUserMutation({ variables: { id: user.id, name: name, username: username, role: userType} })
       setUser('')
-      setLoading(false)
+      setLoading(false),
+      reset(),
       setPopup('')
       
     } catch (error) {
@@ -70,6 +73,19 @@ const EditUser = ({
           </SVG>
         </div>
         <div className="w40 box-curved-3 boxForm">
+          <div className="form-group element-white curved-eased">
+            <input 
+              className="curved-eased"
+              type="text" 
+              value={name ? name : user.name}
+              placeholder="email"
+              onChange={(e) => (
+                setError(''),
+                setLoading(''),
+                setName(e.target.value)
+              )}
+            />
+          </div>
           <div className="form-group element-white curved-eased">
             <input 
               className="curved-eased"

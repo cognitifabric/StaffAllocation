@@ -3,7 +3,8 @@ import { gql } from '@apollo/client';
 export default gql`
 mutation AddFillBarToAllocation($allocationID: ID!, $allocation: FillBarInputType!, $userID: ID!, $pickedContainer: FillBarInputType!) {
   addFillBarToAllocation(allocationID: $allocationID, allocation: $allocation, userID: $userID, pickedContainer: $pickedContainer ) {
-    id
+    id,
+    name,
     username,
     role,
     years {

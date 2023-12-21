@@ -16,7 +16,8 @@ import UPDATE_FILLBAR from '@/mutations/updateFillBar'
 import DELETE_FILLBAR from '@/mutations/deleteFillbar'
 import DELETE_ALLOCATION from '@/mutations/deleteAllocation'
 import UPLOAD_ALLOCATION from '@/mutations/uploadAllocation'
-import USER_REQUIRES_LOGIN from '@/mutations/userRequiresLogin'
+import ADD_YEAR from '@/mutations/addYear'
+import ADD_TEAM from '@/mutations/addTeam'
 
 //// HELPERS
 import { onDragStart, onDragOver, onDrop, onDropFillBar, onDragStartFillBar } from '@/helpers/draggable';
@@ -29,6 +30,8 @@ import ColumnListRight from '@/component/columnListRight';
 import ColumnListLeft from '@/component/columnListLeft';
 import ColorPallete from '@/component/colorPallete'
 import SystemAdmin from '../_components/SystemAdmin'
+import AddYear from '../_components/AddYear'
+import AddTeam from '../_components/AddTeam'
 
 function Staffing () {
 
@@ -44,12 +47,15 @@ function Staffing () {
   const [ yearID, setYearID] = useState('')
   const [ years, setYears] = useState([])
   const [ teamID, setTeamID] = useState('')
+  const [ popup, setPopup] = useState('')
+  const [ loading, setLoading] = useState('')
+  const [ submitError, setSubmitError] = useState('')
 
   const dataUser = useQuery(GET_USER, {
     variables: { id: cookies.user ? cookies.user.id : '', token: cookies.accessToken }
   })
   const users = useQuery(GET_USERS, { variables: { id: cookies.user ? cookies.user.id : ''} })
-  const [ addSettings, { data, loading, error }] = useMutation(ADD_SETTINGS);
+  const [ addSettings, { data, loadingSettings, errorSettings }] = useMutation(ADD_SETTINGS);
   const [ addAllocation, { dataAllocation, loadingAllocation, errorAllocation }] = useMutation(ADD_ALLOCATION, { refetchQueries: [ GET_USER ] });
   const [ updateAllocationMutation, { dataUpdateAllocation, loadingUpdateAllocation, errorUpdatedAllocation }] = useMutation(UPDATE_ALLOCATION, { refetchQueries: [ GET_USER ]});
   const [ addFillBar, { dataAddFillBar, loadingAddFillBar, errorAddFillBar }] = useMutation(ADD_FILLBAR, { refetchQueries: [ GET_USER ]});
@@ -57,7 +63,8 @@ function Staffing () {
   const [ deleteFillbar, { dataDeleteFillbar, loadingDeleteFillbar, errorDeleteFillbar }] = useMutation(DELETE_FILLBAR, { refetchQueries: [ GET_USER ]})
   const [ deleteAllocation, { dataDeleteAllocation, loadingDeleteAllocation, errorDeleteAllocation }] = useMutation(DELETE_ALLOCATION, { refetchQueries: [ GET_USER ]})
   const [ uploadAllocation, { dataUploadAllocation, loadingUploadAllocation, errorUploadAllocation }] = useMutation(UPLOAD_ALLOCATION, { refetchQueries: [ GET_USER ]})
-  const [ userRequiresLogin, { dataUserRequiresLogin, loadingUserRequiresLogin, errorUserRequiresLogin }] = useMutation(USER_REQUIRES_LOGIN, { refetchQueries: [ GET_USER ]})
+  const [ addYear, { dataAddYear, loadingAddYear, errorAddYear }] = useMutation(ADD_YEAR, { refetchQueries: [ GET_USER ]})
+  const [ addTeam, { dataAddTeam, loadingAddTeam, errorAddTeam }] = useMutation(ADD_TEAM, { refetchQueries: [ GET_USER ]})
   const [ sortTwo, setSortTwo ] = useState(false)
   const [ sortThree, setSortThree ] = useState(false)
   const [ sortType, setSortType] = useState('')
@@ -108,7 +115,7 @@ function Staffing () {
     setLoadingData(true)
     
     if(users.error){
-      console.log('USERS ERROR', error)
+      console.log('USERS ERROR', users.error)
     }
 
     if(!users.error) setLoadingData(false)
@@ -563,8 +570,8 @@ function Staffing () {
 
   if (loadingData) return <div className="loadingPage"><span>loading</span></div>
   if (dataUser.loading) return <div className="loadingPage"><span>loading</span></div>
-  if (loading) return <div className="loadingPage"><span>loading</span></div>
-  if (error) return `Submission error! ${error.message}`;
+  if (loadingSettings) return <div className="loadingPage"><span>loading</span></div>
+  if (errorSettings) return `Submission error! ${error.message}`;
   if (loadingAllocation) return <div className="loadingPage"><span>loading</span></div>
   if (errorAllocation) return `Submission error! ${errorAllocation}`;
   if (loadingUpdateAllocation) return <div className="loadingPage"><span>loading</span></div>
@@ -579,29 +586,54 @@ function Staffing () {
       >
       </Nav>
       <div className="w-full flex justify-end mt">
-      <div className="teams flex justify-center items-center mt10">
-        { years.length > 0 && years.find(item => item.id === yearID).teams.map((team, idx) => 
-          <span className="teamsItem" key={idx}>{team.team}</span>
-        )}
-        <SVG 
-          svg={'plus'}
-          color={'#8D5A97'}
-        ></SVG>
-      </div>
+        <div className="teams flex justify-center items-center mt10">
+        <div
+          className="svgItem"
+          onClick={() => setPopup('addTeam')}
+        >
+          <SVG 
+            width={50}
+            height={50}
+            svg={'plus'}
+            color={'#8D5A97'}
+          ></SVG>
+        </div>
+        <div 
+          className=""
+        >
+          { years.length > 0 && years.find(item => item.id === yearID).teams.map((team, idx) => 
+            <span 
+              className="teamsItem" 
+              key={idx}
+            >
+              {team.team}
+            </span>
+          )}
+        </div>
+        </div>
       <div className="container-center wrap">
-        <div className="w-full flex">
-          <div className="years flex items-center">
+        <div className="w-full flex items-center">
+          <div className="years flex items-center justify-center">
+            <div 
+              className="svgItem"
+              onClick={() => setPopup('addYear')}
+            >
+              <SVG 
+                width={50}
+                height={50}
+                svg={'plus'}
+                color={'#8D5A97'}
+              ></SVG>
+            </div>
             { years.length > 0 && years.map((year, idx) => 
-              <span className="yearsItem" key={idx}>{year.year}</span>
+              <span 
+                className="yearsItem" 
+                key={idx}
+                onClick={() => setYearID(year.id)}
+              >
+                {year.year}
+              </span>
             )}
-          </div>
-          <div className="ml5">
-            <SVG 
-              width={60}
-              height={60}
-              svg={'plus'}
-              color={'#8D5A97'}
-            ></SVG>
           </div>
         </div>
         <div className="container-flex-right whalf h5 border-right">
@@ -880,6 +912,30 @@ function Staffing () {
 
       </div>
       </div>
+      { popup == 'addYear' &&
+        <AddYear
+          loading={loading}
+          setLoading={setLoading}
+          submitError={submitError}
+          setSubmitError={setSubmitError}
+          addYear={addYear}
+          setPopup={setPopup}
+          user={dataUser}
+        >
+        </AddYear>
+      }
+      { popup == 'addTeam' &&
+        <AddTeam
+          loading={loading}
+          setLoading={setLoading}
+          submitError={submitError}
+          setSubmitError={setSubmitError}
+          addTeam={addTeam}
+          setPopup={setPopup}
+          year={yearID}
+        >
+        </AddTeam>
+      }
     </>
   )
 }

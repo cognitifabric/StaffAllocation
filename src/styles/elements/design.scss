@@ -22,6 +22,19 @@
   justify-content: start;
   align-items: center;
   font-size: 1.6rem;
+  background-color: rgba($color-light-grey-2, .7);
+  padding: 1rem 0;
+  border-radius: 1.2rem;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    width: 0.2rem;
+    background-color: white;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $color-scheme-2;
+  }
 
   &Item {
     width: 90%;
@@ -34,31 +47,61 @@
     min-height: 5rem;
     background-color: #f0f0f0;
     position: relative;
-    writing-mode: vertical-rl;
-    text-orientation: upright;
+    writing-mode: vertical-lr;;
+    transform: rotate(-180deg);
     white-space: nowrap;
+    transition: all .5s;
+
+    &:hover {
+      cursor: pointer;
+      transform: rotate(-180deg) scaleY(1.2);
+      box-shadow: 1rem .1rem 1rem .1rem rgba(0,0,0, .3);
+    }
+    
   }
   
 }
 
 .years {
-  width: 3%;
+  width: 20%;
   display: flex;
   justify-content: start;
   align-items: center;
   font-size: 1.6rem;
+  overflow-x: scroll;
+  background-color: rgba($color-light-grey-2, .7);
+  padding: 0 1rem;
+  border-radius: 1.2rem;
+
+  &::-webkit-scrollbar {
+    height: 0.2rem;
+    background-color: white;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $color-scheme-2;
+  }
 
   &Item {
     display: flex;
     padding: 1rem 2rem;
     border-radius: 1.2rem;
     margin: 1rem 0;
+    margin-right: 1rem;
     justify-content: center;
     align-items: center;
     min-height: 5rem;
     background-color: #f0f0f0;
     position: relative;
     white-space: nowrap;
+    transition: all .5s;
+
+    &:hover {
+      cursor: pointer;
+      transform: scaleY(1.2);
+      box-shadow: 1rem .1rem 1rem .1rem rgba(0,0,0, .3);
+    }
+    
   }
   
 }
@@ -68,7 +111,7 @@
 }
 
 .curved-eased {
-  border-radius: 1rem;
+  border-radius: 2rem;
 }
 
 .element {

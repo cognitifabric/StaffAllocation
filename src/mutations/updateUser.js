@@ -1,9 +1,10 @@
 import { gql } from '@apollo/client';
 
 export default gql`
-mutation UpdateUser($id: ID!, $username: String!, $role: String!) {
-  updateUser(id: $id, username: $username, role: $role) {
-    id
+mutation UpdateUser($id: ID!, $name: String!, $username: String!, $role: String!) {
+  updateUser(id: $id, name: $name, username: $username, role: $role) {
+    id,
+    name,
     username,
     role,
     years {
