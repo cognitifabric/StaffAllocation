@@ -4,7 +4,8 @@ export {
   sumByType,
   sum,
   isStrongPassword,
-  isValidYear
+  isValidYear,
+  findObjectById
 }
 
 const switchPositions = (object, id1, id2) => {
@@ -74,4 +75,8 @@ const isValidYear = (year) => {
   
   return yearPattern.test(year);
   
+}
+
+const findObjectById = (array, id) => {
+  return array.find(obj => obj.id === id);
 }

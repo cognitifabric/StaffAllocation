@@ -21,7 +21,7 @@ import ADD_TEAM from '@/mutations/addTeam'
 
 //// HELPERS
 import { onDragStart, onDragOver, onDrop, onDropFillBar, onDragStartFillBar } from '@/helpers/draggable';
-import { sumByType, sum } from '@/helpers/utilities';
+import { sumByType, sum, findObjectById } from '@/helpers/utilities';
 
 //// COMPONENTS
 import Nav from '../_components/Navigation';
@@ -32,6 +32,9 @@ import ColorPallete from '@/component/colorPallete'
 import SystemAdmin from '../_components/SystemAdmin'
 import AddYear from '../_components/AddYear'
 import AddTeam from '../_components/AddTeam'
+
+//// OPERATIONS
+import { handleChangeTeam } from '../../helpers/operations';
 
 function Staffing () {
 
@@ -93,13 +96,27 @@ function Staffing () {
     if(dataUser.data && dataUser.data.user.years.length > 0) setHeadingSettings(dataUser.data.user.years[0].teams[0].settings)
     if(dataUser.data && dataUser.data.user.years.length > 0){
       
-      if(dataUser.data.user.years[0]){
+      if(!yearID && dataUser.data.user.years[0]){
         setYearID(dataUser.data.user.years[0].id)
         setYears(dataUser.data.user.years)
       }
-      if(dataUser.data.user.years[0].teams[0]) setTeamID(dataUser.data.user.years[0].teams[0].id)
-      newAllocations = [...dataUser.data.user.years[0].teams[0].allocations]
-      newAllocations.sort((a, b) => a.order - b.order) 
+      if(!teamID && dataUser.data.user.years[0].teams[0]) setTeamID(dataUser.data.user.years[0].teams[0].id)
+
+      if(teamID){
+
+        let selectedYear = findObjectById(dataUser.data.user.years, yearID)
+
+        let selectedTeam = findObjectById(selectedYear.teams, teamID)
+        
+        newAllocations = [...selectedTeam.allocations]
+        newAllocations.sort((a, b) => a.order - b.order) 
+
+        setAllocations(newAllocations)
+
+      }else {
+        newAllocations = [...dataUser.data.user.years[0].teams[0].allocations]
+        newAllocations.sort((a, b) => a.order - b.order) 
+      }
     
       setAllocations(newAllocations)
 
@@ -605,6 +622,7 @@ function Staffing () {
             <span 
               className="teamsItem" 
               key={idx}
+              onClick={() => handleChangeTeam(team, setTeamID, setAllocations)}
             >
               {team.team}
             </span>
