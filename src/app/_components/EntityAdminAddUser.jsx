@@ -2,10 +2,10 @@ import SVG from '../../libs/svg'
 import { useMutation } from '@apollo/client';
 
 //// MUTATIONS
-import UPDATE_USER from '../../mutations/updateUser'
-import GET_USERS from '@/queries/fetchUsers'
+import ADD_ENTITY_USER from '../../mutations/addEntityUser'
+import GET_USER from '@/queries/fetchUser'
 
-const EditUser = ({
+const AddEntityUser = ({
   reset,
   username,
   setError,
@@ -18,36 +18,39 @@ const EditUser = ({
   setUserType,
   setUserTypeFormField,
   loading,
+  sendInviteForm,
   message,
+  setMessage,
   error,
   setPopup,
   user,
   setUser,
-  userType,
-  name,
-  setName
+  userType
 }) => {
   
   const loadingColor = 'white'
-  const [ updateUserMutation, { dataUpdateUser, loadingUpdateUser, errorUpdateUser}] = useMutation(UPDATE_USER, { refetchQueries: [ GET_USERS ]})
+  const [ addEntityUserMutation, { dataAddEntityUser, loadingAddEntityUser, errorAddEntityUser}] = useMutation(ADD_ENTITY_USER, { refetchQueries: [ GET_USER ]})
 
-  const sendUpdatedUser = () => {
+  const addEntityUser = async () => {
     
-    if(!username && !userType && !name) return setError('Username, name, or role must be different')
+    // if(!username && !userType) return setError('Username or role must be different')
     setLoading(true)
 
     try {
       
-      updateUserMutation({ variables: { id: user.id, name: name, username: username, role: userType} })
+      const response = await addEntityUserMutation({ variables: { id: user.id, username: username, role: userType } })
       setUser('')
-      setLoading(false),
-      reset(),
-      setPopup('')
+      setLoading(false)
+      setUsername('')
+      setUserType('')
+      setUserTypeFormField('')
+      setMessage('Invite sent')
       
     } catch (error) {
       
       console.log(error)
-      if(error) setError(error)
+      setLoading(false)
+      if(error) setError(error.message)
       
     }
     
@@ -76,24 +79,12 @@ const EditUser = ({
             <input 
               className="curved-eased"
               type="text" 
-              value={name ? name : user.name}
-              placeholder="email"
+              value={username}
+              placeholder="Email"
               onChange={(e) => (
                 setError(''),
                 setLoading(''),
-                setName(e.target.value)
-              )}
-            />
-          </div>
-          <div className="form-group element-white curved-eased">
-            <input 
-              className="curved-eased"
-              type="text" 
-              value={username ? username : user.username}
-              placeholder="email"
-              onChange={(e) => (
-                setError(''),
-                setLoading(''),
+                setMessage(''),
                 setUsername(e.target.value)
               )}
             />
@@ -101,15 +92,15 @@ const EditUser = ({
           <div className="form-group element-white curved-eased">
             <input
               className="curved-eased capitalize"
-              onClick={() => setInputDropdown('inviteUser')} 
-              value={userTypeFormField.split(/(?=[A-Z])/).join('') ? userTypeFormField.split(/(?=[A-Z])/).join('') : user.role.split(/(?=[A-Z])/).join(' ')} 
+              onClick={() => setInputDropdown('userType')} 
+              value={userTypeFormField.split(/(?=[A-Z])/).join('')} 
               placeholder="user type"
               // onChange={(e) => (setInputDropdown(''), stateMethod(caseType, 'leader', e.target.value))}
               readOnly
             />
             <div 
               onClick={() => (
-                inputDropdown == 'inviteUser' ? setInputDropdown('') : setInputDropdown('inviteUser')
+                inputDropdown == 'userType' ? setInputDropdown('') : setInputDropdown('userType')
               )}
             >
               <SVG 
@@ -120,38 +111,32 @@ const EditUser = ({
               >
               </SVG>
             </div>
-            { inputDropdown == 'inviteUser' &&
+            { inputDropdown == 'userType' &&
               <div 
                 className="form-group-list" 
                 ref={myRefs}
               >
                 <div 
                   className="form-group-list-item" 
-                  onClick={(e) => (setUserType('systemAdmin'), setUserTypeFormField('System Admin'), setInputDropdown(''))}
+                  onClick={(e) => (setUserType('editor'), setUserTypeFormField('Editor'), setInputDropdown(''), setMessage(''))}
                 >
-                  System Admin
+                  Editor
                 </div>
                 <div 
                   className="form-group-list-item" 
-                  onClick={(e) => (setUserType('entityAdmin'), setUserTypeFormField('Entity Admin'), setInputDropdown(''))}
+                  onClick={(e) => (setUserType('viewer'), setUserTypeFormField('Viewer'), setInputDropdown(''), setMessage(''))}
                 >
-                  Entity Admin
+                  Viewer
                 </div>
-                {/* <div 
-                  className="form-group-list-item" 
-                  onClick={(e) => (setUserType('entityUser'), setUserTypeFormField('Entity User'), setInputDropdown(''))}
-                >
-                  Entity User
-                </div> */}
               </div>
             }
           </div>
           <div className="form-group">
           <button
             className="form-group-button-large"
-            onClick={() => sendUpdatedUser()}
+            onClick={() => addEntityUser()}
             >
-              {!loading && <span>Update User</span>} 
+              {!loading && <span>Add Entity User</span>} 
               {loading && 
               <div className="loading">
                 <span style={{backgroundColor: loadingColor}}></span>
@@ -181,4 +166,4 @@ const EditUser = ({
   )
 }
 
-export default EditUser
+export default AddEntityUser

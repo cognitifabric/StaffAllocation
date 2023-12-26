@@ -19,7 +19,8 @@ const ColumnListRight = ({
   colorPallete,
   setColorPallete,
   headingSettings,
-  setPalleteType
+  setPalleteType,
+  handlePermissions
 }) => {
   
   return (
@@ -35,7 +36,11 @@ const ColumnListRight = ({
           key={idx}
           className="lightGray-background curved"
           onDragOver={(e)=> onDragOver(e)}
-          onDrop={(e) => handleOnDrop(e)}
+          onDrop={(e) => {
+            if(handlePermissions()){
+              handleOnDrop(e)
+            }
+          }}
         >
           <div className="container-flex-left wfull">
             <div 
@@ -50,17 +55,23 @@ const ColumnListRight = ({
             >
               { isHovered == `hover${allocation.id}${idx}` &&
                 <div 
-                  onClick={(e) => handleDeleteAllocation(e, allocation)}
+                  onClick={(e) => {
+                    if(handlePermissions()){
+                      handleDeleteAllocation(e, allocation)
+                    }
+                  }}
                   className="elementSvgContainer">
                     <SVG svg={'thrashCan'}></SVG>
                 </div>
               }
               { isHovered == `hover${allocation.id}${idx}` &&
               <div 
-                onClick={(e) => (
-                  setColorPallete(allocation.id),
-                  setPalleteType('allocations')
-                )}
+                onClick={(e) => {
+                  if(handlePermissions()){
+                    setColorPallete(allocation.id),
+                    setPalleteType('allocations')
+                  }
+                }}
                 className="elementSvgContainer positionLeftZero noColor"
               >
                   <SVG svg={'pallete'}></SVG>
@@ -79,14 +90,22 @@ const ColumnListRight = ({
                 className="elementInnerBox schemeFour"
                 style={{ borderColor: allocation.fte }}
                 value={ allocation.fte }
-                onChange={(e) => updateAllocationItems(allocation.id, 'fte', e.target.value) }
+                onChange={(e) => {
+                  if(handlePermissions()){
+                    updateAllocationItems(allocation.id, 'fte', e.target.value) 
+                  }
+                }}
               >
               </input>
               <input 
                 type="text"
                 className="elementInnerText darkContrast curved-eased"
                 value={ allocation.text }
-                onChange={(e) => updateAllocationItems(allocation.id, 'text', e.target.value) }
+                onChange={(e) => {
+                  if(handlePermissions()){
+                    updateAllocationItems(allocation.id, 'text', e.target.value) 
+                  }
+                }}
               >
               </input>
               <input
@@ -109,7 +128,11 @@ const ColumnListRight = ({
                 data-test-id="3"
                 onDragOver={(e)=> onDragOver(e)}
                 onDragStart={(e) => onDragStartFillBar(e, fillBar, allocation.id, allocation)}
-                onDrop={(e) => handleOnDropFillbar(e, allocation)}
+                onDrop={(e) => {
+                  if(handlePermissions()){
+                    handleOnDropFillbar(e, allocation)
+                  }
+                }}
                 className="element-button-allocation curved-eased lightContrast schemeFive fontSize-12 capitalize h6"
                 onMouseEnter={() => setHovered(`hover${fillBar.id}${allocation.id}`)}
                 onMouseLeave={() => setHovered('')}
@@ -118,7 +141,11 @@ const ColumnListRight = ({
                 { isHovered == `hover${fillBar.id}${allocation.id}` &&
                   <div 
                     className="elementSvgContainer"
-                    onClick={(e) => handleDeleteFillbar(e, allocation, fillBar.id)}
+                    onClick={(e) => {
+                      if(handlePermissions()){
+                        handleDeleteFillbar(e, allocation, fillBar.id)
+                      }
+                    }}
                   >
                     <SVG svg={'thrashCan'}></SVG>
                   </div>
@@ -142,7 +169,11 @@ const ColumnListRight = ({
                   type="text" 
                   className="elementInnerText darkContrast curved-eased"
                   value={ fillBar.text }
-                  onChange={(e) => updateFillBarData(allocation.id, idx, 'text', e.target.value) }
+                  onChange={(e) => {
+                    if(handlePermissions()){
+                      updateFillBarData(allocation.id, idx, 'text', e.target.value) 
+                    }
+                  }}
                 >
                 </input>
                 <input 
@@ -150,7 +181,11 @@ const ColumnListRight = ({
                   style={{ borderColor: headingSettings.length > 0 ? headingSettings[3].color : '#587B7F' }} 
                   className="elementInnerBox schemeFive"
                   value={ fillBar.allocation ? fillBar.allocation.replace(/(\.\d*?[1-9])0+$/g, '$1') : '' }
-                  onChange={(e) => updateFillBarData(allocation.id, idx, 'allocation', e.target.value) }
+                  onChange={(e) => {
+                    if(handlePermissions()){
+                      updateFillBarData(allocation.id, idx, 'allocation', e.target.value) 
+                    }
+                  }}
                 >
                 </input>
               </div>

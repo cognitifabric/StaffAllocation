@@ -1,44 +1,74 @@
 "use client"
-import { useState, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import axios from 'axios'
 import { useMutation, useQuery } from '@apollo/client';
 import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/navigation';
+import SVG from '../libs/svg'
 
 //// MUTATIONS
 import USER_LOGIN from '@/mutations/login'
+import USER_ENTITY_LOGIN from '@/mutations/loginEntityUser'
 
 export default function Home() {
 
-  const loadingColor = 'white'
+  const loadingColor = 'white';
   const router = useRouter();
+  const myRefs = useRef();
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [cookies, setCookie] = useCookies(['accessToken', 'user']);
-  const [ userLogin, { data, loadingLogin, errorLogin }] = useMutation(USER_LOGIN);
+  const [userType, setUserType] = useState('')
+  const [userTypeFormField, setUserTypeFormField] = useState('')
+  const [inputDropdown, setInputDropdown] = useState('')
+  const [userLogin, { data, loadingLogin, errorLogin }] = useMutation(USER_LOGIN);
+  const [entityUserLogin, { dataEntityUser, loadingEntityUserLogin, errorEntityUserLogin }] = useMutation(USER_ENTITY_LOGIN);
 
   const login = async () => {
 
+    if(!userType) return setError('Please select a user type')
     setLoading(true)
 
-    try {
-      const response = await userLogin({ variables: { username: username, password: password } })
-      const { token } = response.data.login;
+    if(userType == 'admin'){
+      try {
+        const response = await userLogin({ variables: { username: username, password: password } })
+        const { token } = response.data.login;
+  
+        // Handle successful login (use response data)
+        // Set cookies with a 1-hour expiration time
+        setCookie('accessToken', token, { path: '/', expires: new Date(Date.now() + 60 * 60 * 1000) });
+        setCookie('user', JSON.stringify(response.data.login), { path: '/', expires: new Date(Date.now() + 60 * 60 * 1000) });
+  
+        // Callback or additional logic after successful login
+        router.push('/staffing');
+  
+      } catch (error) {
+        // Handle login error (use error)
+        console.error(error);
+        if(error) setError(error.message)
+      }
+    } else if (userType == 'user'){
+      try {
+        const response = await entityUserLogin({ variables: { username: username, password: password } })
 
-      // Handle successful login (use response data)
-      // Set cookies with a 1-hour expiration time
-      setCookie('accessToken', token, { path: '/', expires: new Date(Date.now() + 60 * 60 * 1000) });
-      setCookie('user', JSON.stringify(response.data.login), { path: '/', expires: new Date(Date.now() + 60 * 60 * 1000) });
+        const { token } = response.data.loginEntityUser;
+  
+        // Handle successful login (use response data)
+        // Set cookies with a 1-hour expiration time
+        setCookie('accessToken', token, { path: '/', expires: new Date(Date.now() + 60 * 60 * 1000) });
 
-      // Callback or additional logic after successful login
-      router.push('/staffing');
-
-    } catch (error) {
-      // Handle login error (use error)
-      console.error(error);
-      if(error) setError(error.message)
+        setCookie('user', JSON.stringify(response.data.loginEntityUser), { path: '/', expires: new Date(Date.now() + 60 * 60 * 1000) });
+  
+        // Callback or additional logic after successful login
+        router.push('/staffing');
+  
+      } catch (error) {
+        // Handle login error (use error)
+        console.error(error);
+        if(error) setError(error.message)
+      }
     }
     
     setLoading(false)
@@ -84,6 +114,48 @@ export default function Home() {
                   setPassword(e.target.value)
                 )}
               />
+            </div>
+            <div className="form-group element-white curved-eased">
+              <input
+                className="curved-eased capitalize"
+                onClick={() => setInputDropdown('userType')} 
+                value={userTypeFormField.split(/(?=[A-Z])/).join('')} 
+                placeholder="user type"
+                // onChange={(e) => (setInputDropdown(''), stateMethod(caseType, 'leader', e.target.value))}
+                readOnly
+              />
+              <div 
+                onClick={() => (
+                  inputDropdown == 'userType' ? setInputDropdown('') : setInputDropdown('userType')
+                )}
+              >
+                <SVG 
+                  svg={'arrowDown'}
+                  width={20}
+                  height={20}
+                  color={'#8D5A97'}
+                >
+                </SVG>
+              </div>
+              { inputDropdown == 'userType' &&
+                <div 
+                  className="form-group-list" 
+                  ref={myRefs}
+                >
+                  <div 
+                    className="form-group-list-item" 
+                    onClick={(e) => (setUserType('admin'), setUserTypeFormField('admin'), setInputDropdown(''))}
+                  >
+                    Admin
+                  </div>
+                  <div 
+                    className="form-group-list-item" 
+                    onClick={(e) => (setUserType('user'), setUserTypeFormField('user'), setInputDropdown(''))}
+                  >
+                    Guest User
+                  </div>
+                </div>
+              }
             </div>
             <div className="form-group">
               <button

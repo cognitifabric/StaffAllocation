@@ -1,28 +1,21 @@
+
 import SVG from '../../libs/svg'
 
-const EntityUsers = ({
-  reset,
-  username,
-  setError,
-  setLoading,
-  setUsername,
-  setInputDropdown,
-  userTypeFormField,
-  inputDropdown,
-  myRefs,
-  setUserType,
-  setUserTypeFormField,
-  loading,
-  sendInviteForm,
-  message,
-  setMessage,
-  error,
+const EditEntityUsers = ({
   setPopup,
+  reset,
   user,
   setUser,
-  userType,
-  allUsers
+  allUsers,
+  message,
+  setMessage,
+  submitError,
+  setSubmitError,
+  loading,
+  setLoading
 }) => {
+  
+  const loadingColor = 'white'
   
   return (
     <div className="popUpBackground">
@@ -44,8 +37,15 @@ const EntityUsers = ({
         </div>
         <div className="w40 box-curved-3 boxForm">
           <div className="element-white curved-eased">
-            { allUsers.length > 0 && allUsers.map((account) => 
-              account.username == user.username && account.users.length > 0 && account.users.map((item, idx) => 
+            <div className="form-group">
+            <button
+              className="form-group-button-large"
+              onClick={() => setPopup('addEntityUser')}
+            >
+              <span>Add Entity User</span>
+            </button>
+            </div>
+            { allUsers.length > 0 && allUsers.map((item, idx) => 
                 <div 
                   key={idx}
                   // onClick={(e) => (setUserType('editor'), setUserTypeFormField('Editor'), setInputDropdown(''), setMessage(''))}
@@ -86,7 +86,7 @@ const EntityUsers = ({
                   </div>
                 </div>
               )
-            )}
+          }
           </div>
           <div className="form-group">
           </div>
@@ -97,10 +97,10 @@ const EntityUsers = ({
               </div>
             </div>
           }
-          {error && 
+          {submitError && 
             <div className="container-center padding-0">
               <div className="text-schemeOne">
-                {error}
+                {submitError}
               </div>
             </div>
           }
@@ -110,4 +110,4 @@ const EntityUsers = ({
   )
 }
 
-export default EntityUsers
+export default EditEntityUsers

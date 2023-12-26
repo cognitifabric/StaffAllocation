@@ -214,7 +214,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .container-center {
-  width: 90%;
+  width: 95%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -302,11 +302,11 @@ body::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: 100%;
 }
 
 .popUpBox {
@@ -597,7 +597,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .teams {
-  width: 3%;
+  width: max-content;
   height: 400px;
   display: flex;
   flex-direction: column;
@@ -1166,6 +1166,14 @@ body::-webkit-scrollbar-thumb {
   margin: 10rem 0rem !important;
 }
 
+.mt5 {
+  margin: 5rem 0rem !important;
+}
+
+.my3 {
+  margin: 2rem 0 !important;
+}
+
 .headerOne {
   letter-spacing: 0.2rem;
   font-size: 2.4rem;
@@ -1209,6 +1217,41 @@ body::-webkit-scrollbar-thumb {
   gap: 1rem;
 }
 
+.bg-red {
+  background-color: red !important;
+}
+
+.relative {
+  position: relative !important;
+}
+
+.notification {
+  display: flex;
+  justify-content: center;
+  width: 40rem;
+  margin-top: 1rem;
+  padding: 1rem 1rem;
+  background-color: #A4A5AE;
+  color: white;
+  font-size: 1.4rem;
+  border-radius: 1.2rem;
+  box-shadow: 0.5rem 0.3rem 0.3rem 0.3rem rgba(0, 0, 0, 0.4);
+}
+
+.close {
+  position: absolute;
+  right: -1rem;
+  top: -0.7rem;
+  padding: 0.5rem;
+  background-color: black;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+.close:hover {
+  cursor: pointer;
+}
+
 .nav {
   display: flex;
   flex-direction: row;
@@ -1229,6 +1272,41 @@ body::-webkit-scrollbar-thumb {
 }
 .nav-list-item:hover {
   cursor: pointer;
+}
+.nav-account {
+  position: relative;
+}
+.nav-account svg:hover {
+  cursor: pointer;
+}
+.nav-account-menu {
+  position: absolute;
+  top: 100%;
+  left: -15rem;
+  background-color: #907F9F;
+  width: 20rem;
+  height: max-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.5rem;
+  z-index: 200;
+  box-shadow: 0.5rem 0.5rem 1rem 0.5rem rgba(0, 0, 0, 0.4);
+}
+.nav-account-menu h1 {
+  padding: 1rem;
+}
+.nav-account-menu-item {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  font-size: 1.8rem;
+  width: 100%;
+  transition: all 0.5s;
+}
+.nav-account-menu-item:hover {
+  cursor: pointer;
+  background-color: #A4A5AE;
 }
 .nav-logo {
   font-size: 2.4rem;

@@ -2,13 +2,13 @@ import SVG from '../../libs/svg'
 import { useMutation } from '@apollo/client';
 
 //// MUTATIONS
-import UPDATE_USER from '../../mutations/updateUser'
-import GET_USERS from '@/queries/fetchUsers'
+import UPDATE_ENTITY_USER from '../../mutations/updateEntityUser'
+import GET_USER from '@/queries/fetchUser'
 
-const EditUser = ({
+const EditEntityUser = ({
   reset,
   username,
-  setError,
+  setSubmitError,
   setLoading,
   setUsername,
   setInputDropdown,
@@ -18,31 +18,33 @@ const EditUser = ({
   setUserType,
   setUserTypeFormField,
   loading,
+  sendInviteForm,
   message,
-  error,
+  setMessage,
+  submitError,
   setPopup,
   user,
   setUser,
-  userType,
-  name,
-  setName
+  userType
 }) => {
   
   const loadingColor = 'white'
-  const [ updateUserMutation, { dataUpdateUser, loadingUpdateUser, errorUpdateUser}] = useMutation(UPDATE_USER, { refetchQueries: [ GET_USERS ]})
+  const [ updateEntityUserMutation, { dataUpdateEntityUser, loadingUpdateEntityUser, errorUpdateEntityUser}] = useMutation(UPDATE_ENTITY_USER, { refetchQueries: [ GET_USER ]})
 
-  const sendUpdatedUser = () => {
+  const updateEntityUser = async () => {
     
-    if(!username && !userType && !name) return setError('Username, name, or role must be different')
+    if(!username && !userType) return setSubmitError('Username or role must be different')
     setLoading(true)
 
     try {
       
-      updateUserMutation({ variables: { id: user.id, name: name, username: username, role: userType} })
+      const response = await updateEntityUserMutation({ variables: { id: user.id, username: username, role: userType} })
       setUser('')
-      setLoading(false),
-      reset(),
-      setPopup('')
+      setLoading(false)
+      setPopup('editAllEntityUsers')
+      setUsername('')
+      setUserType('')
+      setMessage('User updated')
       
     } catch (error) {
       
@@ -76,40 +78,28 @@ const EditUser = ({
             <input 
               className="curved-eased"
               type="text" 
-              value={name ? name : user.name}
-              placeholder="email"
-              onChange={(e) => (
-                setError(''),
-                setLoading(''),
-                setName(e.target.value)
-              )}
-            />
-          </div>
-          <div className="form-group element-white curved-eased">
-            <input 
-              className="curved-eased"
-              type="text" 
               value={username ? username : user.username}
-              placeholder="email"
-              onChange={(e) => (
-                setError(''),
-                setLoading(''),
-                setUsername(e.target.value)
-              )}
+              placeholder="Email"
+              readOnly
+              // onChange={(e) => (
+              //   setError(''),
+              //   setLoading(''),
+              //   setMessage(''),
+              //   setUsername(e.target.value)
+              // )}
             />
           </div>
           <div className="form-group element-white curved-eased">
             <input
               className="curved-eased capitalize"
-              onClick={() => setInputDropdown('inviteUser')} 
+              onClick={() => setInputDropdown('userType')} 
               value={userTypeFormField.split(/(?=[A-Z])/).join('') ? userTypeFormField.split(/(?=[A-Z])/).join('') : user.role.split(/(?=[A-Z])/).join(' ')} 
               placeholder="user type"
-              // onChange={(e) => (setInputDropdown(''), stateMethod(caseType, 'leader', e.target.value))}
               readOnly
             />
             <div 
               onClick={() => (
-                inputDropdown == 'inviteUser' ? setInputDropdown('') : setInputDropdown('inviteUser')
+                inputDropdown == 'userType' ? setInputDropdown('') : setInputDropdown('userType')
               )}
             >
               <SVG 
@@ -120,38 +110,32 @@ const EditUser = ({
               >
               </SVG>
             </div>
-            { inputDropdown == 'inviteUser' &&
+            { inputDropdown == 'userType' &&
               <div 
                 className="form-group-list" 
                 ref={myRefs}
               >
                 <div 
                   className="form-group-list-item" 
-                  onClick={(e) => (setUserType('systemAdmin'), setUserTypeFormField('System Admin'), setInputDropdown(''))}
+                  onClick={(e) => (setUserType('editor'), setUserTypeFormField('Editor'), setInputDropdown(''), setMessage(''))}
                 >
-                  System Admin
+                  Editor
                 </div>
                 <div 
                   className="form-group-list-item" 
-                  onClick={(e) => (setUserType('entityAdmin'), setUserTypeFormField('Entity Admin'), setInputDropdown(''))}
+                  onClick={(e) => (setUserType('viewer'), setUserTypeFormField('Viewer'), setInputDropdown(''), setMessage(''))}
                 >
-                  Entity Admin
+                  Viewer
                 </div>
-                {/* <div 
-                  className="form-group-list-item" 
-                  onClick={(e) => (setUserType('entityUser'), setUserTypeFormField('Entity User'), setInputDropdown(''))}
-                >
-                  Entity User
-                </div> */}
               </div>
             }
           </div>
           <div className="form-group">
           <button
             className="form-group-button-large"
-            onClick={() => sendUpdatedUser()}
+            onClick={() => updateEntityUser()}
             >
-              {!loading && <span>Update User</span>} 
+              {!loading && <span>Update Entity User</span>} 
               {loading && 
               <div className="loading">
                 <span style={{backgroundColor: loadingColor}}></span>
@@ -168,10 +152,10 @@ const EditUser = ({
               </div>
             </div>
           }
-          {error && 
+          {submitError && 
             <div className="container-center padding-0">
               <div className="text-schemeOne">
-                {error}
+                {submitError}
               </div>
             </div>
           }
@@ -181,4 +165,4 @@ const EditUser = ({
   )
 }
 
-export default EditUser
+export default EditEntityUser

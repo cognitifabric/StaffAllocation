@@ -32,6 +32,10 @@ import ColorPallete from '@/component/colorPallete'
 import SystemAdmin from '../_components/SystemAdmin'
 import AddYear from '../_components/AddYear'
 import AddTeam from '../_components/AddTeam'
+import EditAllEntityUsers from '../_components/EditAllEntityUsers'
+import EntityAdminEditUser from '../_components/EntityAdminEditUsers'
+import EntityDeleteEntityUser from '../_components/EntityAdminDeleteUser'
+import EntityAdminAddUser from '../_components/EntityAdminAddUser';
 
 //// OPERATIONS
 import { handleChangeTeam } from '../../helpers/operations';
@@ -40,6 +44,7 @@ function Staffing () {
 
   const router = useRouter();
 
+  const myRefs = useRef()
   const [cookies, setCookie, removeCookie] = useCookies(['accessToken', 'user']);
   const [ headingSettings, setHeadingSettings ] = useState([])
   const [ allocations, setAllocations ] = useState([])
@@ -53,7 +58,22 @@ function Staffing () {
   const [ popup, setPopup] = useState('')
   const [ loading, setLoading] = useState('')
   const [ submitError, setSubmitError] = useState('')
-
+  const [ sortTwo, setSortTwo ] = useState(false)
+  const [ sortThree, setSortThree ] = useState(false)
+  const [ sortType, setSortType] = useState('')
+  const [ isTyping, setIsTyping ] = useState('');
+  const [ isHovered, setHovered ] = useState('');
+  const [ colorPallete, setColorPallete ] = useState('')
+  const [ palleteType, setPalleteType] = useState('')
+  const [ sortLeftType, setSortLeftType] = useState('')
+  const [ sortRightType, setSortRightType] = useState('')
+  const [ username, setUsername] = useState('')
+  const [ userType, setUserType] = useState('')
+  const [ userTypeFormField, setUserTypeFormField] = useState('')
+  const [ inputDropdown, setInputDropdown] = useState('')
+  const [ user, setUser] = useState('')
+  const [ message, setMessage ] = useState('')
+  
   const dataUser = useQuery(GET_USER, {
     variables: { id: cookies.user ? cookies.user.id : '', token: cookies.accessToken }
   })
@@ -68,25 +88,35 @@ function Staffing () {
   const [ uploadAllocation, { dataUploadAllocation, loadingUploadAllocation, errorUploadAllocation }] = useMutation(UPLOAD_ALLOCATION, { refetchQueries: [ GET_USER ]})
   const [ addYear, { dataAddYear, loadingAddYear, errorAddYear }] = useMutation(ADD_YEAR, { refetchQueries: [ GET_USER ]})
   const [ addTeam, { dataAddTeam, loadingAddTeam, errorAddTeam }] = useMutation(ADD_TEAM, { refetchQueries: [ GET_USER ]})
-  const [ sortTwo, setSortTwo ] = useState(false)
-  const [ sortThree, setSortThree ] = useState(false)
-  const [ sortType, setSortType] = useState('')
-  const [ isTyping, setIsTyping ] = useState('');
-  const [ isHovered, setHovered ] = useState('');
-  const [ colorPallete, setColorPallete ] = useState('')
-  const [ palleteType, setPalleteType] = useState('')
-  const [ sortLeftType, setSortLeftType] = useState('')
-  const [ sortRightType, setSortRightType] = useState('')
   const elementsWithIdRef = useRef([]);
   const containerRefLeft    = useRef(null);
   const containerRefRight   = useRef(null);
+  
+  const reset = () => {
+    setSubmitError('')
+    setLoading('')
+    setUsername(''),
+    setUserType(''),
+    setUserTypeFormField(''),
+    setMessage('')
+  }
+
+  const handlePermissions = () => {
+    if(cookies && cookies.user.role){
+      if(cookies.user.role == 'viewer'){
+        setMessage('Not allowed, user has only viwer permissions') 
+        return false
+      }
+    }
+    return true
+  }
   
   useEffect(() => {
     
     let newAllocations = []
 
     setLoadingData(true)
-    // console.log(dataUser)
+    
     if(dataUser.error){ 
       console.log('DATAUSER ERROR', dataUser.error)
       dataUser.error.message = 'Invalid token' ? router.push('/') : router.push('/error') 
@@ -600,13 +630,38 @@ function Staffing () {
     <>
       <Nav
         removeCookie={removeCookie}
+        user={dataUser}
+        popup={popup}
+        setPopup={setPopup}
+        cookies={cookies}
       >
       </Nav>
+      {message && 
+        <div className="w-full flex justify-center">
+          <div className="notification relative">
+            <div
+              className="close"
+              onClick={() => setMessage('')}
+            >
+              <SVG
+                svg={'close'}
+                color={'white'}
+              >
+              </SVG>
+            </div>
+            {message}
+          </div>
+        </div>
+      }
       <div className="w-full flex justify-end mt">
-        <div className="teams flex justify-center items-center mt10">
+      <div className="teams flex justify-center items-center mt5">
         <div
           className="svgItem"
-          onClick={() => setPopup('addTeam')}
+          onClick={() => {
+            if(handlePermissions()){
+              setPopup('addTeam')
+            }
+          }}
         >
           <SVG 
             width={50}
@@ -628,13 +683,17 @@ function Staffing () {
             </span>
           )}
         </div>
-        </div>
+      </div>
       <div className="container-center wrap">
         <div className="w-full flex items-center">
           <div className="years flex items-center justify-center">
             <div 
               className="svgItem"
-              onClick={() => setPopup('addYear')}
+              onClick={() => {
+                if(handlePermissions()){
+                  setPopup('addYear')
+                }
+              }}
             >
               <SVG 
                 width={50}
@@ -657,9 +716,11 @@ function Staffing () {
         <div className="container-flex-right whalf h5 border-right">
           <div 
             className="element-button-icon"
-            onClick={() => (
-              submitAddAllocation('two')
-            )}
+            onClick={() => {
+              if(handlePermissions()){
+                submitAddAllocation('two')
+              }
+            }}
           >
             <SVG svg={'plus'}></SVG>
           </div>
@@ -675,7 +736,11 @@ function Staffing () {
               id="importAllocationOrderTwo"
               accept=".xlsx"
               className="element-button-text curved"
-              onChange={(e) => readFile(e, 2)}
+              onChange={(e) => {
+                if(handlePermissions()){
+                  readFile(e, 2)
+                }
+              }}
             >
             </input>
           </div>
@@ -683,9 +748,11 @@ function Staffing () {
         <div className="container-flex-left whalf h5">
           <div 
             className="element-button-icon"
-            onClick={() => 
-              submitAddAllocation('three')
-            }
+            onClick={() => {
+              if(handlePermissions()){
+                submitAddAllocation('three')
+              }
+            }}
           >
             <SVG svg={'plus'}></SVG>
           </div>
@@ -701,7 +768,11 @@ function Staffing () {
               id="importAllocationOrderThree"
               accept=".xlsx"
               className="element-button-text curved"
-              onChange={(e) => readFile(e, 3)}
+              onChange={(e) => {
+                if(handlePermissions()){
+                  readFile(e, 3)
+                }
+              }}
             >
             </input>
           </div>
@@ -717,10 +788,12 @@ function Staffing () {
           >
             { headingSettings.length > 0 && isHovered == headingSettings.find(( item ) =>  item.order === 1).id &&
             <div 
-              onClick={(e) => (
-                setColorPallete(headingSettings.find(( item ) =>  item.order === 1).id,
-                setPalleteType('headings')
-              ))}
+              onClick={(e) => {
+                if(handlePermissions()){
+                  setColorPallete(headingSettings.find(( item ) =>  item.order === 1).id),
+                  setPalleteType('headings')
+                }
+              }}
               className="elementSvgContainer positionLeftZero noColor"
             >
                 <SVG svg={'pallete'}></SVG>
@@ -731,7 +804,11 @@ function Staffing () {
               style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[0].color : '#587B7F' }} 
               className="element-button-text curved-eased wfull fontSize-16 capitalize"
               value={ headingSettings.length > 0 ? headingSettings.find(( item ) =>  item.order === 1).content : 'Districts' }
-              onChange={(e) => updateHeadingSetting(1, e.target.value) }
+              onChange={(e) => {
+                if(handlePermissions()){
+                  updateHeadingSetting(1, e.target.value)
+                }
+              }}
             >
             </input>
           </div>
@@ -743,10 +820,12 @@ function Staffing () {
           >
             { headingSettings.length > 0 && isHovered == headingSettings.find(( item ) =>  item.order === 2).id &&
             <div 
-              onClick={(e) => (
-                setColorPallete(headingSettings.find(( item ) =>  item.order === 2).id),
-                setPalleteType('headings')
-              )}
+              onClick={(e) => {
+                if(handlePermissions()){
+                  setColorPallete(headingSettings.find(( item ) =>  item.order === 2).id),
+                  setPalleteType('headings')
+                }
+              }}
               className="elementSvgContainer positionLeftZero noColor"
             >
                 <SVG svg={'pallete'}></SVG>
@@ -757,7 +836,11 @@ function Staffing () {
               style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[1].color : '#587B7F' }}  
               className="element-button-text curved-eased w20 fontSize-16 capitalize"
               value={ headingSettings.length > 0 ? headingSettings.find(( item ) =>  item.order === 2).content : 'Employees' }
-              onChange={(e) => updateHeadingSetting(2, e.target.value) }
+              onChange={(e) => {
+                if(handlePermissions()){
+                  updateHeadingSetting(2, e.target.value) 
+                }
+              }}
             >
             </input>
           </div>
@@ -793,10 +876,12 @@ function Staffing () {
           >
             { headingSettings.length > 0 && isHovered == headingSettings.find(( item ) =>  item.order === 3).id &&
             <div 
-              onClick={(e) => (
-                setColorPallete(headingSettings.find(( item ) =>  item.order === 3).id,
-                setPalleteType('headings')
-              ))}
+              onClick={(e) => {
+                if(handlePermissions()){
+                    setColorPallete(headingSettings.find(( item ) =>  item.order === 3).id),
+                    setPalleteType('headings')
+                }
+              }}
               className="elementSvgContainer positionLeftZero noColor"
             >
                 <SVG svg={'pallete'}></SVG>
@@ -807,7 +892,13 @@ function Staffing () {
               style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[2].color : '#587B7F' }}  
               className="element-button-text curved-eased w20 fontSize-16 capitalize"
               value={ headingSettings.length > 0 ? headingSettings.find(( item ) =>  item.order === 3).content : 'Locations' }
-              onChange={(e) => updateHeadingSetting(3, e.target.value) }
+              onChange={(e) => 
+                {
+                  if(handlePermissions()){
+                    updateHeadingSetting(3, e.target.value) 
+                  }
+                }
+              }
             >
             </input>
           </div>
@@ -819,10 +910,12 @@ function Staffing () {
           >
             { headingSettings.length > 0 && isHovered == headingSettings.find(( item ) =>  item.order === 4).id &&
             <div 
-              onClick={(e) => (
-                  setColorPallete(headingSettings.find(( item ) =>  item.order === 4).id,
+              onClick={(e) => {
+                if(handlePermissions()){
+                  setColorPallete(headingSettings.find(( item ) =>  item.order === 4).id),
                   setPalleteType('headings')
-              ))}
+                }
+              }}
               className="elementSvgContainer positionLeftZero noColor"
             >
                 <SVG svg={'pallete'}></SVG>
@@ -833,7 +926,11 @@ function Staffing () {
               style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[3].color : '#587B7F' }}  
               className="element-button-text curved-eased wfull fontSize-16 capitalize"
               value={ headingSettings.length > 0 ? headingSettings.find(( item ) =>  item.order === 4).content : 'Allocations' }
-              onChange={(e) => updateHeadingSetting(4, e.target.value) }
+              onChange={(e) => {
+                if(handlePermissions()){
+                  updateHeadingSetting(4, e.target.value)
+                }
+              }}
             >
             </input>
           </div>
@@ -870,6 +967,7 @@ function Staffing () {
           setColorPallete={setColorPallete}
           headingSettings={headingSettings}
           setPalleteType={setPalleteType}
+          handlePermissions={handlePermissions}
         >
         </ColumnListLeft>
 
@@ -892,6 +990,7 @@ function Staffing () {
           setColorPallete={setColorPallete}
           headingSettings={headingSettings}
           setPalleteType={setPalleteType}
+          handlePermissions={handlePermissions}
         >
         </ColumnListRight>
         
@@ -953,6 +1052,92 @@ function Staffing () {
           year={yearID}
         >
         </AddTeam>
+      }
+      { popup == 'editAllEntityUsers' &&
+        <EditAllEntityUsers
+          popup={popup}
+          setPopup={setPopup}
+          reset={reset}
+          allUsers={dataUser.data.user.users}
+          user={dataUser.data.user}
+          setUser={setUser}
+          message={message}
+          setMessage={setMessage}
+          submitError={submitError}
+          setSubmitError={setSubmitError}
+          loading={loading}
+          setLoading={setLoading}
+        >
+        </EditAllEntityUsers>
+      }
+      {popup === 'editEntityUser' &&
+        <EntityAdminEditUser
+          reset={reset}
+          username={username}
+          setSubmitError={setSubmitError}
+          setLoading={setLoading}
+          setUsername={setUsername}
+          setInputDropdown={setInputDropdown}
+          userTypeFormField={userTypeFormField}
+          inputDropdown={inputDropdown}
+          myRefs={myRefs}
+          setUserType={setUserType}
+          setUserTypeFormField={setUserTypeFormField}
+          loading={loading}
+          message={message}
+          setMessage={setMessage}
+          submitError={submitError}
+          setPopup={setPopup}
+          user={user}
+          setUser={setUser}
+          userType={userType}
+        />
+      }
+      {popup === 'deleteEntityUser' &&
+        <EntityDeleteEntityUser
+          reset={reset}
+          username={username}
+          setError={setSubmitError}
+          setLoading={setLoading}
+          setUsername={setUsername}
+          setInputDropdown={setInputDropdown}
+          userTypeFormField={userTypeFormField}
+          inputDropdown={inputDropdown}
+          myRefs={myRefs}
+          setUserType={setUserType}
+          setUserTypeFormField={setUserTypeFormField}
+          loading={loading}
+          message={message}
+          setMessage={setMessage}
+          error={submitError}
+          setPopup={setPopup}
+          user={user}
+          setUser={setUser}
+          userType={userType}
+        />
+      }
+      {popup === 'addEntityUser' &&
+        <EntityAdminAddUser
+          reset={reset}
+          username={username}
+          setError={setSubmitError}
+          setLoading={setLoading}
+          setUsername={setUsername}
+          setInputDropdown={setInputDropdown}
+          userTypeFormField={userTypeFormField}
+          inputDropdown={inputDropdown}
+          myRefs={myRefs}
+          setUserType={setUserType}
+          setUserTypeFormField={setUserTypeFormField}
+          loading={loading}
+          message={message}
+          setMessage={setMessage}
+          error={submitError}
+          setPopup={setPopup}
+          user={dataUser.data.user}
+          setUser={setUser}
+          userType={userType}
+        />
       }
     </>
   )

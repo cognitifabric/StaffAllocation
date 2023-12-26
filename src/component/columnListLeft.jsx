@@ -19,7 +19,8 @@ const ColumnListLeft = ({
   colorPallete,
   setColorPallete,
   headingSettings,
-  setPalleteType
+  setPalleteType,
+  handlePermissions
 }) => {
   
   return (
@@ -35,7 +36,11 @@ const ColumnListLeft = ({
         key={idx}
         className="lightGray-background curved"
         onDragOver={(e)=> onDragOver(e)}
-        onDrop={(e) => handleOnDrop(e)}
+        onDrop={(e) => {
+          if(handlePermissions()){
+            handleOnDrop(e)
+          }
+        }}
       >
         <div className="container-flex-right wfull">
           <div className="container-flex-right wfull h10 fontSize-16 capitalize scrollReverse">
@@ -48,7 +53,11 @@ const ColumnListLeft = ({
                 data-test-id="2"
                 onDragOver={(e)=> onDragOver(e)}
                 onDragStart={(e) => onDragStartFillBar(e, fillBar, allocation.id, allocation)}
-                onDrop={(e) => handleOnDropFillbar(e, allocation)}
+                onDrop={(e) => {
+                  if(handlePermissions()){
+                    handleOnDropFillbar(e, allocation)
+                  }
+                }}
                 onMouseEnter={() => setHovered(`hover${fillBar.id}${allocation.id}`)}
                 onMouseLeave={() => setHovered('')}
                 onClick={() => glowAll(fillBar.id)}
@@ -56,7 +65,11 @@ const ColumnListLeft = ({
                 { isHovered == `hover${fillBar.id}${allocation.id}` &&
                   <div 
                     className="elementSvgContainer"
-                    onClick={(e) => handleDeleteFillbar(e, allocation, fillBar.id)}
+                    onClick={(e) => {
+                      if(handlePermissions()){
+                        handleDeleteFillbar(e, allocation, fillBar.id)
+                      }
+                    }}
                   >
                     <SVG svg={'thrashCan'}></SVG>
                   </div>
@@ -108,17 +121,23 @@ const ColumnListLeft = ({
           >
             { isHovered == `hover${allocation.id}${idx}` &&
               <div 
-                onClick={(e) => handleDeleteAllocation(e, allocation)}
+                onClick={(e) => {
+                  if(handlePermissions()){
+                    handleDeleteAllocation(e, allocation)
+                  }
+                }}
                 className="elementSvgContainer">
                   <SVG svg={'thrashCan'}></SVG>
               </div>
             }
             { isHovered == `hover${allocation.id}${idx}` &&
               <div 
-                onClick={(e) => (
-                  setColorPallete(allocation.id),
-                  setPalleteType('allocations')
-                )}
+                onClick={(e) => {
+                  if(handlePermissions()){
+                    setColorPallete(allocation.id),
+                    setPalleteType('allocations')
+                  }
+                }}
                 className="elementSvgContainer positionLeftZero noColor"
               >
                   <SVG svg={'pallete'}></SVG>
@@ -137,14 +156,22 @@ const ColumnListLeft = ({
               style={{ borderColor: allocation.color }}
               className="elementInnerBox schemeTwo"
               value={ allocation.fte }
-              onChange={(e) => updateAllocationItems(allocation.id, 'fte', e.target.value) }
+              onChange={(e) => {
+                if(handlePermissions()){
+                  updateAllocationItems(allocation.id, 'fte', e.target.value) 
+                }
+              }}
             >
             </input>
             <input 
               type="text"
               className="elementInnerText darkContrast curved-eased"
               value={ allocation.text }
-              onChange={(e) => updateAllocationItems(allocation.id, 'text', e.target.value) }
+              onChange={(e) => {
+                if(handlePermissions()){
+                  updateAllocationItems(allocation.id, 'text', e.target.value) 
+                }
+              }}
             >
             </input>
             <input 

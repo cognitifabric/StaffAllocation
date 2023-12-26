@@ -24,6 +24,51 @@
     
   }
 
+  &-account {
+    position: relative;
+    
+    svg {
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    &-menu {
+      position: absolute;
+      top: 100%;
+      left: -15rem;
+      background-color: $color-scheme-2;
+      width: 20rem;
+      height: max-content;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border-radius: .5rem;
+      z-index: 200;
+      box-shadow: .5rem .5rem 1rem .5rem rgba(0,0,0, .4);
+
+      h1 {
+        padding: 1rem;
+      }
+
+      &-item {
+        text-align: center;
+        padding: 1.5rem 1rem;
+        font-size: 1.8rem;
+        width: 100%;
+        transition: all .5s;
+
+        &:hover {
+          cursor: pointer;
+          background-color: $color-scheme-3;
+        }
+      }
+      
+    }
+    
+  }
+
   &-logo {
     font-size: 2.4rem;
     font-family: palanquin;

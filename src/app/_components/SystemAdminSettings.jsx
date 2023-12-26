@@ -38,10 +38,10 @@ const SystemAdminSettings = ({
   const [ sendInviteMutation, { dataInviteUser, loadingInviteUser, errorInviteUser}] = useMutation(USER_INVITE)
   
   const reset = () => {
-    setName(''),
-    setUsername(''),
-    setUserType(''),
-    setUserTypeFormField(''),
+    setName('')
+    setUsername('')
+    setUserType('')
+    setUserTypeFormField('')
     setLoading('')
     setError('')
     setMessage('')

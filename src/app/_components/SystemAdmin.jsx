@@ -17,6 +17,7 @@ const SystemAdmin = ({
     <>
       <Nav
         removeCookie={removeCookie}
+        user={currentUser}
       >
       </Nav>
       <SystemAdminSettings
