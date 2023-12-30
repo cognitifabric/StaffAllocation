@@ -22,6 +22,7 @@ import ADD_TEAM from '@/mutations/addTeam'
 //// HELPERS
 import { onDragStart, onDragOver, onDrop, onDropFillBar, onDragStartFillBar } from '@/helpers/draggable';
 import { sumByType, sum, findObjectById } from '@/helpers/utilities';
+import { changeSort, savedSort } from '../../helpers/operations';
 
 //// COMPONENTS
 import Nav from '../_components/Navigation';
@@ -58,8 +59,8 @@ function Staffing () {
   const [ popup, setPopup] = useState('')
   const [ loading, setLoading] = useState('')
   const [ submitError, setSubmitError] = useState('')
-  const [ sortTwo, setSortTwo ] = useState(false)
-  const [ sortThree, setSortThree ] = useState(false)
+  const [ sortTwo, setSortTwo ] = useState(true)
+  const [ sortThree, setSortThree ] = useState(true)
   const [ sortType, setSortType] = useState('')
   const [ isTyping, setIsTyping ] = useState('');
   const [ isHovered, setHovered ] = useState('');
@@ -70,6 +71,8 @@ function Staffing () {
   const [ username, setUsername] = useState('')
   const [ userType, setUserType] = useState('')
   const [ userTypeFormField, setUserTypeFormField] = useState('')
+  const [ savedSortTwo, setSavedSortTwo] = useState(false)
+  const [ savedSortThree, setSavedSortThree] = useState(false)
   const [ inputDropdown, setInputDropdown] = useState('')
   const [ user, setUser] = useState('')
   const [ message, setMessage ] = useState('')
@@ -150,8 +153,9 @@ function Staffing () {
     
       setAllocations(newAllocations)
 
-      if(sortLeftType) changeSort(sortLeftType.type, sortLeftType.order)
-      if(sortRightType) changeSort(sortRightType.type, sortRightType.order)
+      if(sortLeftType) savedSort(sortLeftType.type, sortLeftType.order, newAllocations, setAllocations, setSortTwo, setSortThree, savedSortTwo ? !savedSortTwo : !sortTwo, savedSortThree)
+
+      if(sortRightType) savedSort(sortRightType.type, sortRightType.order, newAllocations, setAllocations, setSortTwo, setSortThree, savedSortTwo, savedSortThree ? !savedSortThree : !sortThree)
 
     }
     
@@ -336,7 +340,7 @@ function Staffing () {
     e.preventDefault()
 
     let newObject = { ...allocation }
-    console.log(allocation)
+    
     delete newObject.fillBars
     deleteAllocation({ variables: { allocation: newObject, userID: dataUser.data.user.id } })
     setIsTyping('')
@@ -392,114 +396,6 @@ function Staffing () {
       }
 
     });
-  }
-
-  const changeSort = (sortType, listType) => {
-    
-    if(listType == 'two'){
-      let newList = []
-      
-      if(sortType == 'text'){
-        newList = allocations
-          .slice()
-          .sort( (a, b) => {
-
-          const textA = a[sortType].toLowerCase();
-          const textB = b[sortType].toLowerCase();
-
-          if (textA < textB) return sortTwo ? -1 : 1;
-          if (textA > textB) return sortTwo ? 1 : -1;
-          return 0;
-
-        }).filter((item) => {
-          if(item.order == 2) return item
-        })
-      }
-
-      if(sortType !== 'text'){
-        newList = allocations
-          .slice()
-          .sort( (a, b) => {
-
-          const numA = parseFloat(a[sortType]);
-          const numB = parseFloat(b[sortType]);
-          
-          if (numA < numB) return sortTwo ? 1 : -1;
-          if (numA > numB) return sortTwo ? -1 : 1;
-          return 0;
-
-        }).filter((item) => {
-          if(item.order == 2) return item
-        })
-      }
-
-      let newAllocations = [...allocations]
-      
-
-      newAllocations.forEach((item, index) => {
-        if (item.order === 2) {
-          const targetItem = newList.shift();
-          newAllocations[index] = targetItem;
-        }
-      });
-
-      setAllocations(newAllocations)
-      setSortTwo(!sortTwo)
-
-    }
-
-    if(listType == 'three'){
-      let newList = []
-      
-      if(sortType == 'text'){
-        newList = allocations
-          .slice()
-          .sort( (a, b) => {
-
-            const textA = a[sortType].toLowerCase();
-            const textB = b[sortType].toLowerCase();
-
-            if (textA < textB) return sortThree ? -1 : 1;
-            if (textA > textB) return sortThree ? 1 : -1;
-            return 0;
-
-          }).filter((item) => {
-          if(item.order == 3) return item
-        })
-      }
-
-      if(sortType !== 'text'){
-        newList = allocations
-          .slice()
-          .sort( (a, b) => {
-
-          const numA = parseFloat(a[sortType]);
-          const numB = parseFloat(b[sortType]);
-          
-          if (numA < numB) return sortThree ? 1 : -1;
-          if (numA > numB) return sortThree ? -1 : 1;
-          return 0
-
-        }).filter((item) => {
-          if(item.order == 3) return item
-        })
-      }
-
-      let newAllocations = [...allocations]
-      
-
-      newAllocations.forEach((item, index) => {
-        if (item.order === 3) {
-          const targetItem = newList.shift();
-          newAllocations[index] = targetItem;
-        }
-      });
-
-      setAllocations(newAllocations)
-      setSortThree(!sortThree)
-
-    }
-    
   }
 
   const submitAddAllocation = (type) => {
@@ -852,6 +748,14 @@ function Staffing () {
               listType="two"
               allocations={allocations}
               setSortLeftType={setSortLeftType}
+              setSortRightType={setSortRightType}
+              setAllocations={setAllocations}
+              setSortTwo={setSortTwo}
+              setSortThree={setSortThree}
+              sortTwo={sortTwo}
+              sortThree={sortThree}
+              setSavedSortTwo={setSavedSortTwo}
+              setSavedSortThree={setSavedSortThree}
             >
             </DropDown>
           </div>
@@ -864,7 +768,15 @@ function Staffing () {
               changeSort={changeSort}
               listType="three"
               allocations={allocations}
+              setSortLeftType={setSortLeftType}
               setSortRightType={setSortRightType}
+              setAllocations={setAllocations}
+              setSortTwo={setSortTwo}
+              setSortThree={setSortThree}
+              sortTwo={sortTwo}
+              sortThree={sortThree}
+              setSavedSortTwo={setSavedSortTwo}
+              setSavedSortThree={setSavedSortThree}
             >
             </DropDown>
           </div>

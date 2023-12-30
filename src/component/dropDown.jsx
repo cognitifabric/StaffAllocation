@@ -6,8 +6,16 @@ const Dropdown = ({
   listType,
   allocations,
   setSortLeftType,
-  setSortRightType
+  setSortRightType,
+  setAllocations,
+  setSortTwo,
+  setSortThree,
+  sortTwo,
+  sortThree,
+  setSavedSortTwo,
+  setSavedSortThree
 }) => {
+
   const [isOpen, setIsOpen] = useState(false);
   const toggleDropdown = () => setIsOpen(!isOpen);
 
@@ -24,27 +32,27 @@ const Dropdown = ({
         <ul className="dropdown-menu curved-eased">
           <li
             onClick={() => (
-              changeSort('text', listType),
-              listType == 'two' ? setSortLeftType({ type: 'text', order: listType }) : null,
-              listType == 'three' ? setSortRightType({ type: 'text', order: listType }) : null
+              changeSort('text', listType, allocations, setAllocations, setSortTwo, setSortThree, sortTwo, sortThree, setSavedSortTwo, setSavedSortThree),
+              listType == 'two' ? setSortLeftType({ type: 'text', order: listType }) : setSortLeftType(''),
+              listType == 'three' ? setSortRightType({ type: 'text', order: listType }) : setSortRightType('')
             )}
           >
             A-Z
           </li>
           <li
             onClick={() => (
-              changeSort('fte', listType),
-              listType == 'two' ? setSortLeftType({ type: 'fte', order: listType }) : null,
-              listType == 'three' ? setSortRightType({ type: 'fte', order: listType }) : null
+              changeSort('fte', listType, allocations, setAllocations, setSortTwo, setSortThree, sortTwo, sortThree, setSavedSortTwo, setSavedSortThree),
+              listType == 'two' ? setSortLeftType({ type: 'fte', order: listType }) : setSortLeftType(''),
+              listType == 'three' ? setSortRightType({ type: 'fte', order: listType }) : setSortRightType('')
             )}
           >
             FTE
           </li>
           <li
             onClick={() => (
-              changeSort('allocation', listType),
-              listType == 'two' ? setSortLeftType({ type: 'allocation', order: listType }) : null,
-              listType == 'three' ? setSortRightType({ type: 'allocation', order: listType }) : null
+              changeSort('allocation', listType, allocations, setAllocations, setSortTwo, setSortThree, sortTwo, sortThree),
+              listType == 'two' ? setSortLeftType({ type: 'allocation', order: listType }) : setSortLeftType(''),
+              listType == 'three' ? setSortRightType({ type: 'allocation', order: listType }) : setSortRightType('')
             )}
           >
             Allocation
