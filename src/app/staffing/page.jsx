@@ -416,7 +416,7 @@ function Staffing () {
       addAllocation( { variables: defaultAllocationOrderTwo } ).then(() => {
 
         setTimeout(() => {
-          scrollToBottom( containerRefLeft )
+          // scrollToBottom( containerRefLeft )
         }, 200);
         
       })
@@ -438,7 +438,7 @@ function Staffing () {
       addAllocation( { variables: defaultAllocationOrderThree } ).then(() => {
 
         setTimeout(() => {
-          scrollToBottom( containerRefRight )
+          // scrollToBottom( containerRefRight )
         }, 200);
 
       })
