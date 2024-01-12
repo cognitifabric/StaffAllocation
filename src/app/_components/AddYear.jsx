@@ -10,9 +10,13 @@ const AddYear = ({
   setSubmitError,
   addYear,
   setPopup,
-  user
+  user,
+  setYears,
+  refetch,
+  yearID,
+  years
 }) => {
-  
+
   const loadingColor = 'white'
   const [year, setYear] = useState('')
   const [message, setMessage] = useState('')
@@ -30,11 +34,12 @@ const AddYear = ({
           year: year
         }
       })
-
+      
       setYear('')
       setLoading('')
       setSubmitError('')
       setMessage('Year was created')
+      refetch()
       
     } catch (error) {
       console.log(error)

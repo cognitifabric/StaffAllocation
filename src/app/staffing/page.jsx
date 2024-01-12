@@ -18,10 +18,14 @@ import DELETE_ALLOCATION from '@/mutations/deleteAllocation'
 import UPLOAD_ALLOCATION from '@/mutations/uploadAllocation'
 import ADD_YEAR from '@/mutations/addYear'
 import ADD_TEAM from '@/mutations/addTeam'
+import DELETE_TEAM from '@/mutations/deleteTeam'
+import DELETE_YEAR from '@/mutations/deleteYear'
+import UPDATE_YEAR from '@/mutations/updateYear'
+import UPDATE_TEAM from '@/mutations/updateTeam'
 
 //// HELPERS
 import { onDragStart, onDragOver, onDrop, onDropFillBar, onDragStartFillBar } from '@/helpers/draggable';
-import { sumByType, sum, findObjectById } from '@/helpers/utilities';
+import { sumByType, sum, findObjectById, customSort } from '@/helpers/utilities';
 import { changeSort, savedSort } from '../../helpers/operations';
 
 //// COMPONENTS
@@ -37,6 +41,8 @@ import EditAllEntityUsers from '../_components/EditAllEntityUsers'
 import EntityAdminEditUser from '../_components/EntityAdminEditUsers'
 import EntityDeleteEntityUser from '../_components/EntityAdminDeleteUser'
 import EntityAdminAddUser from '../_components/EntityAdminAddUser';
+import EditYear from '../_components/EditYear'
+import EditTeam from '../_components/EditTeam'
 
 //// OPERATIONS
 import { handleChangeTeam } from '../../helpers/operations';
@@ -71,6 +77,8 @@ function Staffing () {
   const [ username, setUsername] = useState('')
   const [ userType, setUserType] = useState('')
   const [ userTypeFormField, setUserTypeFormField] = useState('')
+  const [ editYear, setEditYear] = useState('')
+  const [ editTeam, setEditTeam ] = useState('')
   const [ savedSortTwo, setSavedSortTwo] = useState(false)
   const [ savedSortThree, setSavedSortThree] = useState(false)
   const [ inputDropdown, setInputDropdown] = useState('')
@@ -81,6 +89,9 @@ function Staffing () {
     variables: { id: cookies.user ? cookies.user.id : '', token: cookies.accessToken }
   })
   const users = useQuery(GET_USERS, { variables: { id: cookies.user ? cookies.user.id : ''} })
+  const { refetch } = useQuery(GET_USER, {
+    variables: { id: cookies.user ? cookies.user.id : '', token: cookies.accessToken }
+  })
   const [ addSettings, { data, loadingSettings, errorSettings }] = useMutation(ADD_SETTINGS);
   const [ addAllocation, { dataAllocation, loadingAllocation, errorAllocation }] = useMutation(ADD_ALLOCATION, { refetchQueries: [ GET_USER ] });
   const [ updateAllocationMutation, { dataUpdateAllocation, loadingUpdateAllocation, errorUpdatedAllocation }] = useMutation(UPDATE_ALLOCATION, { refetchQueries: [ GET_USER ]});
@@ -91,6 +102,10 @@ function Staffing () {
   const [ uploadAllocation, { dataUploadAllocation, loadingUploadAllocation, errorUploadAllocation }] = useMutation(UPLOAD_ALLOCATION, { refetchQueries: [ GET_USER ]})
   const [ addYear, { dataAddYear, loadingAddYear, errorAddYear }] = useMutation(ADD_YEAR, { refetchQueries: [ GET_USER ]})
   const [ addTeam, { dataAddTeam, loadingAddTeam, errorAddTeam }] = useMutation(ADD_TEAM, { refetchQueries: [ GET_USER ]})
+  const [ deleteTeam, { dataDeleteTeam, loadingDeleteTeam, errorDeleteTeam }] = useMutation(DELETE_TEAM, { refetchQueries: [ GET_USER ]})
+  const [ deleteYear, { dataDeleteYear, loadingDeleteYear, errorDeleteYear }] = useMutation(DELETE_YEAR, { refetchQueries: [ GET_USER ]})
+  const [ updateYear, { dataUpdateYear, loadingUpdateYear, errorUpdateYear }] = useMutation(UPDATE_YEAR, { refetchQueries: [ GET_USER ]})
+  const [ updateTeam, { dataUpdateTeam, loadingUpdateTeam, errorUpdateTeam }] = useMutation(UPDATE_TEAM, { refetchQueries: [ GET_USER ]})
   const elementsWithIdRef = useRef([]);
   const containerRefLeft    = useRef(null);
   const containerRefRight   = useRef(null);
@@ -130,28 +145,42 @@ function Staffing () {
     if(dataUser.data && dataUser.data.user.years.length > 0){
       
       if(!yearID && dataUser.data.user.years[0]){
+        
         setYearID(dataUser.data.user.years[0].id)
         setYears(dataUser.data.user.years)
       }
+      
       if(!teamID && dataUser.data.user.years[0].teams[0]) setTeamID(dataUser.data.user.years[0].teams[0].id)
 
-      if(teamID){
+      if(teamID ){
+
+        setYears(dataUser.data.user.years)
 
         let selectedYear = findObjectById(dataUser.data.user.years, yearID)
-
         let selectedTeam = findObjectById(selectedYear.teams, teamID)
         
-        newAllocations = [...selectedTeam.allocations]
-        newAllocations.sort((a, b) => a.order - b.order) 
+        if(selectedTeam){
+          newAllocations = [...selectedTeam.allocations]
+          newAllocations.sort((a, b) => a.order - b.order) 
 
-        setAllocations(newAllocations)
+          setAllocations(newAllocations)
+        }
+
+        if(!selectedTeam){
+
+          newAllocations = [...dataUser.data.user.years[0].teams[0].allocations]
+          newAllocations.sort((a, b) => a.order - b.order) 
+
+        }
 
       }else {
         newAllocations = [...dataUser.data.user.years[0].teams[0].allocations]
         newAllocations.sort((a, b) => a.order - b.order) 
       }
-    
+      
+      newAllocations.sort(customSort)
       setAllocations(newAllocations)
+      setUser(dataUser.data.user)
 
       if(sortLeftType) savedSort(sortLeftType.type, sortLeftType.order, newAllocations, setAllocations, setSortTwo, setSortThree, savedSortTwo ? !savedSortTwo : !sortTwo, savedSortThree)
 
@@ -511,6 +540,51 @@ function Staffing () {
     
   }
 
+  const handleDeleteTeam = async (team) => {
+    
+    try {
+      
+      const response = await deleteTeam({
+        variables: {
+          teamID: team.id,
+          userID: user.id
+        }
+      })
+
+      setYears(response.data.deleteTeam.years)
+      
+    } catch (error) {
+      
+      console.log(error)
+      if(error) setMessage(error.message)
+      
+    }
+    
+  }
+
+  const handleDeleteYear = async (year) => {
+    
+    try {
+      
+      const response = await deleteYear({
+        variables: {
+          yearID: year.id,
+          userID: user.id
+        }
+      })
+  
+      setYearID(response.data.deleteYear.years[0].id)
+      setYears(response.data.deleteYear.years)
+      
+    } catch (error) {
+      
+      console.log(error)
+      if(error) setMessage(error.message)
+      
+    }
+    
+  }
+
   if (loadingData) return <div className="loadingPage"><span>loading</span></div>
   if (dataUser.loading) return <div className="loadingPage"><span>loading</span></div>
   if (loadingSettings) return <div className="loadingPage"><span>loading</span></div>
@@ -569,13 +643,45 @@ function Staffing () {
         <div 
           className=""
         >
-          { years.length > 0 && years.find(item => item.id === yearID).teams.map((team, idx) => 
+          { years.length > 0 && years.find(item => item.id === yearID) && years.find(item => item.id === yearID).teams.map((team, idx) => 
             <span 
-              className="teamsItem" 
+              className="teamsItem relative" 
               key={idx}
+              onMouseEnter={() => setHovered(`hover${team.id}${idx}`)}
+              onMouseLeave={() => setHovered('')}
               onClick={() => handleChangeTeam(team, setTeamID, setAllocations)}
             >
               {team.team}
+              { isHovered == `hover${team.id}${idx}` &&
+                <div 
+                  onClick={(e) => {
+                    if(handlePermissions()){
+                      e.stopPropagation(),
+                      handleDeleteTeam(team)
+                    }
+                  }}
+                  className="teamSvg">
+                    <SVG svg={'thrashCan'}></SVG>
+                </div>
+              }
+              { isHovered == `hover${team.id}${idx}` &&
+                  <div 
+                    onClick={(e) => {
+                      if(handlePermissions()){
+                        e.stopPropagation(),
+                        setEditTeam(team),
+                        setPopup('editTeam')
+                      }
+                    }}
+                    className="teamSvgEdit">
+                    <SVG 
+                      svg={'edit2'}
+                      width={20}
+                      height={20}
+                    >
+                    </SVG>
+                  </div>
+                }
             </span>
           )}
         </div>
@@ -602,9 +708,41 @@ function Staffing () {
               <span 
                 className="yearsItem" 
                 key={idx}
+                onMouseEnter={() => setHovered(`hover${year.id}${idx}`)}
+                onMouseLeave={() => setHovered('')}
                 onClick={() => setYearID(year.id)}
               >
                 {year.year}
+                { isHovered == `hover${year.id}${idx}` &&
+                  <div 
+                    onClick={(e) => {
+                      if(handlePermissions()){
+                        e.stopPropagation(),
+                        handleDeleteYear(year)
+                      }
+                    }}
+                    className="yearSvg">
+                    <SVG svg={'thrashCan'}></SVG>
+                  </div>
+                }
+                { isHovered == `hover${year.id}${idx}` &&
+                  <div 
+                    onClick={(e) => {
+                      if(handlePermissions()){
+                        e.stopPropagation(),
+                        setEditYear(year),
+                        setPopup('editYear')
+                      }
+                    }}
+                    className="yearSvgEdit">
+                    <SVG 
+                      svg={'edit2'}
+                      width={20}
+                      height={20}
+                    >
+                    </SVG>
+                  </div>
+                }
               </span>
             )}
           </div>
@@ -950,8 +1088,31 @@ function Staffing () {
           addYear={addYear}
           setPopup={setPopup}
           user={dataUser}
+          setYears={setYears}
+          refetch={refetch}
+          yearID={yearID}
+          years={years}
         >
         </AddYear>
+      }
+      { popup == 'editYear' &&
+        <EditYear
+          loading={loading}
+          setLoading={setLoading}
+          submitError={submitError}
+          setSubmitError={setSubmitError}
+          addYear={addYear}
+          setPopup={setPopup}
+          user={dataUser}
+          setYears={setYears}
+          refetch={refetch}
+          yearID={yearID}
+          years={years}
+          editYear={editYear}
+          setEditYear={setEditYear}
+          updateYear={updateYear}
+        >
+        </EditYear>
       }
       { popup == 'addTeam' &&
         <AddTeam
@@ -962,8 +1123,27 @@ function Staffing () {
           addTeam={addTeam}
           setPopup={setPopup}
           year={yearID}
+          user={dataUser}
+          setYears={setYears}
+          refetch={refetch}
         >
         </AddTeam>
+      }
+      { popup == 'editTeam' &&
+        <EditTeam
+          loading={loading}
+          setLoading={setLoading}
+          submitError={submitError}
+          setSubmitError={setSubmitError}
+          addYear={addYear}
+          setPopup={setPopup}
+          user={dataUser}
+          refetch={refetch}
+          editTeam={editTeam}
+          setEditTeam={setEditTeam}
+          updateTeam={updateTeam}
+        >
+        </EditTeam>
       }
       { popup == 'editAllEntityUsers' &&
         <EditAllEntityUsers

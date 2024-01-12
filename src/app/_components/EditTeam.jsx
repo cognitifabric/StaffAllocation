@@ -1,41 +1,49 @@
 
 import { useState } from "react"
+import { isValidYear, findObjectById } from '../../helpers/utilities'
 import SVG from '../../libs/svg'
 
-const AddTeam = ({
+const EditTeam = ({
   loading,
   setLoading,
   submitError,
   setSubmitError,
-  addTeam,
+  addYear,
   setPopup,
-  year,
   user,
   setYears,
-  refetch
+  refetch,
+  yearID,
+  years,
+  editTeam,
+  setEditYear,
+  updateTeam
 }) => {
   
   const loadingColor = 'white'
-  const [team, setTeam] = useState('')
+  const [team, setTeam] = useState(editTeam.team)
   const [message, setMessage] = useState('')
 
-  const submitAddTeam = async () => {
+  const submitEditTeam = async () => {
+
+    if(!team) return setSubmitError('Team name is required')
+    setLoading('editTeam')
     
     try {
       
-      const response = await addTeam({
+      const response = await updateTeam({
         variables: {
-          id: year,
-          team: team,
-          userID: user.data.user.id
+          id: editTeam.id,
+          team: team
         }
       })
       
       setTeam('')
       setLoading('')
       setSubmitError('')
-      setMessage('Team was created')
-      setYears(response.data.addTeam.years)
+      setPopup('')
+      setMessage('Team was updated')
+      refetch()
       
     } catch (error) {
       console.log(error)
@@ -80,9 +88,9 @@ const AddTeam = ({
           <div className="form-group">
           <button
             className="form-group-button-large"
-            onClick={() => submitAddTeam()}
+            onClick={() => submitEditTeam()}
             >
-              {!loading && <span>Add Team</span>} 
+              {!loading && <span>Update Team</span>} 
               {loading && 
               <div className="loading">
                 <span style={{backgroundColor: loadingColor}}></span>
@@ -112,4 +120,4 @@ const AddTeam = ({
   )
 }
 
-export default AddTeam
+export default EditTeam

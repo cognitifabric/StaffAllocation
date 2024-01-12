@@ -1,41 +1,49 @@
 
 import { useState } from "react"
+import { isValidYear, findObjectById } from '../../helpers/utilities'
 import SVG from '../../libs/svg'
 
-const AddTeam = ({
+const EditYear = ({
   loading,
   setLoading,
   submitError,
   setSubmitError,
-  addTeam,
+  addYear,
   setPopup,
-  year,
   user,
   setYears,
-  refetch
+  refetch,
+  yearID,
+  years,
+  editYear,
+  setEditYear,
+  updateYear
 }) => {
   
   const loadingColor = 'white'
-  const [team, setTeam] = useState('')
+  const [year, setYear] = useState(editYear.year)
   const [message, setMessage] = useState('')
 
-  const submitAddTeam = async () => {
+  const submitEditYear = async () => {
+
+    if(!isValidYear(year)) return setSubmitError('Invalid year')
+    setLoading('addYear')
     
     try {
       
-      const response = await addTeam({
+      const response = await updateYear({
         variables: {
-          id: year,
-          team: team,
-          userID: user.data.user.id
+          id: editYear.id,
+          year: year
         }
       })
       
-      setTeam('')
+      setYear('')
       setLoading('')
+      setPopup('')
       setSubmitError('')
-      setMessage('Team was created')
-      setYears(response.data.addTeam.years)
+      setMessage('Year was updated')
+      refetch()
       
     } catch (error) {
       console.log(error)
@@ -68,21 +76,21 @@ const AddTeam = ({
             <input 
               className="curved-eased"
               type="text" 
-              value={team}
-              placeholder="team"
+              value={year}
+              placeholder="year"
               onChange={(e) => (
                 setSubmitError(''),
                 setLoading(''),
-                setTeam(e.target.value)
+                setYear(e.target.value)
               )}
             />
           </div>
           <div className="form-group">
           <button
             className="form-group-button-large"
-            onClick={() => submitAddTeam()}
+            onClick={() => submitEditYear()}
             >
-              {!loading && <span>Add Team</span>} 
+              {!loading && <span>Update Year</span>} 
               {loading && 
               <div className="loading">
                 <span style={{backgroundColor: loadingColor}}></span>
@@ -112,4 +120,4 @@ const AddTeam = ({
   )
 }
 
-export default AddTeam
+export default EditYear

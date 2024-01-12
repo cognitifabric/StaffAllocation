@@ -134,6 +134,7 @@ const ColumnListLeft = ({
               <div 
                 onClick={(e) => {
                   if(handlePermissions()){
+                    e.stopPropagation(),
                     setColorPallete(allocation.id),
                     setPalleteType('allocations')
                   }

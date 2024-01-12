@@ -5,7 +5,8 @@ export {
   sum,
   isStrongPassword,
   isValidYear,
-  findObjectById
+  findObjectById,
+  customSort
 }
 
 const switchPositions = (object, id1, id2) => {
@@ -79,4 +80,14 @@ const isValidYear = (year) => {
 
 const findObjectById = (array, id) => {
   return array.find(obj => obj.id === id);
+}
+
+const customSort = (a, b) => {
+  if (a.text === '' && a.allocation === '0') {
+    return -1; // a comes first
+  } else if (a.text === '' && a.allocation === '0') {
+    return 1; // b comes first
+  } else {
+    return 0; // order unchanged
+  }
 }

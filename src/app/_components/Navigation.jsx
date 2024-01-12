@@ -35,7 +35,7 @@ const Navigation = ({
   
   return (
     <div className="nav">
-      <div className="nav-logo">StaffingMap</div>
+      <div className="nav-logo">Staff Mapping</div>
       <div className="nav-list">
         {!loggedOut &&
         <>
