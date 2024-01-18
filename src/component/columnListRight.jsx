@@ -72,7 +72,7 @@ const ColumnListRight = ({
                     setPalleteType('allocations')
                   }
                 }}
-                className="elementSvgContainer positionLeftZero noColor"
+                className="elementSvgContainer positionRight noColor"
               >
                   <SVG svg={'pallete'}></SVG>
               </div>
@@ -154,7 +154,7 @@ const ColumnListRight = ({
                   className="progressBar schemeFiveAbsolute curved-eased"
                   style={{ 
                     width: `${ Math.min(100, Math.max(0, (fillBar.allocation/fillBar.fte) * 100 ))}%`,
-                    backgroundColor: headingSettings.length > 0 ? headingSettings[3].color : '#587B7F'
+                    backgroundColor: headingSettings && headingSettings.length > 0 ? headingSettings[3].color : '#587B7F'
                   }}
                 >
                 </div>
@@ -178,7 +178,7 @@ const ColumnListRight = ({
                 </input>
                 <input 
                   type="text"
-                  style={{ borderColor: headingSettings.length > 0 ? headingSettings[3].color : '#587B7F' }} 
+                  style={{ borderColor: headingSettings && headingSettings.length > 0 ? headingSettings[3].color : '#587B7F' }} 
                   className="elementInnerBox schemeFive"
                   value={ fillBar.allocation ? fillBar.allocation.replace(/(\.\d*?[1-9])0+$/g, '$1') : '' }
                   onChange={(e) => {

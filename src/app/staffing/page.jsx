@@ -1,4 +1,3 @@
-
 "use client"
 import SVG from '../../libs/svg'
 import { useState, useEffect, useRef } from 'react'
@@ -30,6 +29,7 @@ import { changeSort, savedSort } from '../../helpers/operations';
 
 //// COMPONENTS
 import Nav from '../_components/Navigation';
+import HeadingSettings from '../_components/HeadingSettings'
 import DropDown from '../../component/dropDown'
 import ColumnListRight from '@/component/columnListRight';
 import ColumnListLeft from '@/component/columnListLeft';
@@ -79,6 +79,8 @@ function Staffing () {
   const [ userTypeFormField, setUserTypeFormField] = useState('')
   const [ editYear, setEditYear] = useState('')
   const [ editTeam, setEditTeam ] = useState('')
+  const [ selectedYear, setSelectedYear] = useState('')
+  const [ selectedTeam, setSelectedTeam] = useState('')
   const [ savedSortTwo, setSavedSortTwo] = useState(false)
   const [ savedSortThree, setSavedSortThree] = useState(false)
   const [ inputDropdown, setInputDropdown] = useState('')
@@ -134,6 +136,36 @@ function Staffing () {
     let newAllocations = []
 
     setLoadingData(true)
+
+    const settings = [
+      {
+        type: "headings",
+        order: 1,
+        content: "districts",
+        color: "#8D5A97"
+      },
+      {
+        type: "headings",
+        order: 2,
+        content: "employees",
+        color: "#907F9F"
+      },
+      {
+        type: "headings",
+        order: 3,
+        content: "locations",
+        color: "#E57A44"
+      },
+      {
+        type: "headings",
+        order: 4,
+        content: "allocations",
+        color: "#E2C044"
+      }
+    ]
+    
+    // addSettings({ variables: { teamID: '656d0e8f1f5103d2cc6b32ca', settings: settings } })
+    // refetch()
     
     if(dataUser.error){ 
       console.log('DATAUSER ERROR', dataUser.error)
@@ -152,21 +184,26 @@ function Staffing () {
       
       if(!teamID && dataUser.data.user.years[0].teams[0]) setTeamID(dataUser.data.user.years[0].teams[0].id)
 
-      if(teamID ){
+      if(teamID){
 
         setYears(dataUser.data.user.years)
 
-        let selectedYear = findObjectById(dataUser.data.user.years, yearID)
-        let selectedTeam = findObjectById(selectedYear.teams, teamID)
+        let yearSelected = findObjectById(dataUser.data.user.years, yearID)
+        setSelectedYear(yearSelected)
+
+        let teamSelected = findObjectById(yearSelected.teams, teamID)
         
-        if(selectedTeam){
-          newAllocations = [...selectedTeam.allocations]
+        // setHeadingSettings(teamSelected)
+        setSelectedTeam(teamSelected)
+        
+        if(teamSelected){
+          newAllocations = [...teamSelected.allocations]
           newAllocations.sort((a, b) => a.order - b.order) 
 
           setAllocations(newAllocations)
         }
 
-        if(!selectedTeam){
+        if(!teamSelected){
 
           newAllocations = [...dataUser.data.user.years[0].teams[0].allocations]
           newAllocations.sort((a, b) => a.order - b.order) 
@@ -189,6 +226,17 @@ function Staffing () {
     }
     
   }, [dataUser])
+
+  useEffect(() => {
+   
+    if(teamID){
+      let yearSelected = findObjectById(dataUser.data.user.years, yearID)
+      let teamSelected = findObjectById(yearSelected.teams, teamID)
+      setSelectedTeam(teamSelected)
+    }
+    
+  }, [teamID])
+
 
   useEffect(() => {
     
@@ -217,44 +265,51 @@ function Staffing () {
         if(isTyping == 'allocations') submitUpdateAllocation();
         if(isTyping == 'fillBars') submitUpdateFillbar();
 
-      }, 1200);
+      }, 500);
     }
     
     return () => {
       clearTimeout(typingTimer); // Cleanup the timer when the component unmounts
     };
   
-  }, [headingSettings, allocations, isTyping])
+  }, [selectedTeam.settings, allocations, isTyping])
 
   const updateHeadingSetting = (order, newValue, newColor) => {
 
     let updatedSettings = []
-    
+
     if(newValue){
-      updatedSettings = headingSettings.map(( item ) => {
+      updatedSettings = selectedTeam.settings.map(( item ) => {
         return item.order === order ? { ...item, content: newValue } : item
         
       })
     }
 
     if(newColor){
-      updatedSettings = headingSettings.map(( item ) => {
-
+      updatedSettings = selectedTeam.settings.map(( item ) => {
+        
         return item.order === order ? { ...item, color: newColor } : item
         
       })
     }
-    
-    setHeadingSettings(updatedSettings)
-    setIsTyping('headings')
+
+    let copy = { ...selectedTeam}
+    copy.settings = updatedSettings
+
+    if(updatedSettings.length){
+      setHeadingSettings(updatedSettings)
+      setSelectedTeam(copy)
+      setIsTyping('headings')
+    }
     
   }
 
   const submitAddSettings = () => {
-
-    addSettings({ variables: { teamID: teamID, settings: headingSettings } })
-    setIsTyping('')
-
+    if(headingSettings.length > 0){
+      addSettings({ variables: { teamID: teamID, settings: headingSettings } })
+      setIsTyping('')
+      refetch()
+    }
   }
   
   const updateAllocationItems = ( id, type, newText ) => {
@@ -273,7 +328,36 @@ function Staffing () {
       
     })
 
-    setAllocations(updatedAllocations)
+    console.log('Test Left')
+    
+    if(sortLeftType) savedSort(sortLeftType.type, sortLeftType.order, updatedAllocations, setAllocations, setSortTwo, setSortThree, savedSortTwo ? !savedSortTwo : !sortTwo, savedSortThree)
+
+    // setAllocations(updatedAllocations)
+    setIsTyping('allocations')
+    
+  }
+
+  const updateAllocationItemsRight = ( id, type, newText ) => {
+    
+    let updateAllocation = allocations.find((item) => {
+      if(item.id === id) return item
+    })
+
+    updateAllocation = { ...updateAllocation, [type]: newText }
+    delete updateAllocation.fillBars
+    setUpdatedAllocation(updateAllocation)
+    
+    const updatedAllocations = allocations.map(( item ) => {
+
+      return item.id === id ? { ...item, [type]: newText } : item
+      
+    })
+
+    console.log('Test Right')
+
+    if(sortRightType) savedSort(sortRightType.type, sortRightType.order, updatedAllocations, setAllocations, setSortTwo, setSortThree, savedSortTwo, savedSortThree ? !savedSortThree : !sortThree)
+
+    // setAllocations(updatedAllocations)
     setIsTyping('allocations')
     
   }
@@ -302,7 +386,7 @@ function Staffing () {
     const newAllocations = allocations.map((item) => {
       return item.id === newData.id ? newData : item
     })
-
+    
     setAllocations(newAllocations)
     setUpdatedFillbar(newFillBar)
     setUpdatedAllocation(newData)
@@ -623,7 +707,7 @@ function Staffing () {
           </div>
         </div>
       }
-      <div className="w-full flex justify-end mt">
+      <div className="w-full flex justify-end mt padding-x">
       <div className="teams flex justify-center items-center mt5">
         <div
           className="svgItem"
@@ -649,7 +733,7 @@ function Staffing () {
               key={idx}
               onMouseEnter={() => setHovered(`hover${team.id}${idx}`)}
               onMouseLeave={() => setHovered('')}
-              onClick={() => handleChangeTeam(team, setTeamID, setAllocations)}
+              onClick={() => handleChangeTeam(team, setTeamID, setAllocations, setSelectedTeam)}
             >
               {team.team}
               { isHovered == `hover${team.id}${idx}` &&
@@ -812,185 +896,38 @@ function Staffing () {
           </div>
         </div>
 
-
-        <div className="container-flex-right whalf border-right">
-          <div
-            style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[0].color : '#254D32' }} 
-            className="element-button-text curved-eased wfull"
-            onMouseEnter={() => setHovered(`${headingSettings.find(( item ) =>  item.order === 1).id}`)}
-            onMouseLeave={() => setHovered('')}
-          >
-            { headingSettings.length > 0 && isHovered == headingSettings.find(( item ) =>  item.order === 1).id &&
-            <div 
-              onClick={(e) => {
-                if(handlePermissions()){
-                  setColorPallete(headingSettings.find(( item ) =>  item.order === 1).id),
-                  setPalleteType('headings')
-                }
-              }}
-              className="elementSvgContainer positionLeftZero noColor"
-            >
-                <SVG svg={'pallete'}></SVG>
-            </div>
-            }
-            <input 
-              type="text"
-              style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[0].color : '#587B7F' }} 
-              className="element-button-text curved-eased wfull fontSize-16 capitalize"
-              value={ headingSettings.length > 0 ? headingSettings.find(( item ) =>  item.order === 1).content : 'Districts' }
-              onChange={(e) => {
-                if(handlePermissions()){
-                  updateHeadingSetting(1, e.target.value)
-                }
-              }}
-            >
-            </input>
-          </div>
-          <div
-            style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[1].color : '#587B7F' }}  
-            className="element-button-text curved-eased w20"
-            onMouseEnter={() => setHovered(`${headingSettings.find(( item ) =>  item.order === 2).id}`)}
-            onMouseLeave={() => setHovered('')}
-          >
-            { headingSettings.length > 0 && isHovered == headingSettings.find(( item ) =>  item.order === 2).id &&
-            <div 
-              onClick={(e) => {
-                if(handlePermissions()){
-                  setColorPallete(headingSettings.find(( item ) =>  item.order === 2).id),
-                  setPalleteType('headings')
-                }
-              }}
-              className="elementSvgContainer positionLeftZero noColor"
-            >
-                <SVG svg={'pallete'}></SVG>
-            </div>
-            }
-            <input 
-              type="text"
-              style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[1].color : '#587B7F' }}  
-              className="element-button-text curved-eased w20 fontSize-16 capitalize"
-              value={ headingSettings.length > 0 ? headingSettings.find(( item ) =>  item.order === 2).content : 'Employees' }
-              onChange={(e) => {
-                if(handlePermissions()){
-                  updateHeadingSetting(2, e.target.value) 
-                }
-              }}
-            >
-            </input>
-          </div>
-          <div 
-            className="element-button-icon"
-          >
-            <DropDown
-              changeSort={changeSort}
-              listType="two"
-              allocations={allocations}
-              setSortLeftType={setSortLeftType}
-              setSortRightType={setSortRightType}
-              setAllocations={setAllocations}
-              setSortTwo={setSortTwo}
-              setSortThree={setSortThree}
-              sortTwo={sortTwo}
-              sortThree={sortThree}
-              setSavedSortTwo={setSavedSortTwo}
-              setSavedSortThree={setSavedSortThree}
-            >
-            </DropDown>
-          </div>
-        </div>
-        <div className="container-flex-left whalf">
-          <div 
-            className="element-button-icon"
-          >
-            <DropDown
-              changeSort={changeSort}
-              listType="three"
-              allocations={allocations}
-              setSortLeftType={setSortLeftType}
-              setSortRightType={setSortRightType}
-              setAllocations={setAllocations}
-              setSortTwo={setSortTwo}
-              setSortThree={setSortThree}
-              sortTwo={sortTwo}
-              sortThree={sortThree}
-              setSavedSortTwo={setSavedSortTwo}
-              setSavedSortThree={setSavedSortThree}
-            >
-            </DropDown>
-          </div>
-          <div
-            style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[2].color : '#587B7F' }}  
-            className="element-button-text curved-eased w20"
-            onMouseEnter={() => setHovered(`${headingSettings.find(( item ) =>  item.order === 3).id}`)}
-            onMouseLeave={() => setHovered('')}
-          >
-            { headingSettings.length > 0 && isHovered == headingSettings.find(( item ) =>  item.order === 3).id &&
-            <div 
-              onClick={(e) => {
-                if(handlePermissions()){
-                    setColorPallete(headingSettings.find(( item ) =>  item.order === 3).id),
-                    setPalleteType('headings')
-                }
-              }}
-              className="elementSvgContainer positionLeftZero noColor"
-            >
-                <SVG svg={'pallete'}></SVG>
-            </div>
-            }
-            <input 
-              type="text"
-              style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[2].color : '#587B7F' }}  
-              className="element-button-text curved-eased w20 fontSize-16 capitalize"
-              value={ headingSettings.length > 0 ? headingSettings.find(( item ) =>  item.order === 3).content : 'Locations' }
-              onChange={(e) => 
-                {
-                  if(handlePermissions()){
-                    updateHeadingSetting(3, e.target.value) 
-                  }
-                }
-              }
-            >
-            </input>
-          </div>
-          <div
-            style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[3].color : '#587B7F' }}  
-            className="element-button-text curved-eased wfull"
-            onMouseEnter={() => setHovered(`${headingSettings.find(( item ) =>  item.order === 4).id}`)}
-            onMouseLeave={() => setHovered('')}
-          >
-            { headingSettings.length > 0 && isHovered == headingSettings.find(( item ) =>  item.order === 4).id &&
-            <div 
-              onClick={(e) => {
-                if(handlePermissions()){
-                  setColorPallete(headingSettings.find(( item ) =>  item.order === 4).id),
-                  setPalleteType('headings')
-                }
-              }}
-              className="elementSvgContainer positionLeftZero noColor"
-            >
-                <SVG svg={'pallete'}></SVG>
-            </div>
-            }
-            <input 
-              type="text"
-              style={{ backgroundColor: headingSettings.length > 0 ? headingSettings[3].color : '#587B7F' }}  
-              className="element-button-text curved-eased wfull fontSize-16 capitalize"
-              value={ headingSettings.length > 0 ? headingSettings.find(( item ) =>  item.order === 4).content : 'Allocations' }
-              onChange={(e) => {
-                if(handlePermissions()){
-                  updateHeadingSetting(4, e.target.value)
-                }
-              }}
-            >
-            </input>
-          </div>
-        </div>
+        <HeadingSettings
+          yearID={yearID}
+          dataUser={dataUser}
+          teamID={teamID}
+          isHovered={isHovered}
+          setHovered={setHovered}
+          changeSort={changeSort}
+          allocations={allocations}
+          setSortLeftType={setSortLeftType}
+          setSortRightType={setSortRightType}
+          setAllocations={setAllocations}
+          setSortTwo={setSortTwo}
+          setSortThree={setSortThree}
+          sortTwo={sortTwo}
+          sortThree={sortThree}
+          setSavedSortTwo={setSavedSortTwo}
+          setSavedSortThree={setSavedSortThree}
+          updateHeadingSetting={updateHeadingSetting}
+          handlePermissions={handlePermissions}
+          setColorPallete={setColorPallete}
+          setPalleteType={setPalleteType}
+          selectedYear={selectedYear}
+          selectedTeam={selectedTeam}
+          headingSettings={headingSettings}
+        >
+        </HeadingSettings>
 
         { colorPallete &&
           <ColorPallete
             colorPallete={colorPallete}
             setColorPallete={setColorPallete}
-            headingSettings={headingSettings}
+            headingSettings={selectedTeam.settings}
             updateHeadingSetting={updateHeadingSetting}
             palleteType={palleteType}
             setPalleteType={setPalleteType}
@@ -1015,7 +952,7 @@ function Staffing () {
           containerRefLeft={containerRefLeft}
           colorPallete={colorPallete}
           setColorPallete={setColorPallete}
-          headingSettings={headingSettings}
+          headingSettings={selectedTeam.settings}
           setPalleteType={setPalleteType}
           handlePermissions={handlePermissions}
         >
@@ -1033,12 +970,12 @@ function Staffing () {
           handleDeleteFillbar={handleDeleteFillbar}
           onDragStart={onDragStart}
           handleDeleteAllocation={handleDeleteAllocation}
-          updateAllocationItems={updateAllocationItems}
+          updateAllocationItems={updateAllocationItemsRight}
           updateFillBarData={updateFillBarData}  
           containerRefRight={containerRefRight}
           colorPallete={colorPallete}
           setColorPallete={setColorPallete}
-          headingSettings={headingSettings}
+          headingSettings={selectedTeam.settings}
           setPalleteType={setPalleteType}
           handlePermissions={handlePermissions}
         >

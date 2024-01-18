@@ -78,13 +78,13 @@ const ColumnListLeft = ({
                   className="progressBar schemeTwoAbsolute curved-eased"
                   style={{ 
                     width: `${ Math.min(100, Math.max(0, (fillBar.allocation/fillBar.fte) * 100 ))}%`,
-                    backgroundColor: headingSettings.length > 0 ? headingSettings[0].color : '#587B7F'  
+                    backgroundColor: headingSettings && headingSettings.length > 0 ? headingSettings[0].color : '#587B7F'  
                   }}
                 >
                 </div>
                 <input 
                   type="text"
-                  style={{ borderColor: headingSettings.length > 0 ? headingSettings[0].color : '#587B7F' }}  
+                  style={{ borderColor: headingSettings && headingSettings.length > 0 ? headingSettings[0].color : '#587B7F' }}  
                   className="elementInnerBox schemeTwo"
                   value={ fillBar.allocation ? parseFloat(fillBar.allocation.replace(/(\.\d*?[1-9])0+$/g, '$1')) : ''}
                   readOnly
@@ -139,7 +139,7 @@ const ColumnListLeft = ({
                     setPalleteType('allocations')
                   }
                 }}
-                className="elementSvgContainer positionLeftZero noColor"
+                className="elementSvgContainer positionRight noColor"
               >
                   <SVG svg={'pallete'}></SVG>
               </div>

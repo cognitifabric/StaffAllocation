@@ -1,5 +1,5 @@
 
-export const handleChangeTeam = (team, setTeamID, setAllocations) => {
+export const handleChangeTeam = (team, setTeamID, setAllocations, setSelectedTeam) => {
 
   let newAllocations = []
   
@@ -7,6 +7,7 @@ export const handleChangeTeam = (team, setTeamID, setAllocations) => {
   newAllocations.sort((a, b) => a.order - b.order) 
   
   setTeamID(team.id)
+  setSelectedTeam(team)
   setAllocations(newAllocations)
   
 }

@@ -38,6 +38,7 @@ const AddYear = ({
       setYear('')
       setLoading('')
       setSubmitError('')
+      setPopup('')
       setMessage('Year was created')
       refetch()
       

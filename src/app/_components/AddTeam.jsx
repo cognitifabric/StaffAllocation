@@ -34,6 +34,7 @@ const AddTeam = ({
       setTeam('')
       setLoading('')
       setSubmitError('')
+      setPopup('')
       setMessage('Team was created')
       setYears(response.data.addTeam.years)
       
