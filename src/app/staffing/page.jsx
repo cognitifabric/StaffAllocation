@@ -332,7 +332,7 @@ function Staffing () {
     
     if(sortLeftType) savedSort(sortLeftType.type, sortLeftType.order, updatedAllocations, setAllocations, setSortTwo, setSortThree, savedSortTwo ? !savedSortTwo : !sortTwo, savedSortThree)
 
-    // setAllocations(updatedAllocations)
+    setAllocations(updatedAllocations)
     setIsTyping('allocations')
     
   }
@@ -357,7 +357,7 @@ function Staffing () {
 
     if(sortRightType) savedSort(sortRightType.type, sortRightType.order, updatedAllocations, setAllocations, setSortTwo, setSortThree, savedSortTwo, savedSortThree ? !savedSortThree : !sortThree)
 
-    // setAllocations(updatedAllocations)
+    setAllocations(updatedAllocations)
     setIsTyping('allocations')
     
   }

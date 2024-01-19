@@ -11,9 +11,6 @@ const ColorPallete = ({
   setPalleteType,
   updateAllocationItems
 }) => {
-
-  // console.log(headingSettings)
-  // console.log(colorPallete)
   
   return (
     <div className="elementColorPalletePopup">
