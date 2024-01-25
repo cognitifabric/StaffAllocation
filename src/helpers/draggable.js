@@ -37,6 +37,8 @@ const onDrop = (e) => {
   e.preventDefault();
   let droppedItem = JSON.parse(e.dataTransfer.getData('text/plain', e.dataTransfer.getData("object")))
 
+  if(!droppedItem.allocations) return false
+
   const allocationContainer = droppedItem.allocations.find((item) => {
 
     if(item.id === e.currentTarget.id) return item

@@ -25,7 +25,7 @@ import UPDATE_TEAM from '@/mutations/updateTeam'
 //// HELPERS
 import { onDragStart, onDragOver, onDrop, onDropFillBar, onDragStartFillBar } from '@/helpers/draggable';
 import { sumByType, sum, findObjectById, customSort } from '@/helpers/utilities';
-import { changeSort, savedSort } from '../../helpers/operations';
+import { changeSort, compareArrays, findUpdatedObject, removeObjectFromArray, savedSort, updateObjectById } from '../../helpers/operations';
 
 //// COMPONENTS
 import Nav from '../_components/Navigation';
@@ -83,6 +83,11 @@ function Staffing () {
   const [ selectedTeam, setSelectedTeam] = useState('')
   const [ savedSortTwo, setSavedSortTwo] = useState(false)
   const [ savedSortThree, setSavedSortThree] = useState(false)
+  const [ adding, setAdding] = useState(false)
+  const [ updating, setUpdating] = useState(false)
+  const [ deleting, setDeleting] = useState(false)
+  const [ onDropID, setOnDropID] = useState('')
+  const [ dragID, setDragID] = useState('')
   const [ inputDropdown, setInputDropdown] = useState('')
   const [ user, setUser] = useState('')
   const [ message, setMessage ] = useState('')
@@ -136,36 +141,6 @@ function Staffing () {
     let newAllocations = []
 
     setLoadingData(true)
-
-    const settings = [
-      {
-        type: "headings",
-        order: 1,
-        content: "districts",
-        color: "#8D5A97"
-      },
-      {
-        type: "headings",
-        order: 2,
-        content: "employees",
-        color: "#907F9F"
-      },
-      {
-        type: "headings",
-        order: 3,
-        content: "locations",
-        color: "#E57A44"
-      },
-      {
-        type: "headings",
-        order: 4,
-        content: "allocations",
-        color: "#E2C044"
-      }
-    ]
-    
-    // addSettings({ variables: { teamID: '656d0e8f1f5103d2cc6b32ca', settings: settings } })
-    // refetch()
     
     if(dataUser.error){ 
       console.log('DATAUSER ERROR', dataUser.error)
@@ -180,6 +155,7 @@ function Staffing () {
         
         setYearID(dataUser.data.user.years[0].id)
         setYears(dataUser.data.user.years)
+
       }
       
       if(!teamID && dataUser.data.user.years[0].teams[0]) setTeamID(dataUser.data.user.years[0].teams[0].id)
@@ -193,14 +169,61 @@ function Staffing () {
 
         let teamSelected = findObjectById(yearSelected.teams, teamID)
         
-        // setHeadingSettings(teamSelected)
         setSelectedTeam(teamSelected)
         
-        if(teamSelected){
+        if(teamSelected && !adding && !deleting && !updating){
           newAllocations = [...teamSelected.allocations]
           newAllocations.sort((a, b) => a.order - b.order) 
 
           setAllocations(newAllocations)
+        }
+
+        if(teamSelected && adding){
+          
+          let newAllocations = [...teamSelected.allocations]
+          let oldAllocations = [...allocations]
+
+          let newObj = compareArrays(oldAllocations, newAllocations, 'id')
+          
+          if(!sortTwo){
+            oldAllocations.unshift(newObj)
+            setAllocations(oldAllocations)
+          }
+
+          if(sortTwo){
+            let oldAllocations = [...allocations]
+            oldAllocations.push(newObj)
+            setAllocations(oldAllocations)
+
+          }
+
+        }
+
+        if(teamSelected && deleting){
+          let newAllocations = [...teamSelected.allocations]
+          let oldAllocations = [...allocations]
+          
+          let deletedObj = compareArrays(newAllocations, oldAllocations, 'id')
+
+          let newArray = removeObjectFromArray(oldAllocations, deletedObj)
+          
+          setAllocations(newArray)
+        }
+
+        if(teamSelected && updating){
+          let newAllocations = [...teamSelected.allocations]
+          let oldAllocations = [...allocations]
+          
+          if(onDropID && dragID){
+            
+            let updatedArray = updateObjectById(oldAllocations, newAllocations, onDropID)
+
+            updatedArray = updateObjectById(oldAllocations, newAllocations, dragID)
+            
+            setAllocations(updatedArray)
+            
+          }
+
         }
 
         if(!teamSelected){
@@ -215,13 +238,17 @@ function Staffing () {
         newAllocations.sort((a, b) => a.order - b.order) 
       }
       
-      newAllocations.sort(customSort)
-      setAllocations(newAllocations)
+      if(!adding && !deleting && !updating){
+        newAllocations.sort(customSort)
+        setAllocations(newAllocations)
+      }
+
       setUser(dataUser.data.user)
-
-      if(sortLeftType) savedSort(sortLeftType.type, sortLeftType.order, newAllocations, setAllocations, setSortTwo, setSortThree, savedSortTwo ? !savedSortTwo : !sortTwo, savedSortThree)
-
-      if(sortRightType) savedSort(sortRightType.type, sortRightType.order, newAllocations, setAllocations, setSortTwo, setSortThree, savedSortTwo, savedSortThree ? !savedSortThree : !sortThree)
+      setAdding(false)
+      setDeleting(false)
+      setUpdating(false)
+      setOnDropID('')
+      setDragID('')
 
     }
     
@@ -328,10 +355,6 @@ function Staffing () {
       
     })
 
-    console.log('Test Left')
-    
-    if(sortLeftType) savedSort(sortLeftType.type, sortLeftType.order, updatedAllocations, setAllocations, setSortTwo, setSortThree, savedSortTwo ? !savedSortTwo : !sortTwo, savedSortThree)
-
     setAllocations(updatedAllocations)
     setIsTyping('allocations')
     
@@ -353,18 +376,19 @@ function Staffing () {
       
     })
 
-    console.log('Test Right')
-
-    if(sortRightType) savedSort(sortRightType.type, sortRightType.order, updatedAllocations, setAllocations, setSortTwo, setSortThree, savedSortTwo, savedSortThree ? !savedSortThree : !sortThree)
-
     setAllocations(updatedAllocations)
     setIsTyping('allocations')
     
   }
 
   const submitUpdateAllocation = () => {
+    
+    setUpdating(true)
+
     updateAllocationMutation({ variables: { allocationID: updatedAllocation.id, userID: dataUser.data.user.id, allocation: updatedAllocation } })
+
     setIsTyping('')
+
   }
 
   const updateFillBarData = ( id, idx, type, newText ) => {
@@ -390,11 +414,15 @@ function Staffing () {
     setAllocations(newAllocations)
     setUpdatedFillbar(newFillBar)
     setUpdatedAllocation(newData)
+    setOnDropID(newData.id)
+    setDragID(newFillBar.id)
     setIsTyping('fillBars')
 
   }
 
   const submitUpdateFillbar = () => {
+    
+    setUpdating(true)
     
     updateFillBar({ 
       variables: { allocationID: updatedAllocation.id, fillBars: updatedAllocation.fillBars, userID: dataUser.data.user.id, fillBar: updatedFillbar }
@@ -405,12 +433,12 @@ function Staffing () {
   }
 
   const handleOnDrop = (e) => {
+
     e.preventDefault()
     e.stopPropagation()
     let data = onDrop(e)
 
     if(!data) return 
-
     let foundDuplicate = []
     
     if(data.pickedContainer.fillBars){
@@ -423,7 +451,12 @@ function Staffing () {
     
     delete data.allocation.allocation.fillBars
     delete data.pickedContainer.fillBars
+    setUpdating(true)
+    setOnDropID(data.onDropId)
+    setDragID(data.allocation.allocation.id)
+    
     addFillBar({ variables: { allocationID: data.onDropId, allocation: data.allocation.allocation, userID: dataUser.data.user.id, pickedContainer: data.pickedContainer } })
+
     setIsTyping('')
     
   }
@@ -433,7 +466,11 @@ function Staffing () {
     e.stopPropagation()
     let data = onDropFillBar(e)
     
-    updateFillBar({ variables: { allocationID: data.id, fillBars: data.fillBars, userID: dataUser.data.user.id, fillBar: {} } }) 
+    setUpdating(true)
+    console.log('TEST')
+
+    // updateFillBar({ variables: { allocationID: data.id, fillBars: data.fillBars, userID: dataUser.data.user.id, fillBar: {} } }) 
+
     setIsTyping('')
 
   }
@@ -443,6 +480,10 @@ function Staffing () {
 
     let newObject = { ...allocation }
 
+    setUpdating(true)
+    setOnDropID(newObject.id)
+    setDragID(deleteId)
+
     delete newObject.fillBars
     deleteFillbar({ variables: { allocation: newObject, userID: dataUser.data.user.id, deleteId: deleteId } })
     setIsTyping('')
@@ -451,11 +492,15 @@ function Staffing () {
 
   const handleDeleteAllocation = (e, allocation) => {
     e.preventDefault()
-
+    console.log(allocation)
     let newObject = { ...allocation }
     
     delete newObject.fillBars
+
+    setDeleting(true)
+    
     deleteAllocation({ variables: { allocation: newObject, userID: dataUser.data.user.id } })
+
     setIsTyping('')
 
   }
@@ -525,7 +570,9 @@ function Staffing () {
       }
 
       defaultAllocationOrderTwo.color = headingSettings.length > 0 ? headingSettings[1].color : '#587B7F'
-      
+
+      setAdding(true)
+
       addAllocation( { variables: defaultAllocationOrderTwo } ).then(() => {
 
         setTimeout(() => {
@@ -533,6 +580,8 @@ function Staffing () {
         }, 200);
         
       })
+
+
     }
 
     if(type == 'three'){
@@ -547,6 +596,8 @@ function Staffing () {
       }
 
       defaultAllocationOrderThree.color = headingSettings.length > 0 ? headingSettings[2].color : '#587B7F'
+
+      setAdding(true)
       
       addAllocation( { variables: defaultAllocationOrderThree } ).then(() => {
 

@@ -130,7 +130,7 @@ const ColumnListRight = ({
                 onDragStart={(e) => onDragStartFillBar(e, fillBar, allocation.id, allocation)}
                 onDrop={(e) => {
                   if(handlePermissions()){
-                    handleOnDropFillbar(e, allocation)
+                    // `handleOnDropFillbar`(e, allocation)
                   }
                 }}
                 className="element-button-allocation curved-eased lightContrast schemeFive fontSize-12 capitalize h6"

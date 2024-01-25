@@ -38,7 +38,7 @@ const ColumnListLeft = ({
         onDragOver={(e)=> onDragOver(e)}
         onDrop={(e) => {
           if(handlePermissions()){
-            handleOnDrop(e)
+            // handleOnDrop(e)
           }
         }}
       >
@@ -55,7 +55,7 @@ const ColumnListLeft = ({
                 onDragStart={(e) => onDragStartFillBar(e, fillBar, allocation.id, allocation)}
                 onDrop={(e) => {
                   if(handlePermissions()){
-                    handleOnDropFillbar(e, allocation)
+                    // handleOnDropFillbar(e, allocation)
                   }
                 }}
                 onMouseEnter={() => setHovered(`hover${fillBar.id}${allocation.id}`)}

@@ -1,4 +1,6 @@
 
+const _ = require('lodash');
+
 export const handleChangeTeam = (team, setTeamID, setAllocations, setSelectedTeam) => {
 
   let newAllocations = []
@@ -61,6 +63,7 @@ export const changeSort = (sortType, listType, allocations, setAllocations, setS
     });
 
     // setSavedSortTwo(sortTwo)
+    
     setAllocations(newAllocations)
     setSortTwo(!sortTwo)
 
@@ -228,4 +231,46 @@ export const savedSort = (sortType, listType, allocations, setAllocations, setSo
   }
   
 
+}
+
+export const compareArrays = (oldArray, newArray, key) => {
+  return newArray.find(newObj => !oldArray.some(oldObj => oldObj[key] === newObj[key]));
+}
+
+// Utility function to check object equality
+export const isEqual = (objA, objB) => {
+  const keysA = Object.keys(objA);
+  const keysB = Object.keys(objB);
+
+  if (keysA.length !== keysB.length) {
+    return false;
+  }
+
+  for (const key of keysA) {
+    if (objA[key] !== objB[key]) {
+      return false;
+    }
+  }
+
+  return true;
+
+}
+
+export const removeObjectFromArray = (array, targetObj) => {
+  return array.filter(obj => obj !== targetObj);
+}
+
+export const updateObjectById = (oldArray, newArray, providedId) => {
+  const updatedObject = newArray.find(obj => obj.id === providedId);
+
+  if (updatedObject) {
+    const index = oldArray.findIndex(obj => obj.id === providedId);
+
+    if (index !== -1) {
+      // Replace the old object with the updated object
+      oldArray[index] = updatedObject;
+    }
+  }
+
+  return oldArray;
 }
