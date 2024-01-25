@@ -384,7 +384,7 @@ function Staffing () {
   const submitUpdateAllocation = () => {
     
     setUpdating(true)
-
+    console.log('UPDATE ALLOCATION')
     updateAllocationMutation({ variables: { allocationID: updatedAllocation.id, userID: dataUser.data.user.id, allocation: updatedAllocation } })
 
     setIsTyping('')
@@ -393,6 +393,7 @@ function Staffing () {
 
   const updateFillBarData = ( id, idx, type, newText ) => {
 
+    if(updating) return
     // Create a copy of the state
     const parentObject = allocations.find((obj) => obj.id === id );
     const newData = { ...parentObject }
@@ -423,10 +424,12 @@ function Staffing () {
   const submitUpdateFillbar = () => {
     
     setUpdating(true)
+    console.log('UPDATE FILLBAR')
     
     updateFillBar({ 
       variables: { allocationID: updatedAllocation.id, fillBars: updatedAllocation.fillBars, userID: dataUser.data.user.id, fillBar: updatedFillbar }
     })
+
     setIsTyping('')
     setSortType('')
 
@@ -492,7 +495,7 @@ function Staffing () {
 
   const handleDeleteAllocation = (e, allocation) => {
     e.preventDefault()
-    console.log(allocation)
+    
     let newObject = { ...allocation }
     
     delete newObject.fillBars
