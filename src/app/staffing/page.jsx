@@ -21,6 +21,8 @@ import DELETE_TEAM from '@/mutations/deleteTeam'
 import DELETE_YEAR from '@/mutations/deleteYear'
 import UPDATE_YEAR from '@/mutations/updateYear'
 import UPDATE_TEAM from '@/mutations/updateTeam'
+import io from 'socket.io-client'
+const socket = io.connect(process.env.NEXT_PUBLIC_SOCKET, {transports: ['websocket', 'polling', 'flashsocket']});
 
 //// HELPERS
 import { onDragStart, onDragOver, onDrop, onDropFillBar, onDragStartFillBar } from '@/helpers/draggable';
@@ -92,13 +94,10 @@ function Staffing () {
   const [ user, setUser] = useState('')
   const [ message, setMessage ] = useState('')
   
-  const dataUser = useQuery(GET_USER, {
-    variables: { id: cookies.user ? cookies.user.id : '', token: cookies.accessToken }
-  })
+  const dataUser = useQuery(GET_USER, { variables: { id: cookies.user ? cookies.user.id : '', token: cookies.accessToken }})
   const users = useQuery(GET_USERS, { variables: { id: cookies.user ? cookies.user.id : ''} })
-  const { refetch } = useQuery(GET_USER, {
-    variables: { id: cookies.user ? cookies.user.id : '', token: cookies.accessToken }
-  })
+  const { refetch } = useQuery(GET_USER, {variables: { id: cookies.user ? cookies.user.id : '', token: cookies.accessToken }})
+  
   const [ addSettings, { data, loadingSettings, errorSettings }] = useMutation(ADD_SETTINGS);
   const [ addAllocation, { dataAllocation, loadingAllocation, errorAllocation }] = useMutation(ADD_ALLOCATION, { refetchQueries: [ GET_USER ] });
   const [ updateAllocationMutation, { dataUpdateAllocation, loadingUpdateAllocation, errorUpdatedAllocation }] = useMutation(UPDATE_ALLOCATION, { refetchQueries: [ GET_USER ]});
@@ -384,9 +383,8 @@ function Staffing () {
   const submitUpdateAllocation = () => {
     
     setUpdating(true)
-    console.log('UPDATE ALLOCATION')
     updateAllocationMutation({ variables: { allocationID: updatedAllocation.id, userID: dataUser.data.user.id, allocation: updatedAllocation } })
-
+    refetch()
     setIsTyping('')
 
   }
@@ -424,7 +422,6 @@ function Staffing () {
   const submitUpdateFillbar = () => {
     
     setUpdating(true)
-    console.log('UPDATE FILLBAR')
     
     updateFillBar({ 
       variables: { allocationID: updatedAllocation.id, fillBars: updatedAllocation.fillBars, userID: dataUser.data.user.id, fillBar: updatedFillbar }
@@ -470,7 +467,6 @@ function Staffing () {
     let data = onDropFillBar(e)
     
     setUpdating(true)
-    console.log('TEST')
 
     // updateFillBar({ variables: { allocationID: data.id, fillBars: data.fillBars, userID: dataUser.data.user.id, fillBar: {} } }) 
 
@@ -722,6 +718,66 @@ function Staffing () {
     }
     
   }
+
+  useEffect(() => {
+   
+    socket.on('checkUserSettings', (client) => {
+      refetch()
+    })
+
+    socket.on('checkAllocations', (client) => {
+      refetch()
+    })
+
+    socket.on('checkFillbars', (client) => {
+      refetch()
+    })
+
+    socket.on('checkAddFillbar', (client) => {
+      refetch()
+    })
+
+    socket.on('checkDeleteFillbar', (client) => {
+      refetch()
+    })
+
+    socket.on('checkDeleteAllocation', (client) => {
+      refetch()
+    })
+
+    socket.on('addAllocation', (client) => {
+      refetch()
+    })
+
+    socket.on('uploadAllocation', (client) => {
+      refetch()
+    })
+
+    socket.on('addYear', (client) => {
+      refetch()
+    })
+
+    socket.on('addTeam', (client) => {
+      refetch()
+    })
+
+    socket.on('deleteYear', (client) => {
+      refetch()
+    })
+
+    socket.on('deleteTeam', (client) => {
+      refetch()
+    })
+
+    socket.on('updateYear', (client) => {
+      refetch()
+    })
+
+    socket.on('updateTeam', (client) => {
+      refetch()
+    })
+    
+  }, [])
 
   if (loadingData) return <div className="loadingPage"><span>loading</span></div>
   if (dataUser.loading) return <div className="loadingPage"><span>loading</span></div>

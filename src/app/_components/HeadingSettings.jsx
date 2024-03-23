@@ -31,8 +31,6 @@ const HeadingSettings = ({
   selectedTeam,
   headingSettings
 }) => {
-
-  // console.log(selectedTeam)
   
   return (
     <>
