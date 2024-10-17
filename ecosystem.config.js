@@ -6,10 +6,10 @@ module.exports = {
 
   deploy : {
     production : {
-      key  : 'arthur.pem',
+      key  : 'allocations.pem',
       user : 'ubuntu',
       host : '54.90.108.58',
-      ref  : 'origin/master',
+      ref  : 'origin/main',
       repo : 'git@github.com:codecallogic/StaffAllocation.git',
       path : '/home/ubuntu/client',
       'pre-deploy-local': '',
