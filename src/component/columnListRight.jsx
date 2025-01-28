@@ -150,14 +150,28 @@ const ColumnListRight = ({
                     <SVG svg={'thrashCan'}></SVG>
                   </div>
                 }
-                <div 
+                {/* <div 
                   className="progressBar schemeFiveAbsolute curved-eased"
                   style={{ 
                     width: `${ Math.min(100, Math.max(0, (fillBar.allocation/fillBar.fte) * 100 ))}%`,
                     backgroundColor: headingSettings && headingSettings.length > 0 ? headingSettings[3].color : '#587B7F'
                   }}
                 >
-                </div>
+                </div> */}
+                <div
+                  className="progressBar schemeFiveAbsolute curved-eased"
+                  style={{
+                    width: `${Math.min(
+                      100,
+                      Math.max(0, (parseFloat(fillBar.allocation) / parseFloat(fillBar.fte)) * 100)
+                    )}%`,
+                    backgroundColor:
+                      headingSettings && headingSettings.length > 0
+                        ? headingSettings[3].color
+                        : "#587B7F",
+                  }}
+                ></div>
+
                 {/* <input 
                   type="text"
                   className="elementInnerBox schemeFive"

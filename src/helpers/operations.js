@@ -14,116 +14,102 @@ export const handleChangeTeam = (team, setTeamID, setAllocations, setSelectedTea
   
 }
 
-export const changeSort = (sortType, listType, allocations, setAllocations, setSortTwo, setSortThree, sortTwo, sortThree) => {
-  
-  if(listType == 'two'){
-    let newList = []
-    
-    if(sortType == 'text'){
-      newList = allocations
-        .slice()
-        .sort( (a, b) => {
+export const changeSort = (
+  sortType,
+  listType,
+  allocations,
+  setAllocations,
+  setSortTwo,
+  setSortThree,
+  sortTwo,
+  sortThree,
+  sortLeftType,
+  sortRightType,
+  setSortLeftType,
+  setSortRightType
+) => {
+  if (listType === "two") {
+    // Determine if the sort type is changing or staying the same
+    const isSameSortType = sortLeftType.type === sortType;
 
-        const textA = a[sortType].toLowerCase();
-        const textB = b[sortType].toLowerCase();
+    // Update sort direction
+    const newSortDirection = isSameSortType ? !sortTwo : true;
 
-        if (textA < textB) return sortTwo ? -1 : 1;
-        if (textA > textB) return sortTwo ? 1 : -1;
-        return 0;
-
-      }).filter((item) => {
-        if(item.order == 2) return item
-      })
-    }
-
-    if(sortType !== 'text'){
-      newList = allocations
-        .slice()
-        .sort( (a, b) => {
-
-        const numA = parseFloat(a[sortType]);
-        const numB = parseFloat(b[sortType]);
-        
-        if (numA < numB) return sortTwo ? 1 : -1;
-        if (numA > numB) return sortTwo ? -1 : 1;
-        return 0;
-
-      }).filter((item) => {
-        if(item.order == 2) return item
-      })
-    }
-
-    let newAllocations = [...allocations]
-
-    newAllocations.forEach((item, index) => {
-      if (item.order === 2) {
-        const targetItem = newList.shift();
-        newAllocations[index] = targetItem;
-      }
-    });
-
-    // setSavedSortTwo(sortTwo)
-    
-    setAllocations(newAllocations)
-    setSortTwo(!sortTwo)
-
-  }
-
-  if(listType == 'three'){
-    let newList = []
-    
-    if(sortType == 'text'){
-      newList = allocations
-        .slice()
-        .sort( (a, b) => {
-
+    // Sort logic
+    const newList = allocations
+      .slice()
+      .filter(item => item.order === 2) // Only items with order === 2 (left column)
+      .sort((a, b) => {
+        if (sortType === "text") {
+          // Handle text-based sorting
           const textA = a[sortType].toLowerCase();
           const textB = b[sortType].toLowerCase();
+          return newSortDirection ? textA.localeCompare(textB) : textB.localeCompare(textA);
+        } else {
+          // Handle numeric sorting (fte or allocation)
+          const numA = parseFloat(a[sortType]);
+          const numB = parseFloat(b[sortType]);
+          return newSortDirection ? numA - numB : numB - numA;
+        }
+      });
 
-          if (textA < textB) return sortThree ? -1 : 1;
-          if (textA > textB) return sortThree ? 1 : -1;
-          return 0;
-
-        }).filter((item) => {
-        if(item.order == 3) return item
-      })
-    }
-
-    if(sortType !== 'text'){
-      newList = allocations
-        .slice()
-        .sort( (a, b) => {
-
-        const numA = parseFloat(a[sortType]);
-        const numB = parseFloat(b[sortType]);
-        
-        if (numA < numB) return sortThree ? 1 : -1;
-        if (numA > numB) return sortThree ? -1 : 1;
-        return 0
-
-      }).filter((item) => {
-        if(item.order == 3) return item
-      })
-    }
-
-    let newAllocations = [...allocations]
-    
-
+    // Update allocations
+    const newAllocations = [...allocations];
+    let newIndex = 0;
     newAllocations.forEach((item, index) => {
-      if (item.order === 3) {
-        const targetItem = newList.shift();
-        newAllocations[index] = targetItem;
+      if (item.order === 2) {
+        newAllocations[index] = newList[newIndex++];
       }
     });
 
-    // setSavedSortThree(sortThree)
-    setAllocations(newAllocations)
-    setSortThree(!sortThree)
+    setAllocations(newAllocations);
 
+    // Update state
+    setSortTwo(newSortDirection);
+    setSortLeftType({ type: sortType, order: listType });
   }
-  
 
-}
+  if (listType === "three") {
+    // Determine if the sort type is changing or staying the same
+    const isSameSortType = sortRightType.type === sortType;
+
+    // Update sort direction
+    const newSortDirection = isSameSortType ? !sortThree : true;
+
+    // Sort logic
+    const newList = allocations
+      .slice()
+      .filter(item => item.order === 3) // Only items with order === 3 (right column)
+      .sort((a, b) => {
+        if (sortType === "text") {
+          // Handle text-based sorting
+          const textA = a[sortType].toLowerCase();
+          const textB = b[sortType].toLowerCase();
+          return newSortDirection ? textA.localeCompare(textB) : textB.localeCompare(textA);
+        } else {
+          // Handle numeric sorting (fte or allocation)
+          const numA = parseFloat(a[sortType]);
+          const numB = parseFloat(b[sortType]);
+          return newSortDirection ? numA - numB : numB - numA;
+        }
+      });
+
+    // Update allocations
+    const newAllocations = [...allocations];
+    let newIndex = 0;
+    newAllocations.forEach((item, index) => {
+      if (item.order === 3) {
+        newAllocations[index] = newList[newIndex++];
+      }
+    });
+
+    setAllocations(newAllocations);
+
+    // Update state
+    setSortThree(newSortDirection);
+    setSortRightType({ type: sortType, order: listType });
+  }
+};
 
 export const savedSort = (sortType, listType, allocations, setAllocations, setSortTwo, setSortThree, savedSortTwo, savedSortThree) => {
   

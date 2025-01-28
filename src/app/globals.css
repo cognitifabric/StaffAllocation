@@ -13,6 +13,16 @@ html {
   padding: env(safe-area-inset);
 }
 
+@media screen and (max-width: 78.125em) {
+  html {
+    font-size: 56.25%;
+  }
+}
+@media screen and (max-width: 48em) {
+  html {
+    font-size: 50%;
+  }
+}
 html,
 body {
   overflow-x: hidden;
@@ -346,6 +356,9 @@ body::-webkit-scrollbar-thumb {
 .padding-0 {
   padding: 0rem !important;
 }
+.padding-3 {
+  padding: 3rem !important;
+}
 
 .flexStart {
   justify-content: flex-start !important;
@@ -603,6 +616,11 @@ body::-webkit-scrollbar-thumb {
 .boxForm {
   background-color: white;
   height: max-content;
+}
+
+.boxBackground {
+  border-radius: 0.5rem;
+  background-color: #8D5A97;
 }
 
 .teams {
@@ -1332,6 +1350,53 @@ body::-webkit-scrollbar-thumb {
 }
 .yearSvgEdit:hover {
   cursor: pointer;
+}
+
+.duplicateSvg {
+  position: absolute;
+  top: -0.5rem;
+  left: 0rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+  width: 2rem;
+  height: 2rem;
+  z-index: 3 !important;
+  border-radius: 50%;
+}
+.duplicateSvg svg {
+  width: 0.8rem;
+  height: 0.8rem;
+  fill: white;
+}
+.duplicateSvg:hover {
+  cursor: pointer;
+}
+.duplicateSvgEdit {
+  position: absolute;
+  top: -0.5rem;
+  left: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+  width: 2rem;
+  height: 2rem;
+  z-index: 3 !important;
+  border-radius: 50%;
+}
+.duplicateSvgEdit svg {
+  width: 1rem;
+  height: 1rem;
+  fill: white;
+}
+.duplicateSvgEdit:hover {
+  cursor: pointer;
+}
+
+.text-center {
+  text-align: center;
 }
 
 .nav {

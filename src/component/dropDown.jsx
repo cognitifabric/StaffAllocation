@@ -13,7 +13,9 @@ const Dropdown = ({
   sortTwo,
   sortThree,
   setSavedSortTwo,
-  setSavedSortThree
+  setSavedSortThree,
+  sortLeftType,
+  sortRightType
 }) => {
 
   const [isOpen, setIsOpen] = useState(false);
@@ -32,27 +34,21 @@ const Dropdown = ({
         <ul className="dropdown-menu curved-eased">
           <li
             onClick={() => (
-              changeSort('text', listType, allocations, setAllocations, setSortTwo, setSortThree, sortTwo, sortThree, setSavedSortTwo, setSavedSortThree),
-              listType == 'two' ? setSortLeftType({ type: 'text', order: listType }) : setSortLeftType(''),
-              listType == 'three' ? setSortRightType({ type: 'text', order: listType }) : setSortRightType('')
+              changeSort('text', listType, allocations, setAllocations, setSortTwo, setSortThree, sortTwo, sortThree, sortLeftType, sortRightType, setSortLeftType, setSortRightType)
             )}
           >
             A-Z
           </li>
           <li
             onClick={() => (
-              changeSort('fte', listType, allocations, setAllocations, setSortTwo, setSortThree, sortTwo, sortThree, setSavedSortTwo, setSavedSortThree),
-              listType == 'two' ? setSortLeftType({ type: 'fte', order: listType }) : setSortLeftType(''),
-              listType == 'three' ? setSortRightType({ type: 'fte', order: listType }) : setSortRightType('')
+              changeSort('fte', listType, allocations, setAllocations, setSortTwo, setSortThree, sortTwo, sortThree, sortLeftType, sortRightType, setSortLeftType, setSortRightType)
             )}
           >
             FTE
           </li>
           <li
             onClick={() => (
-              changeSort('allocation', listType, allocations, setAllocations, setSortTwo, setSortThree, sortTwo, sortThree),
-              listType == 'two' ? setSortLeftType({ type: 'allocation', order: listType }) : setSortLeftType(''),
-              listType == 'three' ? setSortRightType({ type: 'allocation', order: listType }) : setSortRightType('')
+              changeSort('allocation', listType, allocations, setAllocations, setSortTwo, setSortThree, sortTwo, sortThree, sortLeftType, sortRightType, setSortLeftType, setSortRightType)
             )}
           >
             Allocation

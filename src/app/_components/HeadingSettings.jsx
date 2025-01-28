@@ -29,7 +29,9 @@ const HeadingSettings = ({
   setPalleteType,
   selectedYear,
   selectedTeam,
-  headingSettings
+  headingSettings,
+  sortLeftType,
+  sortRightType
 }) => {
   
   return (
@@ -115,6 +117,8 @@ const HeadingSettings = ({
             sortThree={sortThree}
             setSavedSortTwo={setSavedSortTwo}
             setSavedSortThree={setSavedSortThree}
+            sortLeftType={sortLeftType}
+            sortRightType={sortRightType}
           >
           </DropDown>
         </div>
@@ -136,6 +140,8 @@ const HeadingSettings = ({
             sortThree={sortThree}
             setSavedSortTwo={setSavedSortTwo}
             setSavedSortThree={setSavedSortThree}
+            sortLeftType={sortLeftType}
+            sortRightType={sortRightType}
           >
           </DropDown>
         </div>

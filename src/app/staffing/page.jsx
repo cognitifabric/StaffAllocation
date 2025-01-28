@@ -5,6 +5,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { ExcelRenderer } from 'react-excel-renderer';
 import { useCookies } from 'react-cookie';
 import { useRouter } from 'next/navigation';
+import { debounce } from "lodash";
 import GET_USER from '@/queries/fetchUser'
 import GET_USERS from '@/queries/fetchUsers'
 import ADD_SETTINGS from '@/mutations/addSettings'
@@ -21,6 +22,7 @@ import DELETE_TEAM from '@/mutations/deleteTeam'
 import DELETE_YEAR from '@/mutations/deleteYear'
 import UPDATE_YEAR from '@/mutations/updateYear'
 import UPDATE_TEAM from '@/mutations/updateTeam'
+import DUPLICATE_YEAR from '@/mutations/duplicateYear'
 import io from 'socket.io-client'
 const socket = io.connect(process.env.NEXT_PUBLIC_SOCKET, {transports: ['websocket', 'polling', 'flashsocket']});
 
@@ -48,6 +50,7 @@ import EditTeam from '../_components/EditTeam'
 
 //// OPERATIONS
 import { handleChangeTeam } from '../../helpers/operations';
+import DuplicateYear from '../_components/DuplicateYear';
 
 function Staffing () {
 
@@ -112,6 +115,7 @@ function Staffing () {
   const [ deleteYear, { dataDeleteYear, loadingDeleteYear, errorDeleteYear }] = useMutation(DELETE_YEAR, { refetchQueries: [ GET_USER ]})
   const [ updateYear, { dataUpdateYear, loadingUpdateYear, errorUpdateYear }] = useMutation(UPDATE_YEAR, { refetchQueries: [ GET_USER ]})
   const [ updateTeam, { dataUpdateTeam, loadingUpdateTeam, errorUpdateTeam }] = useMutation(UPDATE_TEAM, { refetchQueries: [ GET_USER ]})
+  const [ duplicateYear, { dataDuplicateTeam, loadingDuplicateTeam, errorDuplicateTeam }] = useMutation(DUPLICATE_YEAR, { refetchQueries: [ GET_USER ]})
   const elementsWithIdRef = useRef([]);
   const containerRefLeft    = useRef(null);
   const containerRefRight   = useRef(null);
@@ -177,53 +181,174 @@ function Staffing () {
           setAllocations(newAllocations)
         }
 
-        if(teamSelected && adding){
-          
-          let newAllocations = [...teamSelected.allocations]
-          let oldAllocations = [...allocations]
-
-          let newObj = compareArrays(oldAllocations, newAllocations, 'id')
-          
-          if(!sortTwo){
-            oldAllocations.unshift(newObj)
-            setAllocations(oldAllocations)
+        if (teamSelected && adding) {
+        
+          let newAllocations = [...teamSelected.allocations];
+          let oldAllocations = [...allocations];
+        
+          // Find the newly added allocation
+          const newObj = compareArrays(oldAllocations, newAllocations, "id");
+        
+          if (newObj.order === 2) {
+            // Add to left column and apply sorting
+            const leftColumn = oldAllocations
+              .filter(item => item.order === 2)
+              .concat(newObj) // Add the new item
+              .sort((a, b) => {
+                const sortType = sortLeftType.type;
+                if (sortType === "text") {
+                  const textA = a.text.toLowerCase();
+                  const textB = b.text.toLowerCase();
+                  return sortTwo ? textA.localeCompare(textB) : textB.localeCompare(textA);
+                } else {
+                  const numA = parseFloat(a[sortType]);
+                  const numB = parseFloat(b[sortType]);
+                  return sortTwo ? numA - numB : numB - numA;
+                }
+              });
+        
+            oldAllocations = [...leftColumn, ...oldAllocations.filter(item => item.order !== 2)];
           }
-
-          if(sortTwo){
-            let oldAllocations = [...allocations]
-            oldAllocations.push(newObj)
-            setAllocations(oldAllocations)
-
+        
+          if (newObj.order === 3) {
+            // Add to right column and apply sorting
+            const rightColumn = oldAllocations
+              .filter(item => item.order === 3)
+              .concat(newObj) // Add the new item
+              .sort((a, b) => {
+                const sortType = sortRightType.type;
+                if (sortType === "text") {
+                  const textA = a.text.toLowerCase();
+                  const textB = b.text.toLowerCase();
+                  return sortThree ? textA.localeCompare(textB) : textB.localeCompare(textA);
+                } else {
+                  const numA = parseFloat(a[sortType]);
+                  const numB = parseFloat(b[sortType]);
+                  return sortThree ? numA - numB : numB - numA;
+                }
+              });
+        
+            oldAllocations = [...oldAllocations.filter(item => item.order !== 3), ...rightColumn];
           }
-
+        
+          // Preserve allocations for other items (order !== 2 && order !== 3)
+          const finalAllocations = [
+            ...oldAllocations.filter(item => item.order === 2),
+            ...oldAllocations.filter(item => item.order === 3),
+            ...oldAllocations.filter(item => item.order !== 2 && item.order !== 3),
+          ];
+        
+          setAllocations(finalAllocations);
         }
+        
 
-        if(teamSelected && deleting){
-          let newAllocations = [...teamSelected.allocations]
-          let oldAllocations = [...allocations]
-          
-          let deletedObj = compareArrays(newAllocations, oldAllocations, 'id')
-
-          let newArray = removeObjectFromArray(oldAllocations, deletedObj)
-          
-          setAllocations(newArray)
+        if (teamSelected && deleting) {
+          console.log("DELETING...");
+        
+          let updatedAllocations = teamSelected.allocations.filter(
+            (allocation) => allocation.id !== dragID // Remove the deleted allocation
+          );
+        
+          // Separate into left and right columns based on `order`
+          const leftColumn = updatedAllocations
+            .filter((item) => item.order === 2)
+            .sort((a, b) => {
+              const sortType = sortLeftType.type;
+              if (sortType === "text") {
+                const textA = a.text.toLowerCase();
+                const textB = b.text.toLowerCase();
+                return sortTwo ? textA.localeCompare(textB) : textB.localeCompare(textA);
+              } else {
+                const numA = parseFloat(a[sortType]);
+                const numB = parseFloat(b[sortType]);
+                return sortTwo ? numA - numB : numB - numA;
+              }
+            });
+        
+          const rightColumn = updatedAllocations
+            .filter((item) => item.order === 3)
+            .sort((a, b) => {
+              const sortType = sortRightType.type;
+              if (sortType === "text") {
+                const textA = a.text.toLowerCase();
+                const textB = b.text.toLowerCase();
+                return sortThree
+                  ? textA.localeCompare(textB)
+                  : textB.localeCompare(textA);
+              } else {
+                const numA = parseFloat(a[sortType]);
+                const numB = parseFloat(b[sortType]);
+                return sortThree ? numA - numB : numB - numA;
+              }
+            });
+        
+          // Preserve allocations for other orders
+          const finalAllocations = [
+            ...leftColumn,
+            ...rightColumn,
+            ...updatedAllocations.filter((item) => item.order !== 2 && item.order !== 3),
+          ];
+        
+          setAllocations(finalAllocations);
         }
+        
 
-        if(teamSelected && updating){
-          let newAllocations = [...teamSelected.allocations]
-          let oldAllocations = [...allocations]
-          
-          if(onDropID && dragID){
-            
-            let updatedArray = updateObjectById(oldAllocations, newAllocations, onDropID)
-
-            updatedArray = updateObjectById(oldAllocations, newAllocations, dragID)
-            
-            setAllocations(updatedArray)
-            
+        if (teamSelected && updating) {
+          console.log("UPDATING...");
+        
+          let newAllocations = [...teamSelected.allocations];
+          let oldAllocations = [...allocations];
+        
+          if (onDropID && dragID) {
+            let updatedArray = updateObjectById(oldAllocations, newAllocations, onDropID);
+            updatedArray = updateObjectById(updatedArray, newAllocations, dragID);
+        
+            // Separate into left and right columns based on `order`
+            const leftColumn = updatedArray
+              .filter((item) => item.order === 2)
+              .sort((a, b) => {
+                const sortType = sortLeftType.type;
+                if (sortType === "text") {
+                  const textA = a.text.toLowerCase();
+                  const textB = b.text.toLowerCase();
+                  return sortTwo
+                    ? textA.localeCompare(textB)
+                    : textB.localeCompare(textA);
+                } else {
+                  const numA = parseFloat(a[sortType]);
+                  const numB = parseFloat(b[sortType]);
+                  return sortTwo ? numA - numB : numB - numA;
+                }
+              });
+        
+            const rightColumn = updatedArray
+              .filter((item) => item.order === 3)
+              .sort((a, b) => {
+                const sortType = sortRightType.type;
+                if (sortType === "text") {
+                  const textA = a.text.toLowerCase();
+                  const textB = b.text.toLowerCase();
+                  return sortThree
+                    ? textA.localeCompare(textB)
+                    : textB.localeCompare(textA);
+                } else {
+                  const numA = parseFloat(a[sortType]);
+                  const numB = parseFloat(b[sortType]);
+                  return sortThree ? numA - numB : numB - numA;
+                }
+              });
+        
+            // Preserve allocations for other orders
+            const finalAllocations = [
+              ...leftColumn,
+              ...rightColumn,
+              ...updatedArray.filter((item) => item.order !== 2 && item.order !== 3),
+            ];
+        
+            setUpdating(false)
+            setAllocations(finalAllocations);
           }
-
-        }
+        }        
 
         if(!teamSelected){
 
@@ -233,6 +358,8 @@ function Staffing () {
         }
 
       }else {
+
+        
         newAllocations = [...dataUser.data.user.years[0].teams[0].allocations]
         newAllocations.sort((a, b) => a.order - b.order) 
       }
@@ -252,6 +379,7 @@ function Staffing () {
     }
     
   }, [dataUser])
+  
 
   useEffect(() => {
    
@@ -380,57 +508,96 @@ function Staffing () {
     
   }
 
-  const submitUpdateAllocation = () => {
+  const submitUpdateAllocation = async () => {
     
-    setUpdating(true)
-    updateAllocationMutation({ variables: { allocationID: updatedAllocation.id, userID: dataUser.data.user.id, allocation: updatedAllocation } })
-    refetch()
-    setIsTyping('')
+    setUpdating(true);
+  
+    try {
+      const { data } = await updateAllocationMutation({
+        variables: {
+          allocationID: updatedAllocation.id,
+          userID: dataUser.data.user.id,
+          allocation: updatedAllocation,
+        },
+        refetchQueries: [GET_USER], // Ensures server data is fetched
+      });
+  
+      if (data) {
+        // Manually update the `allocations` state if needed
+        const updatedAllocations = allocations.map((item) => {
+          if (item.id === updatedAllocation.id) {
+            return { ...item, ...updatedAllocation };
+          }
+          return item;
+        });
+  
+        setAllocations(updatedAllocations); // Update state with new data
+      }
+      
+      setIsTyping('');
+      // setUpdating(false);
+    } catch (error) {
+      console.error('Error updating allocation:', error);
+      setUpdating(false);
+    }
+  };
 
-  }
+  const handleDebouncedFillBarUpdate = debounce((updateFn) => {
+    updateFn();
+  }, 230);
 
-  const updateFillBarData = ( id, idx, type, newText ) => {
-
-    if(updating) return
-    // Create a copy of the state
-    const parentObject = allocations.find((obj) => obj.id === id );
-    const newData = { ...parentObject }
-    
-    const fillBar = newData.fillBars.find((item, idxItem) => idxItem === idx )
-    const newFillBar = { ...fillBar }
-
-    newFillBar[type] = newText
-    
-    const fillBars = [...newData.fillBars]
-    
-    fillBars[idx] = newFillBar
-    newData.fillBars = fillBars
-    
+  const updateFillBarData = (id, idx, type, newText) => {
+    if (updating) return;
+  
+    // Update state optimistically
+    const parentObject = allocations.find((obj) => obj.id === id);
+    const newData = { ...parentObject };
+  
+    const fillBar = newData.fillBars.find((item, idxItem) => idxItem === idx);
+    const newFillBar = { ...fillBar };
+  
+    newFillBar[type] = newText;
+  
+    const fillBars = [...newData.fillBars];
+    fillBars[idx] = newFillBar;
+    newData.fillBars = fillBars;
+  
     const newAllocations = allocations.map((item) => {
-      return item.id === newData.id ? newData : item
-    })
-    
-    setAllocations(newAllocations)
-    setUpdatedFillbar(newFillBar)
-    setUpdatedAllocation(newData)
-    setOnDropID(newData.id)
-    setDragID(newFillBar.id)
-    setIsTyping('fillBars')
+      return item.id === newData.id ? newData : item;
+    });
+  
+    setAllocations(newAllocations); // Update state locally for immediate feedback
+    setUpdatedFillbar(newFillBar);
+    setUpdatedAllocation(newData);
+    setOnDropID(newData.id);
+    setDragID(newFillBar.id);
+  
+    // Debounce the server call to reduce typing lag
+    handleDebouncedFillBarUpdate(() => {
+      setIsTyping("fillBars");
+    });
+  };
 
-  }
-
-  const submitUpdateFillbar = () => {
-    
-    setUpdating(true)
-    
-    updateFillBar({ 
-      variables: { allocationID: updatedAllocation.id, fillBars: updatedAllocation.fillBars, userID: dataUser.data.user.id, fillBar: updatedFillbar }
-    })
-
-    setIsTyping('')
-    setSortType('')
-
-  }
+  const submitUpdateFillbar = async () => {
+    setUpdating(true);
+  
+    try {
+      await updateFillBar({
+        variables: {
+          allocationID: updatedAllocation.id,
+          fillBars: updatedAllocation.fillBars,
+          userID: dataUser.data.user.id,
+          fillBar: updatedFillbar,
+        },
+      });
+    } catch (error) {
+      console.error("Error updating fillBar:", error);
+    } finally {
+      setIsTyping("");
+      setUpdating(false);
+      setSortType("");
+    }
+  };
 
   const handleOnDrop = (e) => {
 
@@ -859,23 +1026,23 @@ function Staffing () {
                 </div>
               }
               { isHovered == `hover${team.id}${idx}` &&
-                  <div 
-                    onClick={(e) => {
-                      if(handlePermissions()){
-                        e.stopPropagation(),
-                        setEditTeam(team),
-                        setPopup('editTeam')
-                      }
-                    }}
-                    className="teamSvgEdit">
-                    <SVG 
-                      svg={'edit2'}
-                      width={20}
-                      height={20}
-                    >
-                    </SVG>
-                  </div>
-                }
+                <div 
+                  onClick={(e) => {
+                    if(handlePermissions()){
+                      e.stopPropagation(),
+                      setEditTeam(team),
+                      setPopup('editTeam')
+                    }
+                  }}
+                  className="teamSvgEdit">
+                  <SVG 
+                    svg={'edit2'}
+                    width={20}
+                    height={20}
+                  >
+                  </SVG>
+                </div>
+              }
             </span>
           )}
         </div>
@@ -931,6 +1098,24 @@ function Staffing () {
                     className="yearSvgEdit">
                     <SVG 
                       svg={'edit2'}
+                      width={20}
+                      height={20}
+                    >
+                    </SVG>
+                  </div>
+                }
+                { isHovered == `hover${year.id}${idx}` &&
+                  <div 
+                    onClick={(e) => {
+                      if(handlePermissions()){
+                        e.stopPropagation(),
+                        setEditYear(year),
+                        setPopup('duplicateYear')
+                      }
+                    }}
+                    className="duplicateSvgEdit">
+                    <SVG 
+                      svg={'duplicate'}
                       width={20}
                       height={20}
                     >
@@ -1030,6 +1215,8 @@ function Staffing () {
           selectedYear={selectedYear}
           selectedTeam={selectedTeam}
           headingSettings={headingSettings}
+          sortLeftType={sortLeftType}
+          sortRightType={sortRightType}
         >
         </HeadingSettings>
 
@@ -1160,6 +1347,21 @@ function Staffing () {
           updateYear={updateYear}
         >
         </EditYear>
+      }
+      { popup == 'duplicateYear' &&
+        <DuplicateYear
+          loading={loading}
+          setLoading={setLoading}
+          submitError={submitError}
+          setSubmitError={setSubmitError}
+          setPopup={setPopup}
+          duplicateYear={duplicateYear}
+          editYear={editYear}
+          setEditYear={setEditYear}
+          user={dataUser}
+          refetch={refetch}
+        >
+        </DuplicateYear>
       }
       { popup == 'addTeam' &&
         <AddTeam

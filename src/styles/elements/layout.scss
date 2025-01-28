@@ -152,6 +152,10 @@
   &-0 {
     padding: 0rem!important;
   }
+
+  &-3 {
+    padding: 3rem!important;
+  }
   
 }
 
@@ -329,6 +333,13 @@
   width: 49%!important;
   margin: .5rem .2rem;
 }
+
+// @media (max-width: 1000px) {
+//   .whalf {
+//     width: 100%!important; /* Full width for stacking */
+//     margin: 0.5rem 0; /* Remove side margins */
+//   }
+// }
 
 .wfull {
   width: 100%!important;

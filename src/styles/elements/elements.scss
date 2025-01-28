@@ -423,3 +423,60 @@
   }
 
 }
+
+.duplicate {
+  &Svg {
+    position: absolute;
+    top: -.5rem;
+    left: 0rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $color-dark-contrast;
+    width: 2rem;
+    height: 2rem;
+    z-index: 3!important;
+    border-radius: 50%;
+
+    svg {
+      width: .8rem;
+      height: .8rem;
+      fill: $color-light-contrast;
+    }
+
+    &:hover {
+      cursor: pointer;
+    }
+    
+  }
+
+  &SvgEdit {
+    position: absolute;
+    top: -.5rem;
+    left: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $color-dark-contrast;
+    width: 2rem;
+    height: 2rem;
+    z-index: 3!important;
+    border-radius: 50%;
+
+    svg {
+      width: 1rem;
+      height: 1rem;
+      fill: $color-light-contrast;
+    }
+
+    &:hover {
+      cursor: pointer;
+    }
+    
+  }
+
+}
+
+.text-center {
+  text-align: center;
+}

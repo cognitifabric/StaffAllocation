@@ -172,6 +172,9 @@ export default function Home() {
                 }
               </button>
             </div>
+            <div className="container-center padding-0 elementLink">
+              <a href="/forgotPassword" className="fontSize-16 schemeOne">Forgot Password</a>
+            </div>
             <div className="container-center padding-0 text-black fontSize-16">
               Don&rsquo;t have an account?
             </div>
