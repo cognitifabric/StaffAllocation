@@ -82,12 +82,36 @@ const findObjectById = (array, id) => {
   return array.find(obj => obj.id === id);
 }
 
-const customSort = (a, b) => {
-  if (a.text === '' && a.allocation === '0') {
-    return -1; // a comes first
-  } else if (a.text === '' && a.allocation === '0') {
-    return 1; // b comes first
-  } else {
-    return 0; // order unchanged
+// const customSort = (a, b) => {
+//   if (a.text === '' && a.allocation === '0') {
+//     return -1; // a comes first
+//   } else if (a.text === '' && a.allocation === '0') {
+//     return 1; // b comes first
+//   } else {
+//     return 0; // order unchanged
+//   }
+// }
+
+const customSort = (a, b, sortType, ascending = true) => {
+  const aIsEmpty = a.text === '' && a.allocation === '0';
+  const bIsEmpty = b.text === '' && b.allocation === '0';
+
+  if (aIsEmpty && !bIsEmpty) return -1;
+  if (!aIsEmpty && bIsEmpty) return 1;
+
+  if (sortType?.type === 'text') {
+    const textA = a.text?.toLowerCase() || '';
+    const textB = b.text?.toLowerCase() || '';
+    return ascending ? textA.localeCompare(textB) : textB.localeCompare(textA);
   }
+
+  if (sortType?.type === 'allocation' || sortType?.type === 'fte') {
+    const valA = parseFloat(a[sortType.type] || 0);
+    const valB = parseFloat(b[sortType.type] || 0);
+    return ascending ? valA - valB : valB - valA;
+  }
+
+  return 0;
 }
+
+

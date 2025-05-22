@@ -44,7 +44,7 @@ const ColumnListLeft = ({
       >
         <div className="container-flex-right wfull">
           <div className="container-flex-right wfull h10 fontSize-16 capitalize scrollReverse">
-            { allocation.fillBars.map( ( fillBar, idx) => 
+            { (allocation.fillBars || []).map((fillBar, idx) =>
               <div 
                 key={idx}
                 id={fillBar.id}

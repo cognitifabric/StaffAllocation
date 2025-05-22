@@ -176,7 +176,7 @@ function Staffing () {
         
         if(teamSelected && !adding && !deleting && !updating){
           newAllocations = [...teamSelected.allocations]
-          newAllocations.sort((a, b) => a.order - b.order) 
+          // newAllocations.sort((a, b) => a.order - b.order) 
 
           setAllocations(newAllocations)
         }
@@ -353,7 +353,7 @@ function Staffing () {
         if(!teamSelected){
 
           newAllocations = [...dataUser.data.user.years[0].teams[0].allocations]
-          newAllocations.sort((a, b) => a.order - b.order) 
+          // newAllocations.sort((a, b) => a.order - b.order) 
 
         }
 
@@ -361,13 +361,28 @@ function Staffing () {
 
         
         newAllocations = [...dataUser.data.user.years[0].teams[0].allocations]
-        newAllocations.sort((a, b) => a.order - b.order) 
+        // newAllocations.sort((a, b) => a.order - b.order) 
       }
       
-      if(!adding && !deleting && !updating){
-        newAllocations.sort(customSort)
-        setAllocations(newAllocations)
+      // if(!adding && !deleting && !updating){
+      //   newAllocations.sort(customSort)
+      //   setAllocations(newAllocations)
+      // }
+
+      if (!adding && !deleting && !updating) {
+        if (savedSortTwo || savedSortThree) {
+          const sortedAllocations = [
+            ...allocations.filter(item => item.order === 2).sort((a, b) => customSort(a, b)),
+            ...allocations.filter(item => item.order === 3).sort((a, b) => customSort(a, b)),
+            ...allocations.filter(item => item.order !== 2 && item.order !== 3),
+          ];
+          setAllocations(sortedAllocations);
+        } else {
+          setAllocations(allocations);
+        }
       }
+
+      
 
       setUser(dataUser.data.user)
       setAdding(false)
@@ -379,7 +394,6 @@ function Staffing () {
     }
     
   }, [dataUser])
-  
 
   useEffect(() => {
    
@@ -510,6 +524,8 @@ function Staffing () {
 
   const submitUpdateAllocation = async () => {
     
+    // console.log(updatedAllocation)
+    
     setUpdating(true);
   
     try {
@@ -578,26 +594,85 @@ function Staffing () {
     });
   };
 
+
   const submitUpdateFillbar = async () => {
-    setUpdating(true);
-  
-    try {
-      await updateFillBar({
-        variables: {
-          allocationID: updatedAllocation.id,
-          fillBars: updatedAllocation.fillBars,
-          userID: dataUser.data.user.id,
-          fillBar: updatedFillbar,
-        },
+  setUpdating(true);
+
+  try {
+    const { data } = await updateFillBar({
+      variables: {
+        allocationID: updatedAllocation.id,
+        fillBars: updatedAllocation.fillBars,
+        userID: dataUser.data.user.id,
+        fillBar: updatedFillbar,
+      },
+    });
+
+    if (data && data.updateFillBar) {
+      const updatedAllocationsFromServer = data.updateFillBar.years
+        .flatMap((year) => year.teams)
+        .flatMap((team) => team.allocations);
+
+      const updatedFillBarMap = {};
+      const totalFillBarSums = {};
+      const reverseFillBarMap = {};
+
+      updatedAllocationsFromServer.forEach((alloc) => {
+        alloc.fillBars?.forEach((fb) => {
+          const targetId = fb.id;
+          const val = parseFloat(fb.allocation) || 0;
+
+          if (alloc.id === updatedAllocation.id) {
+            updatedFillBarMap[targetId] = val;
+          }
+
+          totalFillBarSums[targetId] = (totalFillBarSums[targetId] || 0) + val;
+
+          if (!reverseFillBarMap[targetId]) reverseFillBarMap[targetId] = [];
+          reverseFillBarMap[targetId].push({
+            id: alloc.id,
+            order: 3,
+            text: alloc.text,
+            fte: alloc.fte,
+            allocation: fb.allocation,
+          });
+        });
       });
-    } catch (error) {
-      console.error("Error updating fillBar:", error);
-    } finally {
-      setIsTyping("");
-      setUpdating(false);
-      setSortType("");
+
+      const updatedAllocations = allocations.map((item) => {
+        const serverMatch = updatedAllocationsFromServer.find((a) => a.id === item.id);
+        const newItem = { ...item };
+
+        const isRightUpdated = item.id === updatedAllocation.id && item.order === 3;
+        const isLeftTargeted = item.id === updatedFillbar.id && item.order === 2;
+
+        if (isRightUpdated && serverMatch) {
+          newItem.fillBars = serverMatch.fillBars;
+        }
+
+        if (isLeftTargeted) {
+          newItem.fillBars = reverseFillBarMap[item.id] || [];
+          newItem.allocation = (totalFillBarSums[item.id] || 0).toFixed(2);
+        }
+
+        return newItem;
+      });
+
+      setAllocations(updatedAllocations);
     }
-  };
+  } catch (error) {
+    console.error("Error updating fillBar:", error);
+  } finally {
+    setIsTyping("");
+    setUpdating(false);
+    setSortType("");
+  }
+};
+
+
+
+
+
 
   const handleOnDrop = (e) => {
 
@@ -946,6 +1021,7 @@ function Staffing () {
     
   }, [])
 
+
   if (loadingData) return <div className="loadingPage"><span>loading</span></div>
   if (dataUser.loading) return <div className="loadingPage"><span>loading</span></div>
   if (loadingSettings) return <div className="loadingPage"><span>loading</span></div>
@@ -956,6 +1032,7 @@ function Staffing () {
   if (errorUpdatedAllocation) return `Submission error! ${errorUpdatedAllocation}`;
   if (!cookies.accessToken) return <div className="loadingPage"><span>loading user data</span></div>
   if (cookies.user.role == 'systemAdmin') return <SystemAdmin allUsers={allUsers} setAllUsers={setAllUsers} removeCookie={removeCookie} currentUser={dataUser}/>
+  
   
   return (
     <>

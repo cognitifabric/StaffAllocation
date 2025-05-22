@@ -43,6 +43,7 @@ const ColorPallete = ({
             style={{ backgroundColor: item }}
             className="elementColorPalletePopupItem"
             onClick={() => (
+              // console.log(item),
               updateAllocationItems(colorPallete, 'color', item),
               setColorPallete(''),
               setPalleteType('')
